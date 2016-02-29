@@ -14,3 +14,6 @@
 * 3) Preguntara que has bajado un projecto de Studio, que si quieres abrirlo. Dadle a yes. (Puede no salir este paso)
 * 4) Preguntará para importar el proyecto de Gradle, dadle a OK, saldrá un warning diciendo que va a cambiar una linea del fichero properties, decidle que OK.
 * 5) Pulsando Alt+1 aparece la vista del proyecto. Si se selecciona la vista de "Project" en el desplegable, se mostrará todo. Por defecto está en "Android".
+
+### FAQ
+* Para borrar todo el trabajo de local y volver a bajarlo de github, acceder a la carpeta donde se haya clonado el proyecto y borrar el directorio a mano. Abrir Android Studio y repetir los pasos del tutorial.
