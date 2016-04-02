@@ -1,4 +1,4 @@
-package es.unizar.eina.notepadv3;
+package redwinecorp.misvinos.;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +16,7 @@ import es.unizar.eina.send.SendAbstraction;
 import es.unizar.eina.send.SendAbstractionImpl;
 
 
-public class Notepadv3 extends AppCompatActivity {
+public class MisVinos extends AppCompatActivity {
 
     private static final int ACTIVITY_CREATE=0;
     private static final int ACTIVITY_EDIT=1;
@@ -219,12 +219,12 @@ public class Notepadv3 extends AppCompatActivity {
 
     private void createNote() {
         ultima_usada = mList.getCount()+1;
-        Intent i = new Intent(this, NoteEdit.class);
+        Intent i = new Intent(this, EditarVino.class);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
 
     private void editNote(long id) {
-        Intent i = new Intent(this, NoteEdit.class);
+        Intent i = new Intent(this, EditarVino.class);
         i.putExtra(NotesDbAdapter.KEY_ROWID, id);
 
         startActivityForResult(i, ACTIVITY_EDIT);

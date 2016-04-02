@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="redwinecorp.misvinos" >
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    package="redwinecorp.misvinos">
+
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-
             android:name=".MisVinos"
-            android:label="@string/app_name" >
-
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="redwinecorp.misvinos.EditarVino"
+            android:name=".EditarVino"
             android:label="@string/title_activity_editar_vino"
-            android:parentActivityName=".MisVinos" >
+            android:parentActivityName=".MisVinos">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MisVinos" />
         </activity>
-
+        <activity
+            android:name=".Inicio"
+            android:label="@string/title_activity_inicio"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

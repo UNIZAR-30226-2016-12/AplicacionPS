@@ -10,4 +10,5 @@
     <string name="editar_vino">Editar Vino</string>
     <string name="title_activity_editar_vino">Editar Vino</string>
     <string name="id">ID</string>
+    <string name="title_activity_inicio">Inicio</string>
 </resources>

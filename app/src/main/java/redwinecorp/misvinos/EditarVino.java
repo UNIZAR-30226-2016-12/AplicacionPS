@@ -1,4 +1,4 @@
-package es.unizar.eina.notepadv3;
+package redwinecorp.misvinos;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
-public class NoteEdit extends AppCompatActivity {
+public class EditarVino extends AppCompatActivity {
 
     private EditText mTitleText;
     private EditText mBodyText;
