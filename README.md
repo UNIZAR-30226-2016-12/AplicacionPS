@@ -1,12 +1,9 @@
 # AplicacionPS
 
-# Descarga de Android Studio
-* [Link] (http://developer.android.com/intl/es/sdk/index.html)
-
 ## Pre-requisitos
-* Tener Java y Java JDK instalados
-* Para ello acceder a [Link] (https://ninite.com) y seleccionar JDK y JDK x64 (si tenéis procesador de 64bits) en Developer Tools y luego Java 8 en runtimes, así os aseguraréis de que tenéis java al día.
-* Descargar el instalador y ejecutarlo.
+* [Android Studio] (http://developer.android.com/intl/es/sdk/index.html)
+* [Git] (https://git-scm.com/downloads)
+* Tener Java y Java JDK instalados: Para ello acceder a [Link] (https://ninite.com) y seleccionar JDK y JDK x64 (si tenéis procesador de 64bits) en Developer Tools y luego Java 8 en runtimes, así os aseguraréis de que tenéis java al día.
 
 ### Tutorial
 * 1) En la pantalla de bienvenida darle a "Check out project from Version Control" y seleccionar github
