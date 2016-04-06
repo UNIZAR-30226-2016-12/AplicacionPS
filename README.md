@@ -16,5 +16,5 @@
 * 5) Cuando aparezca un mensaje de que se han detectado fuentes de VCS dadle a 'Add root'
 * 6) Pulsando Alt+1 aparece la vista del proyecto. Si se selecciona la vista de "Project" en el desplegable, se mostrará todo. Por defecto está en "Android".
 
-### FAQ
+### FAQ / Lecciones aprendidas
 * Para borrar todo el trabajo de local y volver a bajarlo de github, acceder a la carpeta donde se haya clonado el proyecto y borrar el directorio a mano. Abrir Android Studio y repetir los pasos del tutorial.
