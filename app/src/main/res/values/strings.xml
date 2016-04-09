@@ -5,10 +5,17 @@
     <string name="menu_insert">Añadir Vino</string>
     <string name="menu_delete">Borrar Vino</string>
     <string name="menu_edit">Editar Vino</string>
-    <string name="title">Titulo</string>
+    <string name="nomVino">Nombre</string>
+    <string name="vino">Tipo de vino</string>
     <string name="confirmar">Confirmar</string>
     <string name="editar_vino">Editar Vino</string>
     <string name="title_activity_editar_vino">Editar Vino</string>
-    <string name="id">ID</string>
+    <string name="uva">Tipo de uva</string>
+    <string name="denominacion">Denominacion</string>
+    <string name="anno">Año</string>
+    <string name="premios">Premios</string>
+    <string name="grupo">Grupo</string>
+    <string name="valoracion">Valoracion personal</string>
+    <string name="localizacion">Localizacion</string>
     <string name="title_activity_inicio">Inicio</string>
 </resources>
