@@ -119,7 +119,7 @@ public class VinosDbAdapter {
                     KEY_GANA_AÑO            + " integer, " +
                     "foreign key (" + KEY_GANA_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
                     "foreign key (" + KEY_GANA_PREMIO + ") references " + DATABASE_NAME_PREMIO + "(" + KEY_PREMIO_NOMBRE + "), " +
-                    "primary key (" + KEY_GANA_VINO + "," + KEY_GANA_PREMIO + "));";
+                    "primary key (" + KEY_GANA_VINO + "," + KEY_GANA_PREMIO + ","+ KEY_GANA_AÑO +"));";
 
     private static final String DATABASE_CREATE_POSEE =
             "create table " + DATABASE_NAME_POSEE + " (" +
@@ -187,7 +187,7 @@ public class VinosDbAdapter {
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_TIPO =
-            "CREATE TRIGGER borrar_denominacion\n" +
+            "CREATE TRIGGER borrar_tipo\n" +
                     "BEFORE DELETE ON " + DATABASE_NAME_TIPO + " BEGIN " +
                     "DELETE " + DATABASE_NAME_ES + " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
                     "END;";
@@ -314,76 +314,136 @@ public class VinosDbAdapter {
      */
     private long getSiguienteId(){
 
-        Cursor c = mDb.rawQuery("SELECT MAX("+KEY_VINO_ID+") as max FROM "+DATABASE_NAME_VINO, null);
+        Cursor c = mDb.rawQuery("SELECT MAX(" + KEY_VINO_ID + ") as max FROM " + DATABASE_NAME_VINO, null);
         c.moveToFirst();
         return c.getLong(c.getColumnIndex("max"))+1;
     }
 
     /**
-     * Consulta si existe un vino en la base de datos con nombre y año dados
+     * Busca el vino con el nombre y año dados
      *
      * @param nombre es el nombre del vino
      * @param año es el año del vino
-     * @return devuelve true si existe un vino con las caracteristicas dadas, false en caso contrario.
+     * @return devuelve un cursor con el resultado de la búsqueda
      */
-    private boolean existeVino(String nombre, long año){
+    private Cursor getVino(String nombre, long año){
         String nombreUpper = nombre.toUpperCase();
-        Cursor c = mDb.query(DATABASE_NAME_VINO, new String[] {KEY_VINO_ID},
-                        new String(KEY_VINO_NOMBRE+"='"+nombreUpper+"' AND "+KEY_VINO_AÑO+"="+año),
-                        null, null, null, null);
-        return c.getCount()>0;
+        Cursor c = mDb.query(DATABASE_NAME_VINO, null,
+                new String(KEY_VINO_NOMBRE + "='" + nombreUpper + "' AND " + KEY_VINO_AÑO + "=" + año),
+                null, null, null, null);
+        return c;
     }
 
     /**
-     * Consulta si existe una uva en la base de datos con el nombre dado.
+     * Busca la uva con el nombre dado
      *
-     * @param uva es el nombre de la uva
-     * @return devuelve true si existe una uva con el nombre dado, false en caso contrario.
+     * @param nombre es el nombre de la uva
+     * @return devuelve un cursor con el resultado de la búsqueda
      */
-    private boolean existeUva(String uva){
-        String uvaUpper = uva.toUpperCase();
-        Cursor c = mDb.query(DATABASE_NAME_UVA, new String[]{KEY_UVA_NOMBRE},
+    private Cursor getUva(String nombre){
+        String uvaUpper = nombre.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_UVA, null,
                 new String(KEY_UVA_NOMBRE + "='" + uvaUpper + "'"), null, null, null, null);
-        return c.getCount()>0;
+        return c;
     }
 
     /**
-     * Consulta si existe un premio en la base de datos con el nombre dado.
+     * Busca el premio con el nombre dado
      *
-     * @param premio es el nombre del premio
-     * @return devuelve true si existe un premio con el nombre dado, false en caso contrario.
+     * @param nombre es el nombre del premio
+     * @return devuelve un cursor con el resultado de la búsqueda
      */
-    private boolean existePremio(String premio){
-        String premioUpper = premio.toUpperCase();
-        Cursor c = mDb.query(DATABASE_NAME_PREMIO, new String[]{KEY_PREMIO_NOMBRE},
+    private Cursor getPremio(String nombre){
+        String premioUpper = nombre.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_PREMIO, null,
                 new String(KEY_PREMIO_NOMBRE+"='"+premioUpper+"'"), null, null, null, null);
-        return c.getCount()>0;
+        return c;
     }
 
     /**
-     * Consulta si existe una denominacion en la base de datos con el nombre dado.
+     * Busca la denominacion con el nombre dado
      *
-     * @param denominacion es el nombre de la denominacion
-     * @return devuelve true si existe una denominacion con el nombre dado, false en caso contrario.
+     * @param nombre es el nombre de la denominacion
+     * @return devuelve un cursor con el resultado de la búsqueda
      */
-    private boolean existeDenominacion(String denominacion){
-        String denominacionUpper = denominacion.toUpperCase();
+    private Cursor getDenominacion(String nombre){
+        String denominacionUpper = nombre.toUpperCase();
         Cursor c = mDb.query(DATABASE_NAME_DENOMINACION, new String[]{KEY_DENOMINACION_NOMBRE},
                 new String(KEY_DENOMINACION_NOMBRE+"='"+denominacionUpper+"'"), null, null, null, null);
-        return c.getCount()>0;
+        return c;
     }
 
     /**
-     * Consulta si existe un tipo en la base de datos con el nombre dado.
+     * Busca el tipo con el nombre dado
      *
-     * @param tipo es el nombre de la denominacion
-     * @return devuelve true si existe un tipo con el nombre dado, false en caso contrario.
+     * @param nombre es el nombre del tipo
+     * @return devuelve un cursor con el resultado de la búsqueda
      */
-    private boolean existeTipo(String tipo){
-        String tipoUpper = tipo.toUpperCase();
+    private Cursor getTipo(String nombre){
+        String tipoUpper = nombre.toUpperCase();
         Cursor c = mDb.query(DATABASE_NAME_TIPO, new String[]{KEY_TIPO_NOMBRE},
                 new String(KEY_TIPO_NOMBRE+"='"+tipoUpper+"'"), null, null, null, null);
-        return c.getCount()>0;
+        return c;
+    }
+
+    /**
+     * Busca la composicion de un vino con una uva dados
+     *
+     * @param vino es el id del vino
+     * @param uva es el nombre de la uva
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
+    private Cursor getCompuesto(long vino, String uva){
+        String uvaUpper = uva.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_COMPUESTO, null,
+                new String(KEY_COMPUESTO_VINO+"="+vino+" AND "+KEY_COMPUESTO_UVA+"='"+uvaUpper+"'"),
+                null, null, null, null);
+        return c;
+    }
+
+    /**
+     * Busca las victorias de un vino en un premio dados
+     *
+     * @param vino es el id del vino
+     * @param premio es el nombre del premio
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
+    private Cursor getGana(long vino, String premio, long año){
+        String premioUpper = premio.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_GANA, null,
+                new String(KEY_GANA_VINO+"="+vino+" AND "+KEY_GANA_PREMIO+"='"+premioUpper+"' AND "+
+                KEY_GANA_AÑO+"="+año), null, null, null, null);
+        return c;
+    }
+
+    /**
+     * Busca la posesion de un vino con una denominacion dados
+     *
+     * @param vino es el id del vino
+     * @param denominacion es el nombre de la denominacion
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
+    private Cursor getPosee(long vino, String denominacion){
+        String denominacionUpper = denominacion.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_POSEE, null,
+                new String(KEY_POSEE_VINO+"="+vino+" AND "+KEY_POSEE_DENOMINACION+"='"+denominacionUpper+"'"),
+                null, null, null, null);
+        return c;
+    }
+
+    /**
+     * Busca la existencia de un vino en un tipo
+     *
+     * @param vino es el id del vino
+     * @param tipo es el nombre de un tipo
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
+    private Cursor getEs(long vino, String tipo){
+        String tipoUpper = tipo.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_POSEE, null,
+                new String(KEY_ES_VINO+"="+vino+" AND "+KEY_ES_TIPO+"='"+tipoUpper+"'"),
+                null, null, null, null);
+        return c;
     }
 
     /**
@@ -393,7 +453,9 @@ public class VinosDbAdapter {
      * @return devuelve true si se ha creado, false si ya estaba.
      */
     public boolean crearVino(String nombre,long posicion,long año,long valoracion,String nota){
-        if(!existeVino(nombre,año)){
+
+        //Si no existe el vino se crea
+        if(getVino(nombre,año).getCount()==0){
 
             // Usamos las cadenas en mayusculas
             String nombreUpper=nombre.toUpperCase();
@@ -410,9 +472,268 @@ public class VinosDbAdapter {
             valores.put(KEY_VINO_VALORACION, valoracion);
             valores.put(KEY_VINO_NOTA, notaUpper);
 
-            mDb.insert(DATABASE_NAME_VINO,null,valores);
+            return mDb.insert(DATABASE_NAME_VINO,null,valores)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Enlaza una uva y un vino dado con un porcentaje.
+     *
+     * @param uva nombre de una uva
+     * @param porcentaje porcentaje de la uva en el vino
+     * @param nombreV nombre de un vino
+     * @param añoV año de un vino
+     * @return devuelve true existe el vino y la uva, false si no existen.
+     */
+    public boolean añadirUva(String uva, double porcentaje, String nombreV, int añoV) {
+
+        Cursor cU = getUva(uva);
+        Cursor cV = getVino(nombreV,añoV);
+        //Si existe el premio y el vino, se relacionan.
+        if (cU.getCount()>0 && cV.getCount()>0){
+
+            Cursor cC = getCompuesto(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE)));
+
+            if(cC.getCount()==0) {
+                cU.moveToFirst();
+                cV.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_COMPUESTO_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
+                valores.put(KEY_COMPUESTO_UVA, cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE)));
+                valores.put(KEY_COMPUESTO_PORCENTAJE, porcentaje);
+
+                return mDb.insert(DATABASE_NAME_COMPUESTO, null, valores)>0;
+            }
 
             return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Enlaza un premio y un vino dado en un año dado.
+     *
+     * @param premio nombre de un premio
+     * @param añoP año en el que se gano
+     * @param nombreV nombre de un vino
+     * @param añoV año de un vino
+     * @return devuelve true si existe el vino y el premio, false si no existen.
+     */
+    public boolean añadirPremio(String premio, long añoP, String nombreV, int añoV) {
+
+        Cursor cP = getPremio(premio);
+        Cursor cV = getVino(nombreV,añoV);
+        //Si existe el premio y el vino, se relacionan.
+        if (cP.getCount()>0 && cV.getCount()>0){
+
+            Cursor cG = getGana(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE)), añoP);
+
+            if(cG.getCount()==0) {
+                cP.moveToFirst();
+                cV.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_GANA_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
+                valores.put(KEY_GANA_PREMIO, cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE)));
+                valores.put(KEY_GANA_AÑO, añoP);
+
+
+                return mDb.insert(DATABASE_NAME_GANA, null, valores)>0;
+            }
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Enlaza una denominacion y un vino dado.
+     *
+     * @param denominacion nombre de una denominacion
+     * @param nombreV nombre de un vino
+     * @param añoV año de un vino
+     * @return devuelve true si existe el vino y la denominacion, false si no existen.
+     */
+    public boolean añadirDenominacion(String denominacion, String nombreV, int añoV) {
+
+        Cursor cD = getDenominacion(denominacion);
+        Cursor cV = getVino(nombreV,añoV);
+        //Si existe el premio y el vino, se relacionan.
+        if (cD.getCount()>0 && cV.getCount()>0){
+
+            Cursor cP = getPosee(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE)));
+
+            if(cP.getCount()==0) {
+                cD.moveToFirst();
+                cV.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_POSEE_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
+                valores.put(KEY_POSEE_DENOMINACION, cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE)));
+
+                return mDb.insert(DATABASE_NAME_POSEE, null, valores)>0;
+            }
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Enlaza un tipo y un vino dado.
+     *
+     * @param tipo nombre de un tipo
+     * @param nombreV nombre de un vino
+     * @param añoV año de un vino
+     * @return devuelve true si existe el vino y el tipo, false si no existen.
+     */
+    public boolean añadirTipo(String tipo, String nombreV, int añoV) {
+
+        Cursor cT = getDenominacion(tipo);
+        Cursor cV = getVino(nombreV,añoV);
+        //Si existe el premio y el vino, se relacionan.
+        if (cT.getCount()>0 && cV.getCount()>0){
+
+            Cursor cE = getEs(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE)));
+
+            if(cE.getCount()==0) {
+                cT.moveToFirst();
+                cV.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_ES_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
+                valores.put(KEY_ES_TIPO, cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE)));
+
+                return mDb.insert(DATABASE_NAME_ES, null, valores)>0;
+            }
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un vino dado.
+     *
+     * @param nombre nombre de un vino
+     * @param año año de un vino
+     * @return devuelve true si existe el vino y es borrado, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarVino(String nombre, long año) {
+
+        Cursor cV = getVino(nombre,año);
+
+        if(cV.getCount()>0){
+
+            cV.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_VINO,
+                    new String(KEY_VINO_NOMBRE + "='" + cV.getString(cV.getColumnIndex(KEY_VINO_NOMBRE)) +
+                            "' AND " + KEY_VINO_AÑO + "=" + cV.getLong(cV.getColumnIndex(KEY_VINO_AÑO))),null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Elimina una uva dada.
+     *
+     * @param nombre nombre de una uva
+     * @return devuelve true si existe la uva y es borrada, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarUva(String nombre) {
+
+        Cursor cU = getUva(nombre);
+
+        if(cU.getCount()>0){
+
+            cU.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_UVA,
+                    new String(KEY_UVA_NOMBRE + "=" + cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE))),null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un premio dado.
+     *
+     * @param nombre nombre de un premio
+     * @return devuelve true si existe el premio y es borrado, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarPremio(String nombre) {
+
+        Cursor cP = getPremio(nombre);
+
+        if(cP.getCount()>0){
+
+            cP.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_PREMIO,
+                    new String(KEY_PREMIO_NOMBRE + "=" + cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE))),null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Elimina una denominacion dada.
+     *
+     * @param nombre nombre de una denominacion
+     * @return devuelve true si existe la denominacion y es borrada, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarDenominacion(String nombre) {
+
+        Cursor cD = getDenominacion(nombre);
+
+        if(cD.getCount()>0){
+
+            cD.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_DENOMINACION,
+                    new String(KEY_DENOMINACION_NOMBRE + "=" + cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE))),null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un tipo dado.
+     *
+     * @param nombre nombre de un tipo
+     * @return devuelve true si existe el tipo y es borrado, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarTipo(String nombre) {
+
+        Cursor cT = getTipo(nombre);
+
+        if(cT.getCount()>0){
+
+            cT.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_TIPO,
+                    new String(KEY_TIPO_NOMBRE + "=" + cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE))),null)>0;
         }
         else{
             return false;
@@ -425,8 +746,156 @@ public class VinosDbAdapter {
     /*--------------------------------------------------------------------------------------------*/
     /*--------------------------------------------------------------------------------------------*/
 
+    /**
+     * Actualiza un vino dado.
+     *
+     * @param nombre nombre del vino
+     * @param año año del vino
+     * @param nuevaPos nueva posicion(null para mantener la anterior)
+     * @param nuevaVal nueva valoracion(null para mantener la anterior)
+     * @param nuevaNota nueva nora(null para mantener la anterior)
+     * @return devuelve true si existe el vino y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarVino(String nombre, long año, long nuevaPos, long nuevaVal, String nuevaNota) {
+
+        Cursor cV = getVino(nombre,año);
+
+        if(cV.getCount()>0){
+
+            cV.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_VINO_ID, cV.getString(cV.getColumnIndex(KEY_VINO_ID)));
+            valores.put(KEY_VINO_NOMBRE, cV.getString(cV.getColumnIndex(KEY_VINO_NOMBRE)));
+            valores.put(KEY_VINO_POSICION, nuevaPos);
+            valores.put(KEY_VINO_AÑO, cV.getString(cV.getColumnIndex(KEY_VINO_AÑO)));
+            valores.put(KEY_VINO_VALORACION, nuevaVal);
+            valores.put(KEY_VINO_NOTA, nuevaNota.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_VINO, valores,
+                    new String(KEY_VINO_ID + "=" + cV.getString(cV.getColumnIndex(KEY_VINO_ID))), null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza una uva dada.
+     *
+     * @param nombre nombre de la uva
+     * @param nuevoNombre nuevo nombre(null para mantener la anterior)
+     * @return devuelve true si existe la uva y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarUva(String nombre, String nuevoNombre) {
+
+        Cursor cU = getUva(nombre);
+
+        if(cU.getCount()>0){
+
+            cU.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_UVA_NOMBRE, nuevoNombre.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_UVA, valores,
+                    new String(KEY_UVA_NOMBRE + "=" + cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE))), null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza un premio dado.
+     *
+     * @param nombre nombre del premio
+     * @param nuevoNombre nuevo nombre(null para mantener la anterior)
+     * @return devuelve true si existe el premio y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarPremio(String nombre, String nuevoNombre) {
+
+        Cursor cP = getPremio(nombre);
+
+        if(cP.getCount()>0){
+
+            cP.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_PREMIO_NOMBRE, nuevoNombre.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_PREMIO, valores,
+                    new String(KEY_PREMIO_NOMBRE + "=" + cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE))), null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza una denominacion dada.
+     *
+     * @param nombre nombre de la denominacion
+     * @param nuevoNombre nuevo nombre(null para mantener la anterior)
+     * @return devuelve true si existe la denominacion y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarDenominacion(String nombre, String nuevoNombre) {
+
+        Cursor cD = getDenominacion(nombre);
+
+        if(cD.getCount()>0){
+
+            cD.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_DENOMINACION_NOMBRE, nuevoNombre.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_DENOMINACION, valores,
+                    new String(KEY_DENOMINACION_NOMBRE + "=" + cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE))), null)>0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza un tipo dado.
+     *
+     * @param nombre nombre del tipo
+     * @param nuevoNombre nuevo nombre(null para mantener la anterior)
+     * @return devuelve true si existe el tipo y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarTipo(String nombre, String nuevoNombre) {
+
+        Cursor cT = getTipo(nombre);
+
+        if(cT.getCount()>0){
+
+            cT.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_TIPO_NOMBRE, nuevoNombre.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_TIPO, valores,
+                    new String(KEY_TIPO_NOMBRE + "=" + cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE))), null)>0;
+        }
+        else{
+            return false;
+        }
+    }
 
 
+    // Faltan los metodos cambiar asociaciones de:
+    //          Vino-Uva(Compuesto), Vino-Premio(Gana), Vino-Denominacion(Posee), Vino-Tipo(Es)
+    // Faltan los metodos fetch necesarios
+    // Falta un trigger que borre de las relaciones las tuplas necesarias al borrar un vino
+
+
+    /*--------------------------------------------------------------------------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
+    /*----------------------------------    CODIGO DE EJEMPLO    ---------------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
 
 
     /**
