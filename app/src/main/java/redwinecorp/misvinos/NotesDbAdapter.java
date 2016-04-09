@@ -27,11 +27,10 @@ public class VinosDbAdapter {
     private static final String DATABASE_NAME_VINO = "vino";
     public static final String KEY_VINO_ID = "_id";
     public static final String KEY_VINO_NOMBRE = "nombre";
-    public static final String KEY_VINO_TIPO = "tipo";
-    public static final String KEY_VINO_DENOMINACION = "denominacion";
     public static final String KEY_VINO_POSICION = "posicion";
     public static final String KEY_VINO_AÑO = "año";
     public static final String KEY_VINO_VALORACION = "valoracion";
+    public static final String KEY_VINO_NOTA = "tipo";
 
     // Atributos de la tabla Uva
     private static final String DATABASE_NAME_UVA = "uva";
@@ -41,25 +40,35 @@ public class VinosDbAdapter {
     private static final String DATABASE_NAME_PREMIO = "premio";
     public static final String KEY_PREMIO_NOMBRE = "nombre";
 
-    // Atributos de la tabla Nota
-    private static final String DATABASE_NAME_NOTA = "nota";
-    public static final String KEY_NOTA_TEXTO = "texto";
+    // Atributos de la tabla Denominacion
+    private static final String DATABASE_NAME_DENOMINACION = "denominacion";
+    public static final String KEY_DENOMINACION_NOMBRE = "nombre";
 
     // Atributos de la tabla Tipo
     private static final String DATABASE_NAME_TIPO = "tipo";
-    public static final String KEY_TIPO_VINO = "vino";
-    public static final String KEY_TIPO_UVA = "uva";
-    public static final String KEY_TIPO_PORCENTAJE = "porcentaje";
+    public static final String KEY_TIPO_NOMBRE = "nombre";
+
+    // Atributos de la tabla Compuesto
+    private static final String DATABASE_NAME_COMPUESTO = "compuesto";
+    public static final String KEY_COMPUESTO_VINO = "vino";
+    public static final String KEY_COMPUESTO_UVA = "uva";
+    public static final String KEY_COMPUESTO_PORCENTAJE = "porcentaje";
 
     // Atributos de la tabla Gana
     private static final String DATABASE_NAME_GANA = "gana";
     public static final String KEY_GANA_VINO = "vino";
     public static final String KEY_GANA_PREMIO = "premio";
+    public static final String KEY_GANA_AÑO = "año";
 
     // Atributos de la tabla Posee
     private static final String DATABASE_NAME_POSEE = "posee";
     public static final String KEY_POSEE_VINO = "vino";
-    public static final String KEY_POSEE_NOTA = "nota";
+    public static final String KEY_POSEE_DENOMINACION = "denominacion";
+
+    // Atributos de la tabla Es
+    private static final String DATABASE_NAME_ES = "es";
+    public static final String KEY_ES_VINO = "vino";
+    public static final String KEY_ES_TIPO = "tipo";
 
 
     private static final String TAG = "VinosDbAdapter";
@@ -73,11 +82,10 @@ public class VinosDbAdapter {
             "create table " + DATABASE_NAME_VINO + " (" +
                     KEY_VINO_ID             + " integer primary key, " +
                     KEY_VINO_NOMBRE         + " text not null, " +
-                    KEY_VINO_TIPO           + " text, " +
-                    KEY_VINO_DENOMINACION   + " text, " +
                     KEY_VINO_POSICION       + " integer, " +
                     KEY_VINO_AÑO            + " integer, not null" +
-                    KEY_VINO_VALORACION     + " integer);";
+                    KEY_VINO_VALORACION     + " integer, " +
+                    KEY_VINO_NOTA           + " text);";
 
     private static final String DATABASE_CREATE_UVA =
             "create table " + DATABASE_NAME_UVA + " (" +
@@ -87,23 +95,28 @@ public class VinosDbAdapter {
             "create table " + DATABASE_NAME_PREMIO + " (" +
                     KEY_PREMIO_NOMBRE       + " text primary key); ";
 
-    private static final String DATABASE_CREATE_NOTA =
-            "create table " + DATABASE_NAME_NOTA + " (" +
-                    KEY_NOTA_TEXTO          + " text primary key); ";
+    private static final String DATABASE_CREATE_DENOMINACION =
+            "create table " + DATABASE_NAME_DENOMINACION + " (" +
+                    KEY_DENOMINACION_NOMBRE + " text primary key); ";
 
     private static final String DATABASE_CREATE_TIPO =
             "create table " + DATABASE_NAME_TIPO + " (" +
-                    KEY_TIPO_VINO           + " integer, " +
-                    KEY_TIPO_UVA            + " text, " +
-                    KEY_TIPO_PORCENTAJE     + " real, " +
-                    "foreign key (" + KEY_TIPO_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
-                    "foreign key (" + KEY_TIPO_UVA + ") references " + DATABASE_NAME_UVA + "(" + KEY_UVA_NOMBRE + "), " +
-                    "primary key (" + KEY_TIPO_VINO + "," + KEY_TIPO_UVA + "));";
+                    KEY_TIPO_NOMBRE         + " text primary key); ";
+
+    private static final String DATABASE_CREATE_COMPUESTO =
+            "create table " + DATABASE_NAME_COMPUESTO + " (" +
+                    KEY_COMPUESTO_VINO           + " integer, " +
+                    KEY_COMPUESTO_UVA            + " text, " +
+                    KEY_COMPUESTO_PORCENTAJE     + " real, " +
+                    "foreign key (" + KEY_COMPUESTO_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
+                    "foreign key (" + KEY_COMPUESTO_UVA + ") references " + DATABASE_NAME_UVA + "(" + KEY_UVA_NOMBRE + "), " +
+                    "primary key (" + KEY_COMPUESTO_VINO + "," + KEY_COMPUESTO_UVA + "));";
 
     private static final String DATABASE_CREATE_GANA =
             "create table " + DATABASE_NAME_GANA + " (" +
                     KEY_GANA_VINO           + " integer, " +
-                    KEY_GANA_PREMIO            + " text, " +
+                    KEY_GANA_PREMIO         + " text, " +
+                    KEY_GANA_AÑO            + " integer, " +
                     "foreign key (" + KEY_GANA_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
                     "foreign key (" + KEY_GANA_PREMIO + ") references " + DATABASE_NAME_PREMIO + "(" + KEY_PREMIO_NOMBRE + "), " +
                     "primary key (" + KEY_GANA_VINO + "," + KEY_GANA_PREMIO + "));";
@@ -111,10 +124,18 @@ public class VinosDbAdapter {
     private static final String DATABASE_CREATE_POSEE =
             "create table " + DATABASE_NAME_POSEE + " (" +
                     KEY_POSEE_VINO              + " integer, " +
-                    KEY_POSEE_NOTA              + " text, " +
+                    KEY_POSEE_DENOMINACION      + " text, " +
                     "foreign key (" + KEY_POSEE_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
-                    "foreign key (" + KEY_POSEE_NOTA + ") references " + DATABASE_NAME_NOTA + "(" + KEY_NOTA_TEXTO + "), " +
-                    "primary key (" + KEY_POSEE_VINO + "," + KEY_POSEE_NOTA + "));";
+                    "foreign key (" + KEY_POSEE_DENOMINACION + ") references " + DATABASE_NAME_DENOMINACION + "(" + KEY_DENOMINACION_NOMBRE + "), " +
+                    "primary key (" + KEY_POSEE_VINO + "," + KEY_POSEE_DENOMINACION + "));";
+
+    private static final String DATABASE_CREATE_ES =
+            "create table " + DATABASE_NAME_ES + " (" +
+                    KEY_ES_VINO              + " integer, " +
+                    KEY_ES_TIPO      + " text, " +
+                    "foreign key (" + KEY_ES_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
+                    "foreign key (" + KEY_ES_TIPO + ") references " + DATABASE_NAME_TIPO + "(" + KEY_TIPO_NOMBRE + "), " +
+                    "primary key (" + KEY_ES_VINO + "," + KEY_ES_TIPO + "));";
 
     /**
      **     Sentencias de creacion de los triggers
@@ -122,40 +143,53 @@ public class VinosDbAdapter {
     private static final String TRIGGER_DB_UPDATE_UVA =
             "CREATE TRIGGER actualizar_uva\n" +
                     "BEFORE UPDATE ON " + DATABASE_NAME_UVA + " BEGIN " +
-                    "UPDATE " + DATABASE_NAME_TIPO + " SET " + KEY_TIPO_UVA + " = new." + KEY_UVA_NOMBRE +
-                    " WHERE " + KEY_TIPO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
+                    "UPDATE " + DATABASE_NAME_TIPO + " SET " + KEY_COMPUESTO_UVA + " = new." + KEY_UVA_NOMBRE +
+                    " WHERE " + KEY_COMPUESTO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_UVA =
             "CREATE TRIGGER borrar_uva\n" +
                     "BEFORE DELETE ON " + DATABASE_NAME_UVA + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_TIPO + " WHERE " + KEY_TIPO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
+                    "DELETE " + DATABASE_NAME_TIPO + " WHERE " + KEY_COMPUESTO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_UPDATE_PREMIO =
-            "CREATE TRIGGER actualizar_uva\n" +
+            "CREATE TRIGGER actualizar_premio\n" +
                     "BEFORE UPDATE ON " + DATABASE_NAME_PREMIO + " BEGIN " +
                     "UPDATE " + DATABASE_NAME_GANA + " SET " + KEY_GANA_PREMIO + " = new." + KEY_PREMIO_NOMBRE +
                     " WHERE " + KEY_GANA_PREMIO + " = old." + KEY_PREMIO_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_PREMIO =
-            "CREATE TRIGGER borrar_uva\n" +
+            "CREATE TRIGGER borrar_premio\n" +
                     "BEFORE DELETE ON " + DATABASE_NAME_PREMIO + " BEGIN " +
                     "DELETE " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_PREMIO + " = old." + KEY_PREMIO_NOMBRE + "; " +
                     "END;";
 
-    private static final String TRIGGER_DB_UPDATE_NOTA =
-            "CREATE TRIGGER actualizar_uva\n" +
-                    "BEFORE UPDATE ON " + DATABASE_NAME_NOTA + " BEGIN " +
-                    "UPDATE " + DATABASE_NAME_POSEE + " SET " + KEY_POSEE_NOTA + " = new." + KEY_NOTA_TEXTO +
-                    " WHERE " + KEY_POSEE_NOTA + " = old." + KEY_NOTA_TEXTO + "; " +
+    private static final String TRIGGER_DB_UPDATE_DENOMINACION =
+            "CREATE TRIGGER actualizar_denominacion\n" +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_DENOMINACION + " BEGIN " +
+                    "UPDATE " + DATABASE_NAME_POSEE + " SET " + KEY_POSEE_DENOMINACION + " = new." + KEY_DENOMINACION_NOMBRE +
+                    " WHERE " + KEY_POSEE_DENOMINACION + " = old." + KEY_DENOMINACION_NOMBRE + "; " +
                     "END;";
 
-    private static final String TRIGGER_DB_DELETE_NOTA =
-            "CREATE TRIGGER borrar_uva\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_NOTA + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_NOTA + " = old." + KEY_NOTA_TEXTO + "; " +
+    private static final String TRIGGER_DB_DELETE_DENOMINACION =
+            "CREATE TRIGGER borrar_denominacion\n" +
+                    "BEFORE DELETE ON " + DATABASE_NAME_DENOMINACION + " BEGIN " +
+                    "DELETE " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_DENOMINACION + " = old." + KEY_DENOMINACION_NOMBRE + "; " +
+                    "END;";
+
+    private static final String TRIGGER_DB_UPDATE_TIPO =
+            "CREATE TRIGGER actualizar_tipo\n" +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_TIPO + " BEGIN " +
+                    "UPDATE " + DATABASE_NAME_ES + " SET " + KEY_ES_TIPO + " = new." + KEY_TIPO_NOMBRE +
+                    " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
+                    "END;";
+
+    private static final String TRIGGER_DB_DELETE_TIPO =
+            "CREATE TRIGGER borrar_denominacion\n" +
+                    "BEFORE DELETE ON " + DATABASE_NAME_TIPO + " BEGIN " +
+                    "DELETE " + DATABASE_NAME_ES + " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
                     "END;";
 
     /**
@@ -170,17 +204,23 @@ public class VinosDbAdapter {
     private static final String DATABASE_DROP_PREMIO =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_PREMIO + ";";
 
-    private static final String DATABASE_DROP_NOTA =
-            "DROP TABLE IF EXISTS " + DATABASE_NAME_NOTA + ";";
+    private static final String DATABASE_DROP_DENOMINACION =
+            "DROP TABLE IF EXISTS " + DATABASE_NAME_DENOMINACION + ";";
 
     private static final String DATABASE_DROP_TIPO =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_TIPO + ";";
+
+    private static final String DATABASE_DROP_COMPUESTO =
+            "DROP TABLE IF EXISTS " + DATABASE_NAME_COMPUESTO + ";";
 
     private static final String DATABASE_DROP_GANA =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_GANA + ";";
 
     private static final String DATABASE_DROP_POSEE =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_POSEE + ";";
+
+    private static final String DATABASE_DROP_ES =
+            "DROP TABLE IF EXISTS " + DATABASE_NAME_ES + ";";
 
     /**
      **     Propiedades de la base de datos
@@ -204,31 +244,178 @@ public class VinosDbAdapter {
             db.execSQL(DATABASE_CREATE_VINO);
             db.execSQL(DATABASE_CREATE_UVA);
             db.execSQL(DATABASE_CREATE_PREMIO);
-            db.execSQL(DATABASE_CREATE_NOTA);
+            db.execSQL(DATABASE_CREATE_DENOMINACION);
             db.execSQL(DATABASE_CREATE_TIPO);
+            db.execSQL(DATABASE_CREATE_COMPUESTO);
             db.execSQL(DATABASE_CREATE_GANA);
             db.execSQL(DATABASE_CREATE_POSEE);
+            db.execSQL(DATABASE_CREATE_ES);
 
             db.execSQL(TRIGGER_DB_UPDATE_UVA);
             db.execSQL(TRIGGER_DB_DELETE_UVA);
             db.execSQL(TRIGGER_DB_UPDATE_PREMIO);
             db.execSQL(TRIGGER_DB_DELETE_PREMIO);
-            db.execSQL(TRIGGER_DB_UPDATE_NOTA);
-            db.execSQL(TRIGGER_DB_DELETE_NOTA);
+            db.execSQL(TRIGGER_DB_UPDATE_DENOMINACION);
+            db.execSQL(TRIGGER_DB_DELETE_DENOMINACION);
+            db.execSQL(TRIGGER_DB_UPDATE_TIPO);
+            db.execSQL(TRIGGER_DB_DELETE_TIPO);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
+            db.execSQL(DATABASE_DROP_ES);
             db.execSQL(DATABASE_DROP_POSEE);
             db.execSQL(DATABASE_DROP_GANA);
+            db.execSQL(DATABASE_DROP_COMPUESTO);
             db.execSQL(DATABASE_DROP_TIPO);
-            db.execSQL(DATABASE_DROP_NOTA);
+            db.execSQL(DATABASE_DROP_DENOMINACION);
             db.execSQL(DATABASE_DROP_PREMIO);
             db.execSQL(DATABASE_DROP_UVA);
             db.execSQL(DATABASE_DROP_VINO);
             onCreate(db);
+        }
+    }
+
+    /**
+     * Constructor - Toma el Context para permitir la creacion/apertura de la base de datos.
+     * takes the context to allow the database to be
+     * @param ctx el Context en el que se esta trabajando
+     */
+    public VinosDbAdapter(Context ctx) {
+        this.mCtx = ctx;
+    }
+
+    /**
+     * Abre la base de datos de los vinos. Si no puede ser abierta, Intenta crear
+     * una nueva instancia de la base de datos. Si no puede ser creada, lanza una
+     * excepcion para señalar el fallo.
+     *
+     * @return this (auto-referencia, permitiendo encadenar esto en la llamada de inicializacion.
+     * @throws SQLException si la base de datos no puede ser abierta ni creada
+     */
+    public VinosDbAdapter open() throws SQLException {
+        mDbHelper = new DatabaseHelper(mCtx);
+        mDb = mDbHelper.getWritableDatabase();
+        return this;
+    }
+
+    /**
+     * Cierra la base de datos de los vinos.
+     */
+    public void close() {
+        mDbHelper.close();
+    }
+
+    /**
+     * Consulta y devuelve el siguiente id libre de la tabla Vino
+     * @return siguiente id libre de la tabla Vino.
+     */
+    private long getSiguienteId(){
+
+        Cursor c = mDb.rawQuery("SELECT MAX("+KEY_VINO_ID+") as max FROM "+DATABASE_NAME_VINO, null);
+        c.moveToFirst();
+        return c.getLong(c.getColumnIndex("max"))+1;
+    }
+
+    /**
+     * Consulta si existe un vino en la base de datos con nombre y año dados
+     *
+     * @param nombre es el nombre del vino
+     * @param año es el año del vino
+     * @return devuelve true si existe un vino con las caracteristicas dadas, false en caso contrario.
+     */
+    private boolean existeVino(String nombre, long año){
+        String nombreUpper = nombre.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_VINO, new String[] {KEY_VINO_ID},
+                        new String(KEY_VINO_NOMBRE+"='"+nombreUpper+"' AND "+KEY_VINO_AÑO+"="+año),
+                        null, null, null, null);
+        return c.getCount()>0;
+    }
+
+    /**
+     * Consulta si existe una uva en la base de datos con el nombre dado.
+     *
+     * @param uva es el nombre de la uva
+     * @return devuelve true si existe una uva con el nombre dado, false en caso contrario.
+     */
+    private boolean existeUva(String uva){
+        String uvaUpper = uva.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_UVA, new String[]{KEY_UVA_NOMBRE},
+                new String(KEY_UVA_NOMBRE + "='" + uvaUpper + "'"), null, null, null, null);
+        return c.getCount()>0;
+    }
+
+    /**
+     * Consulta si existe un premio en la base de datos con el nombre dado.
+     *
+     * @param premio es el nombre del premio
+     * @return devuelve true si existe un premio con el nombre dado, false en caso contrario.
+     */
+    private boolean existePremio(String premio){
+        String premioUpper = premio.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_PREMIO, new String[]{KEY_PREMIO_NOMBRE},
+                new String(KEY_PREMIO_NOMBRE+"='"+premioUpper+"'"), null, null, null, null);
+        return c.getCount()>0;
+    }
+
+    /**
+     * Consulta si existe una denominacion en la base de datos con el nombre dado.
+     *
+     * @param denominacion es el nombre de la denominacion
+     * @return devuelve true si existe una denominacion con el nombre dado, false en caso contrario.
+     */
+    private boolean existeDenominacion(String denominacion){
+        String denominacionUpper = denominacion.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_DENOMINACION, new String[]{KEY_DENOMINACION_NOMBRE},
+                new String(KEY_DENOMINACION_NOMBRE+"='"+denominacionUpper+"'"), null, null, null, null);
+        return c.getCount()>0;
+    }
+
+    /**
+     * Consulta si existe un tipo en la base de datos con el nombre dado.
+     *
+     * @param tipo es el nombre de la denominacion
+     * @return devuelve true si existe un tipo con el nombre dado, false en caso contrario.
+     */
+    private boolean existeTipo(String tipo){
+        String tipoUpper = tipo.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_TIPO, new String[]{KEY_TIPO_NOMBRE},
+                new String(KEY_TIPO_NOMBRE+"='"+tipoUpper+"'"), null, null, null, null);
+        return c.getCount()>0;
+    }
+
+    /**
+     * Inserta en la tabla vino el vino si no existe.
+     *
+     * @params atributos de la tabla vino (null en caso de no tener alguno de ellos
+     * @return devuelve true si se ha creado, false si ya estaba.
+     */
+    public boolean crearVino(String nombre,long posicion,long año,long valoracion,String nota){
+        if(!existeVino(nombre,año)){
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper=nombre.toUpperCase();
+            String notaUpper=nota.toUpperCase();
+
+            // Calculamos el siguiente id
+            long id = getSiguienteId();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_VINO_ID, id);
+            valores.put(KEY_VINO_NOMBRE, nombreUpper);
+            valores.put(KEY_VINO_POSICION, posicion);
+            valores.put(KEY_VINO_AÑO, año);
+            valores.put(KEY_VINO_VALORACION, valoracion);
+            valores.put(KEY_VINO_NOTA, notaUpper);
+
+            mDb.insert(DATABASE_NAME_VINO,null,valores);
+
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
@@ -239,34 +426,7 @@ public class VinosDbAdapter {
     /*--------------------------------------------------------------------------------------------*/
 
 
-    /**
-     * Constructor - takes the context to allow the database to be
-     * opened/created
-     *
-     * @param ctx the Context within which to work
-     */
-    public NotesDbAdapter(Context ctx) {
-        this.mCtx = ctx;
-    }
 
-    /**
-     * Open the notes database. If it cannot be opened, try to create a new
-     * instance of the database. If it cannot be created, throw an exception to
-     * signal the failure
-     *
-     * @return this (self reference, allowing this to be chained in an
-     *         initialization call)
-     * @throws SQLException if the database could be neither opened or created
-     */
-    public NotesDbAdapter open() throws SQLException {
-        mDbHelper = new DatabaseHelper(mCtx);
-        mDb = mDbHelper.getWritableDatabase();
-        return this;
-    }
-
-    public void close() {
-        mDbHelper.close();
-    }
 
 
     /**
