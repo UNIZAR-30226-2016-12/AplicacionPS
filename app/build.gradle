@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "es.unizar.eina.notepadv1"
+        applicationId "redwinecorp.misvinos"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
