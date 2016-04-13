@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -9,31 +10,30 @@
     android:background="#000000">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MisVinos"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:touchscreenBlocksFocus="true">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:text="Ver Vinos"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#c93861"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:background="#a80038"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_scrollFlags="scroll|enterAlways">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MisVinos"
-                android:textColor="#000000"
+                android:text="Mis Vinos"
                 android:layout_gravity="center"
                 android:id="@+id/toolbar_title"
-                android:textSize="40dp" />
+                android:textColor="#000000"
+                android:textSize="36dp"
+                android:textStyle="bold|italic" />
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -46,31 +46,33 @@
             android:layout_width="fill_parent"
             android:layout_height="70dp"
             android:text="Ver Vinos"
-            android:id="@+id/button"
+            android:id="@+id/seeWines"
             android:layout_weight="1"
             android:layout_marginLeft="0dp"
-            android:background="#dc6d8c"
-            android:textSize="25dp" />
+            android:background="#a80038"
+            android:textSize="25dp"
+            android:textStyle="italic" />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="70dp"
             android:text="Ver Grupos"
-            android:id="@+id/button2"
+            android:id="@+id/seeGroups"
             android:layout_weight="1"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
-            android:background="#dc6d8c"
-            android:textSize="25dp" />
+            android:background="#a80038"
+            android:textSize="25dp"
+            android:textStyle="italic" />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="70dp"
             android:text="Buscar"
-            android:id="@+id/button3"
-            android:background="#dc6d8c"
-            android:textSize="25dp" />
+            android:background="#a80038"
+            android:textSize="25dp"
+            android:id="@+id/search"
+            android:textStyle="italic" />
 
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>
