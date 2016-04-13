@@ -512,14 +512,13 @@ public class VinosDbAdapter {
      *
      * @param uva        nombre de una uva
      * @param porcentaje porcentaje de la uva en el vino
-     * @param nombreV    nombre de un vino
-     * @param añoV       año de un vino
+     * @param id          id del vino
      * @return devuelve true existe el vino y la uva, false si no existen.
      */
-    public boolean añadirUva(String uva, double porcentaje, String nombreV, int añoV) {
+    public boolean añadirUva(String uva, double porcentaje, long id) {
 
         Cursor cU = getUva(uva);
-        Cursor cV = getVino(nombreV, añoV);
+        Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cU.getCount() > 0 && cV.getCount() > 0) {
 
@@ -549,14 +548,13 @@ public class VinosDbAdapter {
      *
      * @param premio  nombre de un premio
      * @param añoP    año en el que se gano
-     * @param nombreV nombre de un vino
-     * @param añoV    año de un vino
+     * @param id        id del vino
      * @return devuelve true si existe el vino y el premio, false si no existen.
      */
-    public boolean añadirPremio(String premio, long añoP, String nombreV, int añoV) {
+    public boolean añadirPremio(String premio, long añoP, long id) {
 
         Cursor cP = getPremio(premio);
-        Cursor cV = getVino(nombreV, añoV);
+        Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cP.getCount() > 0 && cV.getCount() > 0) {
 
@@ -586,14 +584,13 @@ public class VinosDbAdapter {
      * Enlaza una denominacion y un vino dado.
      *
      * @param denominacion nombre de una denominacion
-     * @param nombreV      nombre de un vino
-     * @param añoV         año de un vino
+     * @param id            id del vino
      * @return devuelve true si existe el vino y la denominacion, false si no existen.
      */
-    public boolean añadirDenominacion(String denominacion, String nombreV, int añoV) {
+    public boolean añadirDenominacion(String denominacion, long id) {
 
         Cursor cD = getDenominacion(denominacion);
-        Cursor cV = getVino(nombreV, añoV);
+        Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cD.getCount() > 0 && cV.getCount() > 0) {
 
@@ -621,14 +618,13 @@ public class VinosDbAdapter {
      * Enlaza un tipo y un vino dado.
      *
      * @param tipo    nombre de un tipo
-     * @param nombreV nombre de un vino
-     * @param añoV    año de un vino
+     * @param id       id del vino
      * @return devuelve true si existe el vino y el tipo, false si no existen.
      */
-    public boolean añadirTipo(String tipo, String nombreV, int añoV) {
+    public boolean añadirTipo(String tipo, long id) {
 
         Cursor cT = getDenominacion(tipo);
-        Cursor cV = getVino(nombreV, añoV);
+        Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cT.getCount() > 0 && cV.getCount() > 0) {
 
@@ -655,13 +651,12 @@ public class VinosDbAdapter {
     /**
      * Elimina un vino dado.
      *
-     * @param nombre nombre de un vino
-     * @param año    año de un vino
+     * @param id del vino
      * @return devuelve true si existe el vino y es borrado, false si no existe o no se puede eliminar.
      */
-    public boolean borrarVino(String nombre, long año) {
+    public boolean borrarVino(long id) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
 
         if (cV.getCount() > 0) {
 
@@ -768,31 +763,33 @@ public class VinosDbAdapter {
     /**
      * Actualiza un vino dado.
      *
-     * @param nombre    nombre del vino
-     * @param año       año del vino
-     * @param nuevaPos  nueva posicion(null para mantener la anterior)
-     * @param nuevaVal  nueva valoracion(null para mantener la anterior)
+     * @param id        id del vino a actualizar
+     * @param nuevoNom  nuevo nombre(null para mantener el anterior)
+     * @param nuevoAño  nuevo año(-1 para matener el anterior)
+     * @param nuevaPos  nueva posicion(-1 para mantener la anterior)
+     * @param nuevaVal  nueva valoracion(-1 para mantener la anterior)
      * @param nuevaNota nueva nora(null para mantener la anterior)
      * @return devuelve true si existe el vino y se ha actualizado, false en caso contrario.
      */
-    public boolean actualizarVino(String nombre, long año, long nuevaPos, long nuevaVal, String nuevaNota) {
+    public boolean actualizarVino(long id, String nuevoNom, long nuevoAño, long nuevaPos,
+                                  long nuevaVal, String nuevaNota) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
 
         if (cV.getCount() > 0) {
 
             cV.moveToFirst();
 
             ContentValues valores = new ContentValues();
-            valores.put(KEY_VINO_ID, cV.getString(cV.getColumnIndex(KEY_VINO_ID)));
-            valores.put(KEY_VINO_NOMBRE, cV.getString(cV.getColumnIndex(KEY_VINO_NOMBRE)));
+            valores.put(KEY_VINO_ID, id);
+            valores.put(KEY_VINO_NOMBRE, nuevoNom);
             valores.put(KEY_VINO_POSICION, nuevaPos);
-            valores.put(KEY_VINO_AÑO, cV.getString(cV.getColumnIndex(KEY_VINO_AÑO)));
+            valores.put(KEY_VINO_AÑO, nuevoAño);
             valores.put(KEY_VINO_VALORACION, nuevaVal);
             valores.put(KEY_VINO_NOTA, nuevaNota.toUpperCase());
 
             return mDb.update(DATABASE_NAME_VINO, valores,
-                    new String(KEY_VINO_ID + "=" + cV.getString(cV.getColumnIndex(KEY_VINO_ID))), null) > 0;
+                    new String(KEY_VINO_ID + "=" + id), null) > 0;
         } else {
             return false;
         }
@@ -901,16 +898,15 @@ public class VinosDbAdapter {
     /**
      * Cambia la relacion vino-uva por vino-nuevaU con porcentaje nuevoP.
      *
-     * @param nombre nombre del vino
-     * @param año    año del vino
+     * @param id id del vino
      * @param uva    nombre de la uva
      * @param nuevaU nombre de la nueva uva
      * @param nuevoP nuevo porcentaje
      * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
      */
-    public boolean cambiarUva(String nombre, long año, String uva, String nuevaU, double nuevoP) {
+    public boolean cambiarUva(long id, String uva, String nuevaU, double nuevoP) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
         Cursor cU = getUva(uva);
         Cursor cNU = getUva(nuevaU);
 
@@ -946,17 +942,16 @@ public class VinosDbAdapter {
     /**
      * Cambia la relacion vino-premio por vino-nuevoP con porcentaje nuevoAP.
      *
-     * @param nombre  nombre del vino
-     * @param año     año del vino
+     * @param id del vino
      * @param premio  nombre del premio
      * @param añoP    año el que se gano el premio
      * @param nuevoP  nombre del nuevo premio
      * @param nuevoAP año en el que se gano el nuevo premio
      * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
      */
-    public boolean cambiarPremio(String nombre, long año, String premio, long añoP, String nuevoP, long nuevoAP) {
+    public boolean cambiarPremio(long id, String premio, long añoP, String nuevoP, long nuevoAP) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
         Cursor cP = getPremio(premio);
         Cursor cNP = getPremio(nuevoP);
 
@@ -993,15 +988,14 @@ public class VinosDbAdapter {
     /**
      * Cambia la relacion vino-denominacion por vino-nuevaD.
      *
-     * @param nombre       nombre del vino
-     * @param año          año del vino
+     * @param id       id del vino
      * @param denominacion nombre de la denominacion
      * @param nuevaD       nombre de la nueva denominacion
      * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
      */
-    public boolean cambiarDenominacion(String nombre, long año, String denominacion, String nuevaD) {
+    public boolean cambiarDenominacion(long id, String denominacion, String nuevaD) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
         Cursor cD = getDenominacion(denominacion);
         Cursor cND = getDenominacion(nuevaD);
 
@@ -1037,15 +1031,14 @@ public class VinosDbAdapter {
     /**
      * Cambia la relacion vino-tipo por vino-nuevoT.
      *
-     * @param nombre nombre del vino
-     * @param año    año del vino
+     * @param id id del vino
      * @param tipo   nombre del tipo
      * @param nuevoT nombre del nuevo tipo
      * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
      */
-    public boolean cambiarTipo(String nombre, long año, String tipo, String nuevoT) {
+    public boolean cambiarTipo(long id, String tipo, String nuevoT) {
 
-        Cursor cV = getVino(nombre, año);
+        Cursor cV = getVino(id);
         Cursor cT = getTipo(tipo);
         Cursor cNT = getTipo(nuevoT);
 
@@ -1090,11 +1083,10 @@ public class VinosDbAdapter {
     /**
      * Devuelve toda la informacion almacenada de un vino
      *
-     * @param nombre nombre del vino
-     * @param año    año del vino
+     * @param id id del vino
      * @return devuelve un cursor con la informacion.
      */
-    public Cursor obtenerInfoVino(String nombre, long año) {
+    public Cursor obtenerInfoVino(long id) {
         Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_TOTAL,null);
         return c;
     }
