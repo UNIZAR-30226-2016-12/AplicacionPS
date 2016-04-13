@@ -17,9 +17,9 @@ public class Inicio extends AppCompatActivity {
 
         setContentView(R.layout.activity_inicio);
 
-        Button BVerVinos = (Button) findViewById(R.id.button1);
-        Button BVerGrupos = (Button) findViewById(R.id.button1);
-        Button BBuscarVino = (Button) findViewById(R.id.button3);
+        Button BVerVinos = (Button) findViewById(R.id.seeWines);
+        Button BVerGrupos = (Button) findViewById(R.id.seeGroups);
+        Button BBuscarVino = (Button) findViewById(R.id.search);
 
         //Si se pulsa el botón VerVinos
         BVerVinos.setOnClickListener(new View.OnClickListener() {
