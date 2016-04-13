@@ -72,7 +72,7 @@ public class MisVinos extends AppCompatActivity {
                     editarVino(id);
                 }
                 else{
-                    //
+                    editarGrupo(id);
                 }
             }
         });
@@ -83,17 +83,22 @@ public class MisVinos extends AppCompatActivity {
 
     private void fillData() {
         if(modoVinos){
-            Cursor cVinos = mDbHelper.obtenerVinos();
+            Cursor cVinos;
+
+            cVinos = mDbHelper.obtenerVinos();
 
             // Obtenemos los vinos de la base de datos
             startManagingCursor(cVinos);
+
             // Creamos un array de los campos que vamos a mostrar
             String[] from = new String[] { VinosDbAdapter.KEY_VINO_NOMBRE, VinosDbAdapter.KEY_VINO_AÑO};
+
             // Creamos un array de los campos a los que los vamos a asignar
             int[] to = new int[] { R.id.text1};
+
             // Creamos un array adapter y lo preparamos para mostrar los datos
             SimpleCursorAdapter vinos =
-                    new SimpleCursorAdapter(this, R.layout.notes_row, cVinos, from, to);
+                    new SimpleCursorAdapter(this, R.layout.vinos_row, cVinos, from, to);
 
             mList.setAdapter(vinos);
         } else{
@@ -132,6 +137,7 @@ public class MisVinos extends AppCompatActivity {
         else{
             //
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -145,6 +151,7 @@ public class MisVinos extends AppCompatActivity {
         } else{
             //
         }
+
     }
 
     @Override
@@ -173,29 +180,21 @@ public class MisVinos extends AppCompatActivity {
 
     private void añadirVino(){
         Intent i = new Intent(this, EditarVino.class);
-        i.putExtra(EditarVino.CREAR,true);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
 
-    private void editarVino(AdapterView.AdapterContextMenuInfo info){
+    private void editarVino(int id){
         Intent i = new Intent(this, EditarVino.class);
-        i.putExtra(EditarVino.CREAR,false);
-        i.putExtra(EditarVino.ID,info.id);
+        i.putExtra(VinosDbAdapter.KEY_VINO_ID,id);
         startActivityForResult(i, ACTIVITY_EDIT);
     }
 
-    private void borrarVino(AdapterView.AdapterContextMenuInfo info){
-        Cursor c = mDbHelper.getVino(info.id);
-        startManagingCursor(c);
-        String nombre = c.getString(
-                c.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOMBRE));
-        long año = c.getLong(
-                c.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_AÑO));
-        mDbHelper.borrarVino(nombre,año);
+    private void borrarVino(int id){
+        mDbHelper.borrarVino(id);
     }
 
     private void ordenarVinos(){
-        //
+
     }
 
     @Override
