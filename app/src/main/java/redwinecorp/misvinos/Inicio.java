@@ -1,31 +1,62 @@
 package redwinecorp.misvinos;
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
-import redwinecorp.misvinos.R;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 public class Inicio extends AppCompatActivity {
+
+    // Para diferenciar si hay que mostrar Vinos o Grupos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inicio);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
+        setContentView(R.layout.activity_inicio);
+
+        Button BVerVinos = (Button) findViewById(R.id.button1);
+        Button BVerGrupos = (Button) findViewById(R.id.button1);
+        Button BBuscarVino = (Button) findViewById(R.id.button3);
+
+        //Si se pulsa el botón VerVinos
+        BVerVinos.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                mostrarVinos();
+            }
+        });
+
+        //Si se pulsa el botón VerGrupos
+        BVerGrupos.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                //
+            }
+        });
+
+        //Si se pulsa el botón Buscar
+        BBuscarVino.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                buscarVino();
             }
         });
     }
 
+    /**
+     * Inicia una nueva actividad MisVinos para mostrar todos los vinos
+     */
+    private void mostrarVinos() {
+        Intent i = new Intent(this, MisVinos.class);
+        i.putExtra(MisVinos.MOSTRAR_VINOS,new Boolean(true));
+        startActivity(i);
+    }
+
+    /**
+     * Inicia una nueva actividad Buscar para realizar la búsqueda
+     */
+    private void buscarVino() {
+        Intent i = new Intent(this, BuscarVino.class);
+        startActivity(i);
+    }
 }
