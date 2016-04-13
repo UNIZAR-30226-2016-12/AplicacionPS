@@ -352,6 +352,18 @@ public class VinosDbAdapter {
     }
 
     /**
+     * Busca el vino con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
+    public Cursor getVino(long id){
+        Cursor c = mDb.query(DATABASE_NAME_VINO, null,
+                new String(KEY_VINO_ID + "='" + id),null, null, null, null);
+        return c;
+    }
+
+    /**
      * Busca la uva con el nombre dado
      *
      * @param nombre es el nombre de la uva
