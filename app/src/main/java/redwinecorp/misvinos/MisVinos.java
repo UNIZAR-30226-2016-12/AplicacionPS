@@ -67,12 +67,12 @@ public class MisVinos extends AppCompatActivity {
         //Comportamiento al pulsar en un vino o grupo
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, int id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
                 if(modoVinos){
-                    editarVino(id);
+                    verVino(id);
                 }
                 else{
-                    editarGrupo(id);
+                    //
                 }
             }
         });
@@ -164,11 +164,11 @@ public class MisVinos extends AppCompatActivity {
             switch (item.getItemId()) {
                 case EDITAR_VINO:
                     info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                    editarVino(info);
+                    editarVino(info.id);
                     fillData();
                     return true;
                 case BORRAR_VINO:
-                    borrarVino(info);
+                    borrarVino(info.id);
                     return true;
             }
         }
@@ -183,17 +183,21 @@ public class MisVinos extends AppCompatActivity {
         startActivityForResult(i, ACTIVITY_CREATE);
     }
 
-    private void editarVino(int id){
+    private void editarVino(long id){
         Intent i = new Intent(this, EditarVino.class);
         i.putExtra(VinosDbAdapter.KEY_VINO_ID,id);
         startActivityForResult(i, ACTIVITY_EDIT);
     }
 
-    private void borrarVino(int id){
+    private void borrarVino(long id){
         mDbHelper.borrarVino(id);
     }
 
     private void ordenarVinos(){
+
+    }
+
+    private void verVino(long id){
 
     }
 
