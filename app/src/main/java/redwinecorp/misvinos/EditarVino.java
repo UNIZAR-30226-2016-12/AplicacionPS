@@ -14,44 +14,59 @@ import android.widget.Spinner;
 
 public class EditarVino extends AppCompatActivity {
 
-    private EditText mTitleText;
-    private EditText mBodyText;
+    private EditText nombre;
+    private EditText tipo;
     private EditText id;
+    private EditText uva;
+    private EditText denominacion;
+    private EditText year;
+    private EditText localizacion;
+    private EditText premios;
+    private EditText valoracion;
+    private EditText nota;
     private Spinner desplegable;
     private Long mRowId;
 
-    private NotesDbAdapter mDbHelper;
+    private VinosDbAdapter mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDbHelper = new NotesDbAdapter(this);
+        mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
         setContentView(R.layout.note_edit);
         setTitle(R.string.edit_note);
 
-        id = (EditText) findViewById(R.id.id);
+        //id = (EditText) findViewById(R.id.id); //El id de la nota no se muestra
         id.setFocusable(false);
         id.setText("***");
-        mTitleText = (EditText) findViewById(R.id.title);
-        desplegable = (Spinner) findViewById(R.id.spinner);
-        mBodyText = (EditText) findViewById(R.id.body);
+        nombre = (EditText) findViewById(R.id.nomVino);
+        tipo = (EditText) findViewById(R.id.nomVino);
+        uva = (EditText) findViewById(R.id.nomVino);
+        denominacion = (EditText) findViewById(R.id.nomVino);
+        year = (EditText) findViewById(R.id.nomVino);
+        localizacion = (EditText) findViewById(R.id.nomVino);
+        premios = (EditText) findViewById(R.id.nomVino);
+        valoracion = (EditText) findViewById(R.id.nomVino);
+        nota = (EditText) findViewById(R.id.nomVino);
+
+       // desplegable = (Spinner) findViewById(R.id.spinner);
 
         // Get all of the notes from the database and create the item list
         Cursor categoryCursor = mDbHelper.fetchAllCategories();
         startManagingCursor(categoryCursor);
 
         // Create an array to specify the fields we want to display in the list (only TITLE)
-        String[] from2 = new String[] { NotesDbAdapter.KEY_NAME};
+        String[] from2 = new String[] { VinosDbAdapter.KEY_VINO_NOMBRE};
 
         // and an array of the fields we want to bind those fields to (in this case just text1)
         int[] to2 = new int[] { R.id.text1};
 
         // Now create an array adapter and set it to display using our row
         SimpleCursorAdapter categories =
-                new SimpleCursorAdapter(this, R.layout.notes_row, categoryCursor, from2, to2);
+                new SimpleCursorAdapter(this, R.layout.vinos_row, categoryCursor, from2, to2);
 
         desplegable.setAdapter(categories);
 
@@ -60,10 +75,10 @@ public class EditarVino extends AppCompatActivity {
         Button confirmButton = (Button) findViewById(R.id.confirm);
 
         mRowId = (savedInstanceState == null) ? null :
-                (Long) savedInstanceState.getSerializable(NotesDbAdapter.KEY_ROWID);
+                (Long) savedInstanceState.getSerializable(VinosDbAdapter.KEY_VINO_ID);
         if (mRowId == null) {
             Bundle extras = getIntent().getExtras();
-            mRowId = (extras != null) ? extras.getLong(NotesDbAdapter.KEY_ROWID)
+            mRowId = (extras != null) ? extras.getLong(VinosDbAdapter.KEY_VINO_ID)
                     : null;
         }
 
@@ -81,19 +96,19 @@ public class EditarVino extends AppCompatActivity {
         if (mRowId != null) {
             Cursor note = mDbHelper.fetchNote(mRowId);
             startManagingCursor(note);
-            id.setText(note.getString(note.getColumnIndexOrThrow(NotesDbAdapter.KEY_ROWID)));
+            id.setText(note.getString(note.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_ID)));
             mTitleText.setText(note.getString(
-                    note.getColumnIndexOrThrow(NotesDbAdapter.KEY_TITLE)));
+                    note.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOMBRE)));
             mBodyText.setText(note.getString(
-                    note.getColumnIndexOrThrow(NotesDbAdapter.KEY_BODY)));
+                    note.getColumnIndexOrThrow(VinosDbAdapter.KEY_BODY)));
 
-            String categoriaDeLaNota = note.getString(note.getColumnIndexOrThrow(NotesDbAdapter.KEY_NAME));
+            String categoriaDeLaNota = note.getString(note.getColumnIndexOrThrow(VinosDbAdapter.KEY_NAME));
 
             Cursor allCategories = mDbHelper.fetchAllCategories();
             startManagingCursor(allCategories);
 
             // Create an array to specify the fields we want to display in the list (only TITLE)
-            String[] from2 = new String[] { NotesDbAdapter.KEY_NAME};
+            String[] from2 = new String[] { VinosDbAdapter.KEY_NAME};
 
 
             // and an array of the fields we want to bind those fields to (in this case just text1)
@@ -114,7 +129,7 @@ public class EditarVino extends AppCompatActivity {
         int index = 0;
         for (int i = 0; i < cursor.getCount(); i++){
             cursor.moveToPosition(i);
-            String temp = cursor.getString(cursor.getColumnIndexOrThrow(NotesDbAdapter.KEY_NAME));
+            String temp = cursor.getString(cursor.getColumnIndexOrThrow(VinosDbAdapter.KEY_NAME));
 
             if (temp.equalsIgnoreCase(string)){
                 index = i;
@@ -130,7 +145,7 @@ public class EditarVino extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putSerializable(NotesDbAdapter.KEY_ROWID, mRowId);
+        outState.putSerializable(VinosDbAdapter.KEY_ROWID, mRowId);
     }
 
     @Override
