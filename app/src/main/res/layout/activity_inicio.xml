@@ -56,7 +56,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="70dp"
-            android:text="Ver Grupos"
+            android:text="NO DISPONIBLE"
             android:id="@+id/seeGroups"
             android:layout_weight="1"
             android:layout_marginTop="50dp"
