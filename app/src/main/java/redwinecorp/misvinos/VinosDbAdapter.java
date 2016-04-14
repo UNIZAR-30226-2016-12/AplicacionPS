@@ -231,12 +231,23 @@ public class VinosDbAdapter {
     private static final String DATABASE_DROP_ES =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_ES + ";";
 
-
+    //Saca toda la información acerca del vino cuyo id se concatena después(excepto premios y uvas)
     private static final String CONSULTA_INFO_VINO_TOTAL =
-            "SELECT v._id, v.nombre, v.año, v.posicion, v.valoracion, v.nota, c.uva, c.porcentaje," +
-                    "g.premio, g.año as año_premio, po.denominacion, es.tipo\n" +
-                "FROM vino v, compuesto c, gana g, posee po, es e\n" +
-                "WHERE v._id=c.vino AND v._id=g.vino AND v._id=po.vino AND v._id=es.vino";
+            "SELECT v._id, v.nombre, v.año, v.posicion, v.valoracion, v.nota,po.denominacion, es.tipo\n" +
+                "FROM vino v, posee po, es e\n" +
+                "WHERE v._id=po.vino AND v._id=es.vino AND v.id=";
+
+    //Saca toda la información de las uvas y porcentajes acerca del vino cuyo id se concatena después
+    private static final String CONSULTA_INFO_VINO_UVAS =
+            "SELECT DISTINCT c.uva c.porcentaje\n" +
+            "FROM vino v, compuesto c\n" +
+            "WHERE v._id=c.vino AND v.id=";
+
+    //Saca toda la información de los premios y años acerca del vino cuyo id se concatena después
+    private static final String CONSULTA_INFO_VINO_PREMIOS =
+            "SELECT DISTINCT g.premio g.año\n" +
+                    "FROM vino v, gana g\n" +
+                    "WHERE v._id=g.vino AND v.id=";
 
     /**
      * *     Propiedades de la base de datos
@@ -1084,10 +1095,20 @@ public class VinosDbAdapter {
      * Devuelve toda la informacion almacenada de un vino
      *
      * @param id id del vino
-     * @return devuelve un cursor con la informacion.
+     * @return devuelve un cursor con la informacion del vino(excepto uva y premios).
      */
-    public Cursor obtenerInfoVino(long id) {
-        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_TOTAL,null);
+    public Cursor getInfoVino(long id) {
+        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_TOTAL+id,null);
+        return c;
+    }
+
+    public Cursor getInfoUvas(long id){
+        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_UVAS+id,null);
+        return c;
+    }
+
+    public Cursor getInfoPremios(long id){
+        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_PREMIOS+id,null);
         return c;
     }
 }

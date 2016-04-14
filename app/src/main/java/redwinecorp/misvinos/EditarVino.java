@@ -14,9 +14,10 @@ import android.widget.Spinner;
 
 public class EditarVino extends AppCompatActivity {
 
+    public static final String ID = "id";
+
     private EditText nombre;
     private EditText tipo;
-    private EditText id;
     private EditText uva;
     private EditText denominacion;
     private EditText year;
@@ -24,8 +25,8 @@ public class EditarVino extends AppCompatActivity {
     private EditText premios;
     private EditText valoracion;
     private EditText nota;
-    private Spinner desplegable;
-    private Long mRowId;
+
+    private Long id;
 
     private VinosDbAdapter mDbHelper;
 
@@ -36,116 +37,67 @@ public class EditarVino extends AppCompatActivity {
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
-        setContentView(R.layout.note_edit);
-        setTitle(R.string.edit_note);
+        setContentView(R.layout.wine_edit);
+        setTitle("EDITAR VINO");
 
-        //id = (EditText) findViewById(R.id.id); //El id de la nota no se muestra
-        id.setFocusable(false);
-        id.setText("***");
         nombre = (EditText) findViewById(R.id.nomVino);
-        tipo = (EditText) findViewById(R.id.nomVino);
-        uva = (EditText) findViewById(R.id.nomVino);
-        denominacion = (EditText) findViewById(R.id.nomVino);
-        year = (EditText) findViewById(R.id.nomVino);
-        localizacion = (EditText) findViewById(R.id.nomVino);
-        premios = (EditText) findViewById(R.id.nomVino);
-        valoracion = (EditText) findViewById(R.id.nomVino);
-        nota = (EditText) findViewById(R.id.nomVino);
+        tipo = (EditText) findViewById(R.id.vino);
+        uva = (EditText) findViewById(R.id.uva);
+        denominacion = (EditText) findViewById(R.id.denominacion);
+        year = (EditText) findViewById(R.id.anno);
+        localizacion = (EditText) findViewById(R.id.localizacion);
+        premios = (EditText) findViewById(R.id.premios);
+        valoracion = (EditText) findViewById(R.id.valoracion);
+        nota = (EditText) findViewById(R.id.notas);
 
-       // desplegable = (Spinner) findViewById(R.id.spinner);
-
-        // Get all of the notes from the database and create the item list
-        Cursor categoryCursor = mDbHelper.fetchAllCategories();
-        startManagingCursor(categoryCursor);
-
-        // Create an array to specify the fields we want to display in the list (only TITLE)
-        String[] from2 = new String[] { VinosDbAdapter.KEY_VINO_NOMBRE};
-
-        // and an array of the fields we want to bind those fields to (in this case just text1)
-        int[] to2 = new int[] { R.id.text1};
-
-        // Now create an array adapter and set it to display using our row
-        SimpleCursorAdapter categories =
-                new SimpleCursorAdapter(this, R.layout.vinos_row, categoryCursor, from2, to2);
-
-        desplegable.setAdapter(categories);
-
-
-
-        Button confirmButton = (Button) findViewById(R.id.confirm);
-
-        mRowId = (savedInstanceState == null) ? null :
-                (Long) savedInstanceState.getSerializable(VinosDbAdapter.KEY_VINO_ID);
-        if (mRowId == null) {
-            Bundle extras = getIntent().getExtras();
-            mRowId = (extras != null) ? extras.getLong(VinosDbAdapter.KEY_VINO_ID)
-                    : null;
-        }
-
+        Button confirmButton = (Button) findViewById(R.id.confirmar);
         confirmButton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
                 setResult(RESULT_OK);
                 finish();
             }
-
         });
+
+        id = (savedInstanceState == null) ? null :
+                (Long) savedInstanceState.getSerializable(ID);
+        if (id == null) {
+            Bundle extras = getIntent().getExtras();
+            id = (extras != null) ? extras.getLong(ID)
+                    : null;
+        }
     }
 
     private void populateFields() {
-        if (mRowId != null) {
-            Cursor note = mDbHelper.fetchNote(mRowId);
-            startManagingCursor(note);
-            id.setText(note.getString(note.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_ID)));
-            mTitleText.setText(note.getString(
-                    note.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOMBRE)));
-            mBodyText.setText(note.getString(
-                    note.getColumnIndexOrThrow(VinosDbAdapter.KEY_BODY)));
+        if (id != null) {
+            Cursor vino = mDbHelper.getInfoVino(id);
+            startManagingCursor(vino);
+            nombre.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOMBRE)));
+            tipo.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_ES_TIPO)));
+            denominacion.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
+            year.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_AÑO)));
+            localizacion.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_POSICION)));
+            valoracion.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_VALORACION)));
+            nota.setText(vino.getString(
+                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOTA)));
 
-            String categoriaDeLaNota = note.getString(note.getColumnIndexOrThrow(VinosDbAdapter.KEY_NAME));
-
-            Cursor allCategories = mDbHelper.fetchAllCategories();
-            startManagingCursor(allCategories);
-
-            // Create an array to specify the fields we want to display in the list (only TITLE)
-            String[] from2 = new String[] { VinosDbAdapter.KEY_NAME};
-
-
-            // and an array of the fields we want to bind those fields to (in this case just text1)
-            int[] to2 = new int[] { R.id.text1};
-
-            SimpleCursorAdapter allCategorias =
-                    new SimpleCursorAdapter(this, R.layout.notes_row, allCategories, from2, to2);
-
-
-            desplegable.setAdapter(allCategorias);
-            desplegable.setSelection(getIndex(allCategories,categoriaDeLaNota));
+            //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
+            premios.setText(tratarPremios(mDbHelper.getInfoPremios(id)));
+            //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
+            premios.setText(tratarPremios(mDbHelper.getInfoUvas(id)));
         }
-    }
-
-    private int getIndex(Cursor cursor,String string){
-        //Pseudo code because I dont remember the API
-
-        int index = 0;
-        for (int i = 0; i < cursor.getCount(); i++){
-            cursor.moveToPosition(i);
-            String temp = cursor.getString(cursor.getColumnIndexOrThrow(VinosDbAdapter.KEY_NAME));
-
-            if (temp.equalsIgnoreCase(string)){
-                index = i;
-            }
-
-        }
-
-        return index;
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putSerializable(VinosDbAdapter.KEY_ROWID, mRowId);
+        outState.putSerializable(ID, id);
     }
 
     @Override
@@ -161,17 +113,37 @@ public class EditarVino extends AppCompatActivity {
     }
 
     private void saveState() {
-        String title = mTitleText.getText().toString();
-        String body = mBodyText.getText().toString();
-        //String categoria = desplegable.getItemAtPosition(desplegable.getSelectedItemPosition()).toString();
-        Cursor aux = (Cursor) desplegable.getSelectedItem();
-        String categoria = null;
-        if(aux != null){
-            categoria = ((Cursor) desplegable.getSelectedItem()).getString(1);
+
+        String no = nombre.getText().toString();
+        String t = tipo.getText().toString();
+        String d = denominacion.getText().toString();
+        String nt = nota.getText().toString();
+
+        try {
+            Long p = Long.parseLong(localizacion.getText().toString());
+        }
+        catch (NumberFormatException e){
+            //
+        }
+        try {
+            Long a = Long.parseLong(year.getText().toString());
+        }
+        catch (NumberFormatException e){
+            //
+        }
+        try {
+            Long v = Long.parseLong(valoracion.getText().toString());
+        }
+        catch (NumberFormatException e){
+            //
         }
 
-        if (mRowId == null) {
-            long id = mDbHelper.createNote(title, body, categoria);
+
+        premios.getText().toString();
+        uva.getText().toString();
+
+        if (id == null) {
+            long id = mDbHelper.crearVino(nombre,localizacion,);
             if (id > 0) {
                 mRowId = id;
             }

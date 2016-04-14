@@ -185,7 +185,7 @@ public class MisVinos extends AppCompatActivity {
 
     private void editarVino(long id){
         Intent i = new Intent(this, EditarVino.class);
-        i.putExtra(VinosDbAdapter.KEY_VINO_ID,id);
+        i.putExtra(EditarVino.ID,id);
         startActivityForResult(i, ACTIVITY_EDIT);
     }
 
