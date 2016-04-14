@@ -194,7 +194,19 @@ public class EditarVino extends AppCompatActivity {
      * "uva1-porcentaje1, uva2-porcentaje2, uva3-porcentaje3..."
      */
     private String tratarUvas(Cursor c){
-        return null;
+        String devolver = "";
+        if (c.moveToFirst()){
+            do{
+                String nombreUva = c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_UVA));
+                Double porcentaje = Double.parseDouble(c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_PORCENTAJE)));
+
+                devolver = nombreUva + "-" + porcentaje + ", ";
+            }while(c.moveToNext());
+        }
+        if(!devolver.equalsIgnoreCase("")){
+            devolver = devolver.substring(0,devolver.length() - 2);
+        }
+        return devolver;
     }
 
     /* Dado un String con la forma
@@ -202,7 +214,13 @@ public class EditarVino extends AppCompatActivity {
      * Introduce las uvas(se ignoran los porcentajes) no existentes en la base de datos
      */
     private void crearUvas(String s){
+        String aux = s.replace(" ","");
+        String[] elementos = aux.split(",");
 
+        for(String elemento: elementos){
+            String[] uvaPorcentaje = elemento.split("-");
+            mDbHelper.crearUva(uvaPorcentaje[0]);
+        }
     }
 
     /* Dado un String con la forma
@@ -211,14 +229,38 @@ public class EditarVino extends AppCompatActivity {
      * Si no tiene ninguna asignada se le asignan todas las nuevas
      */
     private void cambiarUvas(long id,String s){
+        Cursor c = mDbHelper.getInfoUvas(id);
+        if (c.moveToFirst()){
+            String nombreUva = c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_UVA));
 
+            String uvas = tratarUvas(c);
+            String aux = uvas.replace(" ","");
+            String[] elementos = aux.split(",");
+
+            for(String elemento: elementos){
+                String[] uvaPorcentaje = elemento.split("-");
+                mDbHelper.cambiarUva(id,nombreUva,uvaPorcentaje[0],Double.parseDouble(uvaPorcentaje[1]));
+            }
+        }
     }
 
     /* Transforma el cursor con los nombres de los premios y los años en un String:
      * "premio1-año1, premio2-año2, premio3-año3..."
      */
     private String tratarPremios(Cursor c){
-        return null;
+        String devolver = "";
+        if (c.moveToFirst()){
+            do{
+                String nombrePremio = c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_PREMIO));
+                Long anno = Long.parseLong(c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_AÑO)));
+
+                devolver = nombrePremio + "-" + anno + ", ";
+            }while(c.moveToNext());
+        }
+        if(!devolver.equalsIgnoreCase("")){
+            devolver = devolver.substring(0,devolver.length() - 2);
+        }
+        return devolver;
     }
 
     /* Dado un String con la forma
@@ -226,7 +268,13 @@ public class EditarVino extends AppCompatActivity {
      * Introduce los premios(se ignoran los año) no existentes en la base de datos
      */
     private void crearPremios(String s){
+        String aux = s.replace(" ","");
+        String[] elementos = aux.split(",");
 
+        for(String elemento: elementos){
+            String[] premioAnno = elemento.split("-");
+            mDbHelper.crearPremio(premioAnno[0]);
+        }
     }
 
     /* Dado un String con la forma
@@ -235,7 +283,20 @@ public class EditarVino extends AppCompatActivity {
      * Si no tiene ninguno asignado se le asignan todos los nuevos
      */
     private void cambiarPremios(long id,String s){
+        Cursor c = mDbHelper.getInfoPremios(id);
+        if (c.moveToFirst()){
+            String nombrePremio = c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_PREMIO));
+            Long anno = Long.parseLong(c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_AÑO)));
 
+            String premios = tratarPremios(c);
+            String aux = premios.replace(" ","");
+            String[] elementos = aux.split(",");
+
+            for(String elemento: elementos){
+                String[] uvaPorcentaje = elemento.split("-");
+                mDbHelper.cambiarPremio(id,nombrePremio,anno,uvaPorcentaje[0],Long.parseLong(uvaPorcentaje[1]));
+            }
+        }
     }
 
 
