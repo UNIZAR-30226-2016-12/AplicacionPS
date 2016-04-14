@@ -58,7 +58,8 @@ public class MisVinos extends AppCompatActivity {
                 (Boolean) savedInstanceState.getSerializable(MOSTRAR_VINOS);
         if (modoVinos == null) {
             Bundle extras = getIntent().getExtras();
-            modoVinos = (extras != null) ? extras.getBoolean(MOSTRAR_VINOS) : null;
+            modoVinos = (extras != null) ? extras.getBoolean(MOSTRAR_VINOS)
+                    : null;
         }
 
         mList = (ListView) findViewById(R.id.list);
@@ -68,7 +69,7 @@ public class MisVinos extends AppCompatActivity {
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-                if(modoVinos){
+                if(modoVinos.booleanValue()){
                     verVino(id);
                 }
                 else{
@@ -82,10 +83,8 @@ public class MisVinos extends AppCompatActivity {
 
 
     private void fillData() {
-        if(modoVinos){
-            Cursor cVinos;
-
-            cVinos = mDbHelper.obtenerVinos();
+        if(modoVinos.booleanValue()){
+            Cursor cVinos = mDbHelper.obtenerVinos();
 
             // Obtenemos los vinos de la base de datos
             startManagingCursor(cVinos);
@@ -110,7 +109,7 @@ public class MisVinos extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         boolean resultado = super.onCreateOptionsMenu(m);
-        if(modoVinos) {
+        if(modoVinos.booleanValue()) {
             m.add(Menu.NONE, AÑADIR_VINO, Menu.NONE, R.string.menu_insert);
             m.add(Menu.NONE, ORDENAR_VINOS, Menu.NONE, "Ordenar");
         }
@@ -124,7 +123,7 @@ public class MisVinos extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(modoVinos){
+        if(modoVinos.booleanValue()){
             switch (item.getItemId()){
                 case AÑADIR_VINO:
                     añadirVino();
@@ -145,7 +144,7 @@ public class MisVinos extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu m, View v,
                                     ContextMenu.ContextMenuInfo mInfo) {
         super.onCreateContextMenu(m, v, mInfo);
-        if(modoVinos){
+        if(modoVinos.booleanValue()){
             m.add(Menu.NONE, EDITAR_VINO, Menu.NONE, "Editar vino");
             m.add(Menu.NONE, BORRAR_VINO, Menu.NONE, "Borrar vino");
         } else{
@@ -160,7 +159,7 @@ public class MisVinos extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        if(modoVinos){
+        if(modoVinos.booleanValue()){
             switch (item.getItemId()) {
                 case EDITAR_VINO:
                     info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();

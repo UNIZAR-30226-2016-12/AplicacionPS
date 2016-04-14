@@ -79,11 +79,11 @@ public class VinosDbAdapter {
      * *     Sentencias de creacion de las tablas de la base de datos
      **/
     private static final String DATABASE_CREATE_VINO =
-            "create table " + DATABASE_NAME_VINO + " (" +
+            "create table " + DATABASE_NAME_VINO + " ( " +
                     KEY_VINO_ID + " integer primary key, " +
                     KEY_VINO_NOMBRE + " text not null, " +
                     KEY_VINO_POSICION + " integer, " +
-                    KEY_VINO_AÑO + " integer, not null" +
+                    KEY_VINO_AÑO + " integer not null, " +
                     KEY_VINO_VALORACION + " integer, " +
                     KEY_VINO_NOTA + " text);";
 
@@ -142,63 +142,63 @@ public class VinosDbAdapter {
      **/
     private static final String TRIGGER_DB_UPDATE_UVA =
             "CREATE TRIGGER actualizar_uva\n" +
-                    "BEFORE UPDATE ON " + DATABASE_NAME_UVA + " BEGIN " +
+                    "AFTER UPDATE ON " + DATABASE_NAME_UVA + " FOR EACH ROW BEGIN " +
                     "UPDATE " + DATABASE_NAME_TIPO + " SET " + KEY_COMPUESTO_UVA + " = new." + KEY_UVA_NOMBRE +
                     " WHERE " + KEY_COMPUESTO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_UVA =
             "CREATE TRIGGER borrar_uva\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_UVA + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_TIPO + " WHERE " + KEY_COMPUESTO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
+                    "BEFORE DELETE ON " + DATABASE_NAME_UVA + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_TIPO + " WHERE " + KEY_COMPUESTO_UVA + " = old." + KEY_UVA_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_UPDATE_PREMIO =
             "CREATE TRIGGER actualizar_premio\n" +
-                    "BEFORE UPDATE ON " + DATABASE_NAME_PREMIO + " BEGIN " +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_PREMIO + " FOR EACH ROW BEGIN " +
                     "UPDATE " + DATABASE_NAME_GANA + " SET " + KEY_GANA_PREMIO + " = new." + KEY_PREMIO_NOMBRE +
                     " WHERE " + KEY_GANA_PREMIO + " = old." + KEY_PREMIO_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_PREMIO =
             "CREATE TRIGGER borrar_premio\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_PREMIO + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_PREMIO + " = old." + KEY_PREMIO_NOMBRE + "; " +
+                    "BEFORE DELETE ON " + DATABASE_NAME_PREMIO + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_PREMIO + " = old." + KEY_PREMIO_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_UPDATE_DENOMINACION =
             "CREATE TRIGGER actualizar_denominacion\n" +
-                    "BEFORE UPDATE ON " + DATABASE_NAME_DENOMINACION + " BEGIN " +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_DENOMINACION + " FOR EACH ROW BEGIN " +
                     "UPDATE " + DATABASE_NAME_POSEE + " SET " + KEY_POSEE_DENOMINACION + " = new." + KEY_DENOMINACION_NOMBRE +
                     " WHERE " + KEY_POSEE_DENOMINACION + " = old." + KEY_DENOMINACION_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_DENOMINACION =
             "CREATE TRIGGER borrar_denominacion\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_DENOMINACION + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_DENOMINACION + " = old." + KEY_DENOMINACION_NOMBRE + "; " +
+                    "BEFORE DELETE ON " + DATABASE_NAME_DENOMINACION + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_DENOMINACION + " = old." + KEY_DENOMINACION_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_UPDATE_TIPO =
             "CREATE TRIGGER actualizar_tipo\n" +
-                    "BEFORE UPDATE ON " + DATABASE_NAME_TIPO + " BEGIN " +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_TIPO + " FOR EACH ROW BEGIN " +
                     "UPDATE " + DATABASE_NAME_ES + " SET " + KEY_ES_TIPO + " = new." + KEY_TIPO_NOMBRE +
                     " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_TIPO =
             "CREATE TRIGGER borrar_tipo\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_TIPO + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_ES + " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
+                    "BEFORE DELETE ON " + DATABASE_NAME_TIPO + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_ES + " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_VINO =
             "CREATE TRIGGER borrar_vino\n" +
-                    "BEFORE DELETE ON " + DATABASE_NAME_VINO + " BEGIN " +
-                    "DELETE " + DATABASE_NAME_COMPUESTO + " WHERE " + KEY_COMPUESTO_VINO + " = old." + KEY_VINO_ID + "; " +
-                    "DELETE " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_VINO + " = old." + KEY_VINO_ID + "; " +
-                    "DELETE " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_VINO + " = old." + KEY_VINO_ID + "; " +
-                    "DELETE " + DATABASE_NAME_ES + " WHERE " + KEY_ES_VINO + " = old." + KEY_VINO_ID + "; " +
+                    "BEFORE DELETE ON " + DATABASE_NAME_VINO + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_COMPUESTO + " WHERE " + KEY_COMPUESTO_VINO + " = old." + KEY_VINO_ID + "; " +
+                    "DELETE FROM " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_VINO + " = old." + KEY_VINO_ID + "; " +
+                    "DELETE FROM " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_VINO + " = old." + KEY_VINO_ID + "; " +
+                    "DELETE FROM " + DATABASE_NAME_ES + " WHERE " + KEY_ES_VINO + " = old." + KEY_VINO_ID + "; " +
                     "END;";
 
     /**
