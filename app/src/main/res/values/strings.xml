@@ -18,4 +18,5 @@
     <string name="valoracion">Valoracion personal</string>
     <string name="localizacion">Localizacion</string>
     <string name="title_activity_inicio">Inicio</string>
+    <string name="title_activity_mis_vinos">MisVinos</string>
 </resources>
