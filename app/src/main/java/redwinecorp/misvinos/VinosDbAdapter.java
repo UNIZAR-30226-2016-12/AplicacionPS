@@ -519,6 +519,98 @@ public class VinosDbAdapter {
     }
 
     /**
+     * Inserta en la tabla uva la uva si no existe.
+     *
+     * @return devuelve true si se ha creado, false si ya estaba.
+     * @params atributos de la tabla uva
+     */
+    public boolean crearUva(String nombre) {
+
+        //Si no existe el vino se crea
+        if (getUva(nombre).getCount() == 0) {
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper = nombre.toUpperCase();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_UVA_NOMBRE, nombreUpper);
+
+            return mDb.insert(DATABASE_NAME_UVA, null, valores) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Inserta en la tabla premio el premio si no existe.
+     *
+     * @return devuelve true si se ha creado, false si ya estaba.
+     * @params atributos de la tabla premio
+     */
+    public boolean crearPremio(String nombre) {
+
+        //Si no existe el vino se crea
+        if (getPremio(nombre).getCount() == 0) {
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper = nombre.toUpperCase();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_PREMIO_NOMBRE, nombreUpper);
+
+            return mDb.insert(DATABASE_NAME_PREMIO, null, valores) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Inserta en la tabla denominacion la denominacion si no existe.
+     *
+     * @return devuelve true si se ha creado, false si ya estaba.
+     * @params atributos de la tabla denominacion
+     */
+    public boolean crearDenominacion(String nombre) {
+
+        //Si no existe el vino se crea
+        if (getDenominacion(nombre).getCount() == 0) {
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper = nombre.toUpperCase();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_DENOMINACION_NOMBRE, nombreUpper);
+
+            return mDb.insert(DATABASE_NAME_DENOMINACION, null, valores) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Inserta en la tabla tipo el tipo si no existe.
+     *
+     * @return devuelve true si se ha creado, false si ya estaba.
+     * @params atributos de la tabla tipo
+     */
+    public boolean crearTipo(String nombre) {
+
+        //Si no existe el vino se crea
+        if (getTipo(nombre).getCount() == 0) {
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper = nombre.toUpperCase();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_TIPO_NOMBRE, nombreUpper);
+
+            return mDb.insert(DATABASE_NAME_TIPO, null, valores) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Enlaza una uva y un vino dado con un porcentaje.
      *
      * @param uva        nombre de una uva
