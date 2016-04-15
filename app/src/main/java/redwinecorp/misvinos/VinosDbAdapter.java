@@ -231,27 +231,6 @@ public class VinosDbAdapter {
     private static final String DATABASE_DROP_ES =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_ES + ";";
 
-    //Saca toda la información acerca del vino cuyo id se concatena después(excepto premios y uvas)
-    private static final String CONSULTA_INFO_VINO_TOTAL =
-            "SELECT v." + KEY_VINO_ID + ", v." + KEY_VINO_NOMBRE + ", v." + KEY_VINO_AÑO +
-                    ", v." + KEY_VINO_POSICION + ", v." + KEY_VINO_VALORACION + ", v." + KEY_VINO_NOTA +
-                    ", po." + KEY_POSEE_DENOMINACION + ", e." + KEY_ES_TIPO +
-                " FROM " + DATABASE_NAME_VINO + " v, " + DATABASE_NAME_POSEE + " po, " +
-                    DATABASE_NAME_ES + " e" +
-                " WHERE v." + KEY_VINO_ID + "=po." + KEY_POSEE_VINO + " AND v." + KEY_VINO_ID +
-                    "=e." + KEY_ES_VINO + " AND v." + KEY_VINO_ID + "=";
-
-    //Saca toda la información de las uvas y porcentajes acerca del vino cuyo id se concatena después
-    private static final String CONSULTA_INFO_VINO_UVAS =
-            "SELECT DISTINCT c.uva, c.porcentaje\n" +
-            "FROM vino v, compuesto c\n" +
-            "WHERE v._id=c.vino AND v._id=";
-
-    //Saca toda la información de los premios y años acerca del vino cuyo id se concatena después
-    private static final String CONSULTA_INFO_VINO_PREMIOS =
-            "SELECT DISTINCT g.premio, g.año\n" +
-                    "FROM vino v, gana g\n" +
-                    "WHERE v._id=g.vino AND v._id=";
 
     /**
      * *     Propiedades de la base de datos
@@ -375,6 +354,30 @@ public class VinosDbAdapter {
     public Cursor getVino(long id){
         Cursor c = mDb.query(DATABASE_NAME_VINO, null,
                 new String(KEY_VINO_ID + "=" + id),null, null, null, null);
+        return c;
+    }
+
+    public Cursor getUvas(long id){
+        Cursor c = mDb.query(DATABASE_NAME_COMPUESTO, null,
+                new String(KEY_COMPUESTO_VINO + "=" + id),null, null, null, null);
+        return c;
+    }
+
+    public Cursor getPremios(long id){
+        Cursor c = mDb.query(DATABASE_NAME_GANA, null,
+                new String(KEY_GANA_VINO + "=" + id),null, null, null, null);
+        return c;
+    }
+
+    public Cursor getDenominacion(long id){
+        Cursor c = mDb.query(DATABASE_NAME_POSEE, null,
+                new String(KEY_POSEE_VINO + "=" + id),null, null, null, null);
+        return c;
+    }
+
+    public Cursor getTipo(long id){
+        Cursor c = mDb.query(DATABASE_NAME_ES, null,
+                new String(KEY_ES_VINO + "=" + id),null, null, null, null);
         return c;
     }
 
@@ -1028,10 +1031,9 @@ public class VinosDbAdapter {
 
         Cursor cV = getVino(id);
         Cursor cU = getUva(uva);
-        Cursor cNU = getUva(nuevaU);
 
         //Si existe el vino, la uva y la nueva uva
-        if (cV.getCount() > 0 && cU.getCount() > 0 && cNU.getCount() > 0) {
+        if (cV.getCount() > 0 && cU.getCount() > 0) {
 
             cV.moveToFirst();
             cU.moveToFirst();
@@ -1043,14 +1045,22 @@ public class VinosDbAdapter {
 
                 cC.moveToFirst();
 
+                Cursor cNU = getDenominacion(nuevaU);
+                if(cNU.getCount() > 0){
+                    crearDenominacion(nuevaU.toUpperCase());
+                    cNU = getDenominacion(nuevaU.toUpperCase());
+                }
+
+                cNU.moveToFirst();
+
                 ContentValues valores = new ContentValues();
-                valores.put(KEY_COMPUESTO_VINO, cC.getInt(cC.getColumnIndex(KEY_COMPUESTO_VINO)));
-                valores.put(KEY_COMPUESTO_UVA, cNU.getString(cNU.getColumnIndex(KEY_UVA_NOMBRE)));
+                valores.put(KEY_COMPUESTO_VINO, id);
+                valores.put(KEY_COMPUESTO_UVA, nuevaU.toUpperCase());
                 valores.put(KEY_COMPUESTO_VINO, nuevoP);
 
                 return mDb.update(DATABASE_NAME_COMPUESTO, valores,
                         new String(KEY_COMPUESTO_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
-                                " AND " + KEY_COMPUESTO_UVA + "='" + cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE))), null) > 0;
+                                " AND " + KEY_COMPUESTO_UVA + "='" + cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE))+"'"), null) > 0;
             } else {
                 return false;
             }
@@ -1073,10 +1083,9 @@ public class VinosDbAdapter {
 
         Cursor cV = getVino(id);
         Cursor cP = getPremio(premio);
-        Cursor cNP = getPremio(nuevoP);
 
         //Si existe el vino, el premio y el nuevo premio
-        if (cV.getCount() > 0 && cP.getCount() > 0 && cNP.getCount() > 0) {
+        if (cV.getCount() > 0 && cP.getCount() > 0) {
 
             cV.moveToFirst();
             cP.moveToFirst();
@@ -1089,14 +1098,22 @@ public class VinosDbAdapter {
 
                 cG.moveToFirst();
 
+                Cursor cNP = getDenominacion(nuevoP);
+                if(cNP.getCount() > 0){
+                    crearDenominacion(nuevoP.toUpperCase());
+                    cNP = getDenominacion(nuevoP.toUpperCase());
+                }
+
+                cNP.moveToFirst();
+
                 ContentValues valores = new ContentValues();
-                valores.put(KEY_GANA_VINO, cG.getInt(cG.getColumnIndex(KEY_GANA_VINO)));
-                valores.put(KEY_GANA_PREMIO, cNP.getString(cNP.getColumnIndex(KEY_PREMIO_NOMBRE)));
+                valores.put(KEY_GANA_VINO, id);
+                valores.put(KEY_GANA_PREMIO, nuevoP.toUpperCase());
                 valores.put(KEY_GANA_AÑO, nuevoAP);
 
                 return mDb.update(DATABASE_NAME_GANA, valores,
                         new String(KEY_GANA_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
-                                " AND " + KEY_GANA_PREMIO + "='" + cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE))), null) > 0;
+                                " AND " + KEY_GANA_PREMIO + "='" + cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE))+"'"), null) > 0;
             } else {
                 return false;
             }
@@ -1117,10 +1134,9 @@ public class VinosDbAdapter {
 
         Cursor cV = getVino(id);
         Cursor cD = getDenominacion(denominacion);
-        Cursor cND = getDenominacion(nuevaD);
 
-        //Si existe el vino, la denominacion y la nueva denominacion
-        if (cV.getCount() > 0 && cD.getCount() > 0 && cND.getCount() > 0) {
+        //Si existe el vino y la denominacion
+        if (cV.getCount() > 0 && cD.getCount() > 0) {
 
             cV.moveToFirst();
             cD.moveToFirst();
@@ -1133,13 +1149,21 @@ public class VinosDbAdapter {
 
                 cP.moveToFirst();
 
+                Cursor cND = getDenominacion(nuevaD);
+                if(cND.getCount() > 0){
+                    crearDenominacion(nuevaD.toUpperCase());
+                    cND = getDenominacion(nuevaD.toUpperCase());
+                }
+
+                cND.moveToFirst();
+
                 ContentValues valores = new ContentValues();
-                valores.put(KEY_POSEE_VINO, cP.getInt(cP.getColumnIndex(KEY_GANA_VINO)));
-                valores.put(KEY_POSEE_DENOMINACION, cND.getString(cND.getColumnIndex(KEY_DENOMINACION_NOMBRE)));
+                valores.put(KEY_POSEE_VINO, id);
+                valores.put(KEY_POSEE_DENOMINACION, nuevaD.toUpperCase());
 
                 return mDb.update(DATABASE_NAME_POSEE, valores,
                         new String(KEY_POSEE_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
-                                " AND " + KEY_POSEE_DENOMINACION + "='" + cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE))), null) > 0;
+                                " AND " + KEY_POSEE_DENOMINACION + "='" + cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE))+"'"), null) > 0;
             } else {
                 return false;
             }
@@ -1160,10 +1184,9 @@ public class VinosDbAdapter {
 
         Cursor cV = getVino(id);
         Cursor cT = getTipo(tipo);
-        Cursor cNT = getTipo(nuevoT);
 
         //Si existe el vino, el tipo y el nuevo tipo
-        if (cV.getCount() > 0 && cT.getCount() > 0 && cNT.getCount() > 0) {
+        if (cV.getCount() > 0 && cT.getCount() > 0) {
 
             cV.moveToFirst();
             cT.moveToFirst();
@@ -1176,13 +1199,21 @@ public class VinosDbAdapter {
 
                 cE.moveToFirst();
 
+                Cursor cNT = getDenominacion(nuevoT);
+                if(cNT.getCount() > 0){
+                    crearTipo(nuevoT.toUpperCase());
+                    cNT = getDenominacion(nuevoT.toUpperCase());
+                }
+
+                cNT.moveToFirst();
+
                 ContentValues valores = new ContentValues();
-                valores.put(KEY_ES_VINO, cE.getInt(cE.getColumnIndex(KEY_GANA_VINO)));
-                valores.put(KEY_ES_TIPO, cNT.getString(cNT.getColumnIndex(KEY_TIPO_NOMBRE)));
+                valores.put(KEY_ES_VINO, id);
+                valores.put(KEY_ES_TIPO, nuevoT.toUpperCase());
 
                 return mDb.update(DATABASE_NAME_ES, valores,
                         new String(KEY_ES_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
-                                " AND " + KEY_ES_TIPO + "='" + cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE))), null) > 0;
+                                " AND " + KEY_ES_TIPO + "='" + cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE))+"'"), null) > 0;
             } else {
                 return false;
             }
@@ -1200,24 +1231,7 @@ public class VinosDbAdapter {
         return mDb.query(DATABASE_NAME_VINO,null,null,null,null,null,null);
     }
 
-    /**
-     * Devuelve toda la informacion almacenada de un vino
-     *
-     * @param id id del vino
-     * @return devuelve un cursor con la informacion del vino(excepto uva y premios).
-     */
-    public Cursor getInfoVino(long id) {
-        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_TOTAL+id,null);
-        return c;
-    }
-
-    public Cursor getInfoUvas(long id){
-        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_UVAS+id,null);
-        return c;
-    }
-
-    public Cursor getInfoPremios(long id){
-        Cursor c = mDb.rawQuery(CONSULTA_INFO_VINO_PREMIOS+id,null);
-        return c;
+    public long numeroVinos(){
+        return mDb.query(DATABASE_NAME_VINO,null,null,null,null,null,null).getCount();
     }
 }

@@ -69,21 +69,26 @@ public class EditarVino extends AppCompatActivity {
 
     private void populateFields() {
         if (id != null) {
-            Cursor vino = mDbHelper.getInfoVino(id.longValue());
-            vino.moveToFirst();
+            Cursor cV = mDbHelper.getVino(id.longValue());
+            Cursor cD = mDbHelper.getDenominacion(id.longValue());
+            Cursor cT = mDbHelper.getTipo(id.longValue());
 
-            nombre.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
-            tipo.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
-            denominacion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
-            year.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO)));
-            localizacion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION)));
-            valoracion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
-            nota.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
+            cV.moveToFirst();
+            cD.moveToFirst();
+            cT.moveToFirst();
+
+            nombre.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
+            tipo.setText(cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
+            denominacion.setText(cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
+            year.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO)));
+            localizacion.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION)));
+            valoracion.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
+            nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
-            uva.setText(tratarUvas(mDbHelper.getInfoUvas(id.longValue())));
+            uva.setText(tratarUvas(mDbHelper.getUvas(id.longValue())));
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
-            premios.setText(tratarPremios(mDbHelper.getInfoPremios(id.longValue())));
+            premios.setText(tratarPremios(mDbHelper.getPremios(id.longValue())));
         }
     }
 
@@ -108,8 +113,18 @@ public class EditarVino extends AppCompatActivity {
 
     private void saveState() {
         if(id!=null) {
-            Cursor c = mDbHelper.getInfoVino(id);
-            startManagingCursor(c);
+            Cursor cV = mDbHelper.getVino(id.longValue());
+            Cursor cU = mDbHelper.getUvas(id.longValue());
+            Cursor cP = mDbHelper.getPremios(id.longValue());
+            Cursor cD = mDbHelper.getDenominacion(id.longValue());
+            Cursor cT = mDbHelper.getTipo(id.longValue());
+
+            cV.moveToFirst();
+            cU.moveToFirst();
+            cP.moveToFirst();
+            cD.moveToFirst();
+            cT.moveToFirst();
+
             boolean valido = true;
 
             String no = nombre.getText().toString();
@@ -128,8 +143,7 @@ public class EditarVino extends AppCompatActivity {
 
             //Cambiamos la denominacion
             String nd = denominacion.getText().toString();
-            String d = c.getString(
-                    c.getColumnIndexOrThrow(VinosDbAdapter.KEY_POSEE_DENOMINACION));
+            String d = cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION));
             if(!mDbHelper.cambiarDenominacion(id,d,nd)){
                 mDbHelper.crearDenominacion(nd);
                 mDbHelper.cambiarDenominacion(id, d, nd);
@@ -137,8 +151,7 @@ public class EditarVino extends AppCompatActivity {
 
             //Cambiamos el tipo
             String ntp = tipo.getText().toString();
-            String tp = c.getString(
-                    c.getColumnIndexOrThrow(VinosDbAdapter.KEY_ES_TIPO));
+            String tp = cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO));
             if(!mDbHelper.cambiarTipo(id,tp,ntp)){
                 mDbHelper.crearTipo(ntp);
                 mDbHelper.cambiarTipo(id,tp,ntp);
@@ -224,7 +237,7 @@ public class EditarVino extends AppCompatActivity {
      * Si no tiene ninguna asignada se le asignan todas las nuevas
      */
     private void cambiarUvas(long id,String s){
-        Cursor c = mDbHelper.getInfoUvas(id);
+        Cursor c = mDbHelper.getUvas(id);
         if (c.moveToFirst()){
             String nombreUva = c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_UVA));
 
@@ -278,7 +291,7 @@ public class EditarVino extends AppCompatActivity {
      * Si no tiene ninguno asignado se le asignan todos los nuevos
      */
     private void cambiarPremios(long id,String s){
-        Cursor c = mDbHelper.getInfoPremios(id);
+        Cursor c = mDbHelper.getPremios(id);
         if (c.moveToFirst()){
             String nombrePremio = c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_PREMIO));
             Long anno = Long.parseLong(c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_AÑO)));
