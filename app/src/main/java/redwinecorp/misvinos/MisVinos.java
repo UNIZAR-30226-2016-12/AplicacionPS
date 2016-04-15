@@ -184,12 +184,14 @@ public class MisVinos extends AppCompatActivity {
 
     private void editarVino(long id){
         Intent i = new Intent(this, EditarVino.class);
-        i.putExtra(EditarVino.ID,id);
+        i.putExtra(EditarVino.ID,new Long(id));
         startActivityForResult(i, ACTIVITY_EDIT);
     }
 
     private void borrarVino(long id){
+
         mDbHelper.borrarVino(id);
+        fillData();
     }
 
     private void ordenarVinos(){

@@ -69,27 +69,21 @@ public class EditarVino extends AppCompatActivity {
 
     private void populateFields() {
         if (id != null) {
-            Cursor vino = mDbHelper.getInfoVino(id);
-            startManagingCursor(vino);
-            nombre.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOMBRE)));
-            tipo.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_ES_TIPO)));
-            denominacion.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
-            year.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_AÑO)));
-            localizacion.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_POSICION)));
-            valoracion.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_VALORACION)));
-            nota.setText(vino.getString(
-                    vino.getColumnIndexOrThrow(VinosDbAdapter.KEY_VINO_NOTA)));
+            Cursor vino = mDbHelper.getInfoVino(id.longValue());
+            vino.moveToFirst();
+
+            nombre.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
+            tipo.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
+            denominacion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
+            year.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO)));
+            localizacion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION)));
+            valoracion.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
+            nota.setText(vino.getString(vino.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
-            uva.setText(tratarUvas(mDbHelper.getInfoUvas(id)));
+            uva.setText(tratarUvas(mDbHelper.getInfoUvas(id.longValue())));
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
-            premios.setText(tratarPremios(mDbHelper.getInfoPremios(id)));
+            premios.setText(tratarPremios(mDbHelper.getInfoPremios(id.longValue())));
         }
     }
 
@@ -155,6 +149,7 @@ public class EditarVino extends AppCompatActivity {
         }
         else{
             boolean valido = true;
+            long idVino;
 
             String no = nombre.getText().toString();
             String nt = nota.getText().toString();
@@ -167,26 +162,26 @@ public class EditarVino extends AppCompatActivity {
                 valido=false;
             }
             if (valido) {
-                mDbHelper.crearVino(no,p,a,v,nt);
+                idVino = mDbHelper.crearVino(no,p,a,v,nt);
+
+                //Creamos la denominacion y la asignamos
+                String d = denominacion.getText().toString();
+                mDbHelper.crearDenominacion(d);
+                mDbHelper.añadirDenominacion(d,idVino);
+
+                //Creamoos el tipo y lo asignamos
+                String t = tipo.getText().toString();
+                mDbHelper.crearTipo(t);
+                mDbHelper.añadirTipo(t,idVino);
+
+                //Creamos las uvas y las asignamos
+                crearUvas(uva.getText().toString());
+                cambiarUvas(idVino,uva.getText().toString());
+
+                //Creamos los premios y los asignamos
+                crearPremios(premios.getText().toString());
+                cambiarPremios(idVino,premios.getText().toString());
             }
-
-            //Creamos la denominacion y la asignamos
-            String d = denominacion.getText().toString();
-            mDbHelper.crearDenominacion(d);
-            mDbHelper.añadirDenominacion(d,id);
-
-            //Creamoos el tipo y lo asignamos
-            String t = tipo.getText().toString();
-            mDbHelper.crearTipo(t);
-            mDbHelper.añadirTipo(t,id);
-
-            //Creamos las uvas y las asignamos
-            crearUvas(uva.getText().toString());
-            cambiarUvas(id,uva.getText().toString());
-
-            //Creamos los premios y los asignamos
-            crearPremios(premios.getText().toString());
-            cambiarPremios(id,premios.getText().toString());
         }
     }
 

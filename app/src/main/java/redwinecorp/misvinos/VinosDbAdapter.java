@@ -233,21 +233,25 @@ public class VinosDbAdapter {
 
     //Saca toda la información acerca del vino cuyo id se concatena después(excepto premios y uvas)
     private static final String CONSULTA_INFO_VINO_TOTAL =
-            "SELECT v._id, v.nombre, v.año, v.posicion, v.valoracion, v.nota,po.denominacion, es.tipo\n" +
-                "FROM vino v, posee po, es e\n" +
-                "WHERE v._id=po.vino AND v._id=es.vino AND v.id=";
+            "SELECT v." + KEY_VINO_ID + ", v." + KEY_VINO_NOMBRE + ", v." + KEY_VINO_AÑO +
+                    ", v." + KEY_VINO_POSICION + ", v." + KEY_VINO_VALORACION + ", v." + KEY_VINO_NOTA +
+                    ", po." + KEY_POSEE_DENOMINACION + ", e." + KEY_ES_TIPO +
+                " FROM " + DATABASE_NAME_VINO + " v, " + DATABASE_NAME_POSEE + " po, " +
+                    DATABASE_NAME_ES + " e" +
+                " WHERE v." + KEY_VINO_ID + "=po." + KEY_POSEE_VINO + " AND v." + KEY_VINO_ID +
+                    "=e." + KEY_ES_VINO + " AND v." + KEY_VINO_ID + "=";
 
     //Saca toda la información de las uvas y porcentajes acerca del vino cuyo id se concatena después
     private static final String CONSULTA_INFO_VINO_UVAS =
-            "SELECT DISTINCT c.uva c.porcentaje\n" +
+            "SELECT DISTINCT c.uva, c.porcentaje\n" +
             "FROM vino v, compuesto c\n" +
-            "WHERE v._id=c.vino AND v.id=";
+            "WHERE v._id=c.vino AND v._id=";
 
     //Saca toda la información de los premios y años acerca del vino cuyo id se concatena después
     private static final String CONSULTA_INFO_VINO_PREMIOS =
-            "SELECT DISTINCT g.premio g.año\n" +
+            "SELECT DISTINCT g.premio, g.año\n" +
                     "FROM vino v, gana g\n" +
-                    "WHERE v._id=g.vino AND v.id=";
+                    "WHERE v._id=g.vino AND v._id=";
 
     /**
      * *     Propiedades de la base de datos
@@ -370,7 +374,7 @@ public class VinosDbAdapter {
      */
     public Cursor getVino(long id){
         Cursor c = mDb.query(DATABASE_NAME_VINO, null,
-                new String(KEY_VINO_ID + "='" + id),null, null, null, null);
+                new String(KEY_VINO_ID + "=" + id),null, null, null, null);
         return c;
     }
 
@@ -480,7 +484,7 @@ public class VinosDbAdapter {
      */
     private Cursor getEs(long vino, String tipo) {
         String tipoUpper = tipo.toUpperCase();
-        Cursor c = mDb.query(DATABASE_NAME_POSEE, null,
+        Cursor c = mDb.query(DATABASE_NAME_ES, null,
                 new String(KEY_ES_VINO + "=" + vino + " AND " + KEY_ES_TIPO + "='" + tipoUpper + "'"),
                 null, null, null, null);
         return c;
@@ -492,7 +496,7 @@ public class VinosDbAdapter {
      * @return devuelve true si se ha creado, false si ya estaba.
      * @params atributos de la tabla vino (null en caso de no tener alguno de ellos
      */
-    public boolean crearVino(String nombre, long posicion, long año, long valoracion, String nota) {
+    public long crearVino(String nombre, long posicion, long año, long valoracion, String nota) {
 
         //Si no existe el vino se crea
         if (getVino(nombre, año).getCount() == 0) {
@@ -512,9 +516,10 @@ public class VinosDbAdapter {
             valores.put(KEY_VINO_VALORACION, valoracion);
             valores.put(KEY_VINO_NOTA, notaUpper);
 
-            return mDb.insert(DATABASE_NAME_VINO, null, valores) > 0;
+            mDb.insert(DATABASE_NAME_VINO, null, valores);
+            return id;
         } else {
-            return false;
+            return -1;
         }
     }
 
@@ -625,6 +630,9 @@ public class VinosDbAdapter {
         //Si existe el premio y el vino, se relacionan.
         if (cU.getCount() > 0 && cV.getCount() > 0) {
 
+            cU.moveToFirst();
+            cV.moveToFirst();
+
             Cursor cC = getCompuesto(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
                     cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE)));
 
@@ -660,6 +668,9 @@ public class VinosDbAdapter {
         Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cP.getCount() > 0 && cV.getCount() > 0) {
+
+            cP.moveToFirst();
+            cV.moveToFirst();
 
             Cursor cG = getGana(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
                     cP.getString(cP.getColumnIndex(KEY_PREMIO_NOMBRE)), añoP);
@@ -697,6 +708,9 @@ public class VinosDbAdapter {
         //Si existe el premio y el vino, se relacionan.
         if (cD.getCount() > 0 && cV.getCount() > 0) {
 
+            cD.moveToFirst();
+            cV.moveToFirst();
+
             Cursor cP = getPosee(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
                     cD.getString(cD.getColumnIndex(KEY_DENOMINACION_NOMBRE)));
 
@@ -730,6 +744,9 @@ public class VinosDbAdapter {
         Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cT.getCount() > 0 && cV.getCount() > 0) {
+
+            cT.moveToFirst();
+            cV.moveToFirst();
 
             Cursor cE = getEs(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
                     cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE)));
