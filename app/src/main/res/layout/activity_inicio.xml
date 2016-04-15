@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="redwinecorp.misvinos.Inicio"
-    android:background="#000000">
+    android:background="#ffffff">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:background="#000000">
+        android:background="#ffffff">
 
 
         <Button
@@ -68,7 +68,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="70dp"
-            android:text="Buscar"
+            android:text="No Disponible"
             android:background="#a80038"
             android:textSize="25dp"
             android:id="@+id/search"
