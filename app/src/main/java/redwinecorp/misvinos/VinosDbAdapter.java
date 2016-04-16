@@ -877,6 +877,37 @@ public class VinosDbAdapter {
         }
     }
 
+    public boolean borrarCompuesto(long id, String nombre) {
+
+        Cursor cC = getCompuesto(id, nombre);
+
+        if (cC.getCount() > 0) {
+
+            cC.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_COMPUESTO,
+                    new String(KEY_COMPUESTO_VINO+"="+id+" AND "+KEY_COMPUESTO_UVA+"='"+nombre+"'"), null) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean borrarGana(long id, String nombre, long año) {
+
+        Cursor cG = getGana(id, nombre, año);
+
+        if (cG.getCount() > 0) {
+
+            cG.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_GANA,
+                    new String(KEY_GANA_VINO+"="+id+" AND "+KEY_GANA_PREMIO+"='"+nombre+"' AND "+
+                    KEY_GANA_AÑO+"="+año), null) > 0;
+        } else {
+            return false;
+        }
+    }
+
     /*--------------------------------------------------------------------------------------------*/
     /*--------------------------------------------------------------------------------------------*/
     /*-----------------------------------    HASTA AQUI HECHO    ---------------------------------*/
@@ -1047,8 +1078,8 @@ public class VinosDbAdapter {
 
                 Cursor cNU = getDenominacion(nuevaU);
                 if(cNU.getCount() > 0){
-                    crearDenominacion(nuevaU.toUpperCase());
-                    cNU = getDenominacion(nuevaU.toUpperCase());
+                    crearUva(nuevaU.toUpperCase());
+                    cNU = getUva(nuevaU.toUpperCase());
                 }
 
                 cNU.moveToFirst();
@@ -1100,8 +1131,8 @@ public class VinosDbAdapter {
 
                 Cursor cNP = getDenominacion(nuevoP);
                 if(cNP.getCount() > 0){
-                    crearDenominacion(nuevoP.toUpperCase());
-                    cNP = getDenominacion(nuevoP.toUpperCase());
+                    crearPremio(nuevoP.toUpperCase());
+                    cNP = getPremio(nuevoP.toUpperCase());
                 }
 
                 cNP.moveToFirst();
@@ -1202,7 +1233,7 @@ public class VinosDbAdapter {
                 Cursor cNT = getDenominacion(nuevoT);
                 if(cNT.getCount() > 0){
                     crearTipo(nuevoT.toUpperCase());
-                    cNT = getDenominacion(nuevoT.toUpperCase());
+                    cNT = getTipo(nuevoT.toUpperCase());
                 }
 
                 cNT.moveToFirst();
