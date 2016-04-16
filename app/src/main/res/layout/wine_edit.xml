@@ -26,6 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:hint="Nombre del vino"
                     android:inputType="text"
                     android:layout_weight="1"/>
             </LinearLayout>
@@ -43,6 +44,7 @@
                 <EditText android:id="@+id/vino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Tipo del vino"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -59,6 +61,7 @@
                 <EditText android:id="@+id/uva"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Ejemplo: UVA1-5.0,UVA2-10.0"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -75,6 +78,7 @@
                 <EditText android:id="@+id/denominacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Denominacion del vino"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -91,6 +95,7 @@
                 <EditText android:id="@+id/anno"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Año del vino"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -107,6 +112,7 @@
                 <EditText android:id="@+id/localizacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Posicion del vino en su contenedor(entero)"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -123,6 +129,7 @@
                 <EditText android:id="@+id/premios"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Ejemplo: P1-1999,P2-2000"
                     android:layout_weight="1"/>
             </LinearLayout>
 
@@ -142,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/ratingBar"
                     android:numStars="5"
-                    android:stepSize="1.0"
+                    android:stepSize="0.5"
                     android:rating="0" />
 
 
@@ -177,7 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:hint="Escribe aqui una nota"
+                    android:hint="Anotaciones sobre el vino"
                     android:inputType="text"
                     android:layout_weight="1"/>
             </LinearLayout>

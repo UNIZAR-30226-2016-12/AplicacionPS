@@ -251,6 +251,7 @@ public class EditarVino extends AppCompatActivity {
 
         //Añadimos las nuevas
         for (int i=0 ; i<elementosNuevas.length ; i++) {
+            mDbHelper.crearUva(elementosNuevas[i].split("-")[0]);
             mDbHelper.añadirUva(elementosNuevas[i].split("-")[0],
                     Double.parseDouble(elementosNuevas[i].split("-")[1]), id);
         }
@@ -300,6 +301,7 @@ public class EditarVino extends AppCompatActivity {
 
         //Añadimos los nuevos
         for (int i=0 ; i<elementosNuevos.length ; i++){
+            mDbHelper.crearPremio(elementosNuevos[i].split("-")[0]);
             mDbHelper.añadirPremio(elementosNuevos[i].split("-")[0],
                     Long.parseLong(elementosNuevos[i].split("-")[1]), id);
         }

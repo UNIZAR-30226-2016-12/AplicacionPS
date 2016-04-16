@@ -630,7 +630,7 @@ public class VinosDbAdapter {
 
         Cursor cU = getUva(uva);
         Cursor cV = getVino(id);
-        //Si existe el premio y el vino, se relacionan.
+        //Si existe la uva y el vino, se relacionan.
         if (cU.getCount() > 0 && cV.getCount() > 0) {
 
             cU.moveToFirst();
@@ -1076,7 +1076,7 @@ public class VinosDbAdapter {
 
                 cC.moveToFirst();
 
-                Cursor cNU = getDenominacion(nuevaU);
+                Cursor cNU = getUva(nuevaU);
                 if(cNU.getCount() > 0){
                     crearUva(nuevaU.toUpperCase());
                     cNU = getUva(nuevaU.toUpperCase());
@@ -1129,7 +1129,7 @@ public class VinosDbAdapter {
 
                 cG.moveToFirst();
 
-                Cursor cNP = getDenominacion(nuevoP);
+                Cursor cNP = getPremio(nuevoP);
                 if(cNP.getCount() > 0){
                     crearPremio(nuevoP.toUpperCase());
                     cNP = getPremio(nuevoP.toUpperCase());
@@ -1230,7 +1230,7 @@ public class VinosDbAdapter {
 
                 cE.moveToFirst();
 
-                Cursor cNT = getDenominacion(nuevoT);
+                Cursor cNT = getTipo(nuevoT);
                 if(cNT.getCount() > 0){
                     crearTipo(nuevoT.toUpperCase());
                     cNT = getTipo(nuevoT.toUpperCase());
