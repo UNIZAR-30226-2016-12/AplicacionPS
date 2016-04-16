@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:textStyle="bold"
                     android:text="@string/nomVino" />
@@ -37,7 +37,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/vino" />
                 <EditText android:id="@+id/vino"
@@ -53,7 +53,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/uva" />
                 <EditText android:id="@+id/uva"
@@ -69,7 +69,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/denominacion" />
                 <EditText android:id="@+id/denominacion"
@@ -85,7 +85,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/anno" />
                 <EditText android:id="@+id/anno"
@@ -101,7 +101,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/localizacion" />
                 <EditText android:id="@+id/localizacion"
@@ -117,7 +117,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/premios" />
                 <EditText android:id="@+id/premios"
@@ -133,7 +133,7 @@
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="#480e5e"
+                    android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/valoracion" />
                 <EditText android:id="@+id/valoracion"
