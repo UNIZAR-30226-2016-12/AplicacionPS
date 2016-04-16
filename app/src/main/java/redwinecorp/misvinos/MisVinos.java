@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.EditText;
 
 import redwinecorp.misvinos.VinosDbAdapter;
 
@@ -43,6 +44,8 @@ public class MisVinos extends AppCompatActivity {
     private Cursor mVinosCursor;
     private ListView mList;
 
+    private EditText numVinos;
+
 
     /** Constructor de la clase */
     @Override
@@ -53,6 +56,9 @@ public class MisVinos extends AppCompatActivity {
 
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
+
+        numVinos = (EditText) findViewById(R.id.numVinos);
+        numVinos.setFocusable(false);
 
         modoVinos = (savedInstanceState == null) ? null :
                 (Boolean) savedInstanceState.getSerializable(MOSTRAR_VINOS);
@@ -100,6 +106,8 @@ public class MisVinos extends AppCompatActivity {
                     new SimpleCursorAdapter(this, R.layout.vinos_row, cVinos, from, to);
 
             mList.setAdapter(vinos);
+
+            numVinos.setText(""+mDbHelper.numeroVinos());
         } else{
             //
         }
