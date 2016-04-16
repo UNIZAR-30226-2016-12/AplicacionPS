@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class EditarVino extends AppCompatActivity {
     private EditText year;
     private EditText localizacion;
     private EditText premios;
-    private EditText valoracion;
+    private RatingBar valoracion;
     private EditText nota;
 
     private Long id;
@@ -48,7 +49,7 @@ public class EditarVino extends AppCompatActivity {
         year = (EditText) findViewById(R.id.anno);
         localizacion = (EditText) findViewById(R.id.localizacion);
         premios = (EditText) findViewById(R.id.premios);
-        valoracion = (EditText) findViewById(R.id.valoracion);
+        valoracion = (RatingBar) findViewById(R.id.ratingBar);
         nota = (EditText) findViewById(R.id.notas);
 
         Button confirmButton = (Button) findViewById(R.id.confirmar);
@@ -58,7 +59,15 @@ public class EditarVino extends AppCompatActivity {
                 finish();
             }
         });
+/**
+        valoracion.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                                        boolean fromUser) {
+                valoracion.setRating(rating);
 
+            }
+        });
+*/
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
         if (id == null) {
@@ -83,7 +92,7 @@ public class EditarVino extends AppCompatActivity {
             denominacion.setText(cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
             year.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO)));
             localizacion.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION)));
-            valoracion.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
+            valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
             nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
@@ -134,7 +143,8 @@ public class EditarVino extends AppCompatActivity {
             try {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
-                v = Long.parseLong(valoracion.getText().toString());
+                v = new Long(Math.round(valoracion.getRating()));
+                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
@@ -171,7 +181,8 @@ public class EditarVino extends AppCompatActivity {
             try {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
-                v = Long.parseLong(valoracion.getText().toString());
+                v = new Long(Math.round(valoracion.getRating()));
+                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
