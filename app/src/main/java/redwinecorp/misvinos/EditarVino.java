@@ -144,7 +144,6 @@ public class EditarVino extends AppCompatActivity {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
                 v = new Long(Math.round(valoracion.getRating()));
-                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
@@ -182,7 +181,6 @@ public class EditarVino extends AppCompatActivity {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
                 v = new Long(Math.round(valoracion.getRating()));
-                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
