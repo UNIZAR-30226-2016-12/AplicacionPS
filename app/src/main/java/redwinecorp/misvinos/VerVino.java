@@ -1,22 +1,19 @@
 package redwinecorp.misvinos;
 
-import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
-import android.util.Log;
 
-public class EditarVino extends AppCompatActivity {
+/**
+ * Created by Asier on 18/04/2016.
+ */
+public class VerVino extends AppCompatActivity {
 
     public static final String ID = "id";
 
@@ -33,8 +30,8 @@ public class EditarVino extends AppCompatActivity {
     private Long id;
 
     private VinosDbAdapter mDbHelper;
-
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -42,7 +39,7 @@ public class EditarVino extends AppCompatActivity {
         mDbHelper.open();
 
         setContentView(R.layout.wine_edit);
-        setTitle("EDITAR VINO");
+        setTitle("VER VINO");
 
         nombre = (EditText) findViewById(R.id.nomVino);
         tipo = (EditText) findViewById(R.id.vino);
@@ -59,22 +56,7 @@ public class EditarVino extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Button confirmButton = (Button) findViewById(R.id.confirmar);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
-/**
-        valoracion.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            public void onRatingChanged(RatingBar ratingBar, float rating,
-                                        boolean fromUser) {
-                valoracion.setRating(rating);
 
-            }
-        });
-*/
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
         if (id == null) {
@@ -163,6 +145,7 @@ public class EditarVino extends AppCompatActivity {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
                 v = new Long(Math.round(valoracion.getRating()));
+                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
@@ -200,6 +183,7 @@ public class EditarVino extends AppCompatActivity {
                 p = Long.parseLong(localizacion.getText().toString());
                 a = Long.parseLong(year.getText().toString());
                 v = new Long(Math.round(valoracion.getRating()));
+                System.out.println(v);
             } catch (NumberFormatException e) {
                 valido=false;
             }
@@ -235,12 +219,13 @@ public class EditarVino extends AppCompatActivity {
                 String nombreUva = c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_UVA));
                 Double porcentaje = Double.parseDouble(c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_PORCENTAJE)));
 
-                devolver = devolver + nombreUva + "-" + porcentaje + ", ";
+                devolver += nombreUva + "-" + porcentaje + ", ";
             }while(c.moveToNext());
         }
         if(!devolver.equalsIgnoreCase("")){
             devolver = devolver.substring(0,devolver.length() - 2);
         }
+        System.out.println(devolver);
         return devolver;
     }
 
@@ -284,7 +269,7 @@ public class EditarVino extends AppCompatActivity {
                 String nombrePremio = c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_PREMIO));
                 Long anno = Long.parseLong(c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_AÑO)));
 
-                devolver = devolver + nombrePremio + "-" + anno + ", ";
+                devolver += nombrePremio + "-" + anno + ", ";
             }while(c.moveToNext());
         }
         if(!devolver.equalsIgnoreCase("")){
