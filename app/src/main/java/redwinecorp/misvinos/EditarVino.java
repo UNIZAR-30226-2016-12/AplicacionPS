@@ -2,8 +2,10 @@ package redwinecorp.misvinos;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CursorAdapter;
@@ -52,6 +54,11 @@ public class EditarVino extends AppCompatActivity {
         valoracion = (RatingBar) findViewById(R.id.ratingBar);
         nota = (EditText) findViewById(R.id.notas);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         Button confirmButton = (Button) findViewById(R.id.confirmar);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -74,6 +81,18 @@ public class EditarVino extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             id = (extras != null) ? extras.getLong(ID)
                     : null;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
