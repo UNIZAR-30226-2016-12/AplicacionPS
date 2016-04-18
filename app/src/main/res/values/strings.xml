@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MisVinos</string>
-    <string name="no_hay_vinos">No Hay Vinos</string>
+    <string name="no_hay_grupos">No Hay Grupos</string>
     <string name="action_settings">Opciones</string>
     <string name="menu_insert">Añadir Vino</string>
     <string name="menu_delete">Borrar Vino</string>
@@ -16,7 +16,7 @@
     <string name="premios">Premios</string>
     <string name="grupo">Grupo</string>
     <string name="valoracion">Valoracion personal</string>
-    <string name="localizacion">Localizacion</string>
+    <string name="localizacion">Posicion</string>
     <string name="title_activity_inicio">Inicio</string>
     <string name="numVinos">Numero total de vinos en la base de datos</string>
 
