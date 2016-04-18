@@ -83,7 +83,7 @@ public class VinosDbAdapter {
                     KEY_VINO_ID + " integer primary key, " +
                     KEY_VINO_NOMBRE + " text not null, " +
                     KEY_VINO_POSICION + " integer, " +
-                    KEY_VINO_AÑO + " integer not null, " +
+                    KEY_VINO_AÑO + " integer, " +
                     KEY_VINO_VALORACION + " integer, " +
                     KEY_VINO_NOTA + " text);";
 

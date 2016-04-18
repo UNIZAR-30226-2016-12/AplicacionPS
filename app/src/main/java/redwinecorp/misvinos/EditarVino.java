@@ -16,6 +16,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class EditarVino extends AppCompatActivity {
 
     public static final String ID = "id";
@@ -62,8 +65,10 @@ public class EditarVino extends AppCompatActivity {
         Button confirmButton = (Button) findViewById(R.id.confirmar);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                setResult(RESULT_OK);
-                finish();
+                if (comprobarEntradas()){
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
         });
 /**
@@ -321,6 +326,71 @@ public class EditarVino extends AppCompatActivity {
             mDbHelper.crearPremio(elementosNuevos[i].split("-")[0]);
             mDbHelper.añadirPremio(elementosNuevos[i].split("-")[0],
                     Long.parseLong(elementosNuevos[i].split("-")[1]), id);
+        }
+    }
+
+    private boolean comprobarEntradas(){
+        boolean correcto = true;
+
+        String no = nombre.getText().toString();
+        if(no==null){
+            //Mostrar error(nombre no puede ser null)
+            correcto=false;
+        }
+        String p=localizacion.getText().toString();
+        if(p!=null) {
+            try {
+                Long.parseLong(p);
+            } catch (NumberFormatException e) {
+                //Mostrar error(tiene que ser un entero)
+                correcto = false;
+            }
+        }
+        String a=year.getText().toString();
+        if(a!=null) {
+            try {
+                Long.parseLong(a);
+            } catch (NumberFormatException e) {
+                //Mostrar error(tiene que ser un entero)
+                correcto = false;
+            }
+        }
+
+        correcto = correcto && comprobarUvas(uva.getText().toString());
+        correcto = correcto && comprobarPremios(premios.getText().toString());
+
+        return correcto;
+    }
+
+    private static boolean comprobarUvas(String s){
+        if(s==null){
+            return true;
+        }
+        Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[.][0-9]+[,])*([a-z,A-Z]+[-][0-9]+[.][0-9]+)$");
+
+        Matcher matcher = mPattern.matcher(s);
+        if(!matcher.find())
+        {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    private static boolean comprobarPremios(String s){
+        if(s==null){
+            return true;
+        }
+        Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[,])*([a-z,A-Z]+[-][0-9]+)$");
+
+        Matcher matcher = mPattern.matcher(s);
+        if(!matcher.find())
+        {
+            return false;
+        }
+        else{
+            return true;
         }
     }
 }
