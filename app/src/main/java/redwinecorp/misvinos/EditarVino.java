@@ -218,13 +218,12 @@ public class EditarVino extends AppCompatActivity {
                 String nombreUva = c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_UVA));
                 Double porcentaje = Double.parseDouble(c.getString(c.getColumnIndex(mDbHelper.KEY_COMPUESTO_PORCENTAJE)));
 
-                devolver += nombreUva + "-" + porcentaje + ", ";
+                devolver = devolver + nombreUva + "-" + porcentaje + ", ";
             }while(c.moveToNext());
         }
         if(!devolver.equalsIgnoreCase("")){
             devolver = devolver.substring(0,devolver.length() - 2);
         }
-        System.out.println(devolver);
         return devolver;
     }
 
@@ -268,7 +267,7 @@ public class EditarVino extends AppCompatActivity {
                 String nombrePremio = c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_PREMIO));
                 Long anno = Long.parseLong(c.getString(c.getColumnIndex(mDbHelper.KEY_GANA_AÑO)));
 
-                devolver += nombrePremio + "-" + anno + ", ";
+                devolver = devolver + nombrePremio + "-" + anno + ", ";
             }while(c.moveToNext());
         }
         if(!devolver.equalsIgnoreCase("")){
