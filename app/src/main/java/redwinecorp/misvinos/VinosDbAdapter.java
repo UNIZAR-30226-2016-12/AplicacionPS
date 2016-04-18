@@ -743,7 +743,7 @@ public class VinosDbAdapter {
      */
     public boolean añadirTipo(String tipo, long id) {
 
-        Cursor cT = getDenominacion(tipo);
+        Cursor cT = getTipo(tipo);
         Cursor cV = getVino(id);
         //Si existe el premio y el vino, se relacionan.
         if (cT.getCount() > 0 && cV.getCount() > 0) {
