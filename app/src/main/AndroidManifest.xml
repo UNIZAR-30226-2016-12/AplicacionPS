@@ -10,7 +10,6 @@
 
         <activity
             android:name=".Inicio"
-            android:label="@string/title_activity_inicio"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +24,6 @@
 
         <activity
             android:name=".EditarVino"
-            android:label="@string/title_activity_editar_vino"
             android:parentActivityName=".MisVinos">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
