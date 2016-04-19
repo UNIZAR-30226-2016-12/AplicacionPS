@@ -2,6 +2,7 @@ package redwinecorp.misvinos;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -136,7 +137,9 @@ public class EditarVino extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        saveState();
+        if(comprobarEntradas()) {
+            saveState();
+        }
     }
 
     @Override
@@ -267,15 +270,16 @@ public class EditarVino extends AppCompatActivity {
                 mDbHelper.borrarCompuesto(id,elementosAnteriores[i].split("-")[0]);
             }
         }
+        if(nuevas!=null && !nuevas.equals("")) {
+            String auxNuevas = nuevas.replace(" ", "");
+            String[] elementosNuevas = auxNuevas.split(",");
 
-        String auxNuevas = nuevas.replace(" ", "");
-        String[] elementosNuevas = auxNuevas.split(",");
-
-        //Añadimos las nuevas
-        for (int i=0 ; i<elementosNuevas.length ; i++) {
-            mDbHelper.crearUva(elementosNuevas[i].split("-")[0]);
-            mDbHelper.añadirUva(elementosNuevas[i].split("-")[0],
-                    Double.parseDouble(elementosNuevas[i].split("-")[1]), id);
+            //Añadimos las nuevas
+            for (int i = 0; i < elementosNuevas.length; i++) {
+                mDbHelper.crearUva(elementosNuevas[i].split("-")[0]);
+                mDbHelper.añadirUva(elementosNuevas[i].split("-")[0],
+                        Double.parseDouble(elementosNuevas[i].split("-")[1]), id);
+            }
         }
     }
 
@@ -321,11 +325,13 @@ public class EditarVino extends AppCompatActivity {
         String auxNuevas = nuevos.replace(" ", "");
         String[] elementosNuevos = auxNuevas.split(",");
 
-        //Añadimos los nuevos
-        for (int i=0 ; i<elementosNuevos.length ; i++){
-            mDbHelper.crearPremio(elementosNuevos[i].split("-")[0]);
-            mDbHelper.añadirPremio(elementosNuevos[i].split("-")[0],
-                    Long.parseLong(elementosNuevos[i].split("-")[1]), id);
+        if(nuevos!=null && !nuevos.equals("")) {
+            //Añadimos los nuevos
+            for (int i = 0; i < elementosNuevos.length; i++) {
+                mDbHelper.crearPremio(elementosNuevos[i].split("-")[0]);
+                mDbHelper.añadirPremio(elementosNuevos[i].split("-")[0],
+                        Long.parseLong(elementosNuevos[i].split("-")[1]), id);
+            }
         }
     }
 
@@ -333,37 +339,56 @@ public class EditarVino extends AppCompatActivity {
         boolean correcto = true;
 
         String no = nombre.getText().toString();
-        if(no==null){
+        if(no==null || no.equals("")){
             //Mostrar error(nombre no puede ser null)
+            nombre.setText("");
+            nombre.setHintTextColor(Color.rgb(255,0,0));
+            nombre.setHint("El vino tiene que tener un nombre.");
             correcto=false;
         }
         String p=localizacion.getText().toString();
-        if(p!=null) {
+        if(p!=null || !p.equals("")) {
             try {
                 Long.parseLong(p);
             } catch (NumberFormatException e) {
-                //Mostrar error(tiene que ser un entero)
+                localizacion.setText("");
+                localizacion.setHintTextColor(Color.rgb(255,0,0));
+                localizacion.setHint("La localizacion tiene que ser un entero.");
                 correcto = false;
             }
         }
         String a=year.getText().toString();
-        if(a!=null) {
+        if(a!=null || !a.equals("")) {
             try {
                 Long.parseLong(a);
             } catch (NumberFormatException e) {
-                //Mostrar error(tiene que ser un entero)
+                year.setText("");
+                year.setHintTextColor(Color.rgb(255,0,0));
+                year.setHint("El año tiene que ser un entero.");
                 correcto = false;
             }
         }
 
-        correcto = correcto && comprobarUvas(uva.getText().toString());
-        correcto = correcto && comprobarPremios(premios.getText().toString());
+        boolean correctoU = comprobarUvas(uva.getText().toString());
+        if (!correctoU) {
+            uva.setText("");
+            uva.setTextColor(Color.rgb(255,0,0));
+            uva.setText("Las uvas no tienen el formato correcto.");
+            correcto=false;
+        }
+        boolean correctoP = comprobarPremios(premios.getText().toString());
+        if(!correctoP){
+            premios.setText("");
+            premios.setHintTextColor(Color.rgb(255,0,0));
+            premios.setHint("Los premios no tienen el formato correcto.");
+            correcto=false;
+        }
 
         return correcto;
     }
 
     private static boolean comprobarUvas(String s){
-        if(s==null){
+        if(s==null || s.equals("")){
             return true;
         }
         Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[.][0-9]+[,])*([a-z,A-Z]+[-][0-9]+[.][0-9]+)$");
@@ -379,7 +404,7 @@ public class EditarVino extends AppCompatActivity {
     }
 
     private static boolean comprobarPremios(String s){
-        if(s==null){
+        if(s==null || s.equals("")){
             return true;
         }
         Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[,])*([a-z,A-Z]+[-][0-9]+)$");
