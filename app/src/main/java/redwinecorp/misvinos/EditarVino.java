@@ -113,10 +113,30 @@ public class EditarVino extends AppCompatActivity {
             cT.moveToFirst();
 
             nombre.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
-            tipo.setText(cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
-            denominacion.setText(cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
-            year.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO)));
-            localizacion.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION)));
+            if(cT.getCount()>0) {
+                tipo.setText(cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
+            }
+            else{
+                tipo.setText("");
+            }
+            if(cD.getCount()>0) {
+                denominacion.setText(cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
+            }
+            else{
+                denominacion.setText("");
+            }
+            String a = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO));
+            if(a.equals("-1")){
+                year.setText("");
+            }else{
+                year.setText(a);
+            }
+            String p = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION));
+            if(p.equals("-1")){
+                localizacion.setText("");
+            }else{
+                localizacion.setText(p);
+            }
             valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
             nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
@@ -162,67 +182,94 @@ public class EditarVino extends AppCompatActivity {
             cD.moveToFirst();
             cT.moveToFirst();
 
-            boolean valido = true;
+            if(comprobarEntradas()) {
 
-            String no = nombre.getText().toString();
-            String nt = nota.getText().toString();
-            Long p=null,a=null,v=null;
-            try {
-                p = Long.parseLong(localizacion.getText().toString());
-                a = Long.parseLong(year.getText().toString());
-                v = new Long(Math.round(valoracion.getRating()));
-            } catch (NumberFormatException e) {
-                valido=false;
-            }
-            if (valido) {
-                mDbHelper.actualizarVino(id,no,a,p,v,nt);
-            }
+                String p = localizacion.getText().toString();
+                long pos = -1;
+                if(!(p==null || p.equals(""))) {
+                    try {
+                        pos = Long.parseLong(p);
+                    } catch (NumberFormatException e) {
+                        pos=-1;
+                    }
+                }
 
-            //Cambiamos la denominacion
-            String nd = denominacion.getText().toString();
-            String d = cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION));
-            if(!mDbHelper.cambiarDenominacion(id,d,nd)){
-                mDbHelper.crearDenominacion(nd);
-                mDbHelper.cambiarDenominacion(id, d, nd);
-            }
+                String a = year.getText().toString();
+                long año = -1;
+                if(!(a==null || a.equals(""))) {
+                    try {
+                        año = Long.parseLong(a);
+                    } catch (NumberFormatException e) {
+                        año=-1;
+                    }
+                }
 
-            //Cambiamos el tipo
-            String ntp = tipo.getText().toString();
-            String tp = cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO));
-            if(!mDbHelper.cambiarTipo(id,tp,ntp)){
-                mDbHelper.crearTipo(ntp);
-                mDbHelper.cambiarTipo(id,tp,ntp);
-            }
+                mDbHelper.actualizarVino(id, nombre.getText().toString(),
+                        año, pos, new Long(Math.round(valoracion.getRating() * 2)),
+                        nota.getText().toString());
 
-            cambiarUvas(id,uva.getText().toString());
-            cambiarPremios(id,premios.getText().toString());
+
+                //Cambiamos la denominacion
+                String nd = denominacion.getText().toString();
+                String d = cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION));
+                if (!mDbHelper.cambiarDenominacion(id, d, nd)) {
+                    mDbHelper.crearDenominacion(nd);
+                    mDbHelper.cambiarDenominacion(id, d, nd);
+                }
+
+                //Cambiamos el tipo
+                String ntp = tipo.getText().toString();
+                String tp = cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO));
+                if (!mDbHelper.cambiarTipo(id, tp, ntp)) {
+                    mDbHelper.crearTipo(ntp);
+                    mDbHelper.cambiarTipo(id, tp, ntp);
+                }
+
+                cambiarUvas(id, uva.getText().toString());
+                cambiarPremios(id, premios.getText().toString());
+            }
         }
         else{
-            boolean valido = true;
             long idVino;
 
-            String no = nombre.getText().toString();
-            String nt = nota.getText().toString();
-            Long p=null,a=null,v=null;
-            try {
-                p = Long.parseLong(localizacion.getText().toString());
-                a = Long.parseLong(year.getText().toString());
-                v = new Long(Math.round(valoracion.getRating()));
-            } catch (NumberFormatException e) {
-                valido=false;
-            }
-            if (valido) {
-                idVino = mDbHelper.crearVino(no,p,a,v,nt);
+            if (comprobarEntradas()) {
+                String p = localizacion.getText().toString();
+                long pos = -1;
+                if(!(p==null || p.equals(""))) {
+                    try {
+                        pos = Long.parseLong(p);
+                    } catch (NumberFormatException e) {
+                        pos=-1;
+                    }
+                }
+
+                String a = year.getText().toString();
+                long año = -1;
+                if(!(a==null || a.equals(""))) {
+                    try {
+                        año = Long.parseLong(a);
+                    } catch (NumberFormatException e) {
+                        año=-1;
+                    }
+                }
+
+                idVino = mDbHelper.crearVino(nombre.getText().toString(),
+                        pos, año, new Long(Math.round(valoracion.getRating()*2)),
+                        nota.getText().toString());
 
                 //Creamos la denominacion y la asignamos
                 String d = denominacion.getText().toString();
-                mDbHelper.crearDenominacion(d);
-                mDbHelper.añadirDenominacion(d,idVino);
+                if(!(d==null || d.equals(""))) {
+                    mDbHelper.crearDenominacion(d);
+                    mDbHelper.añadirDenominacion(d, idVino);
+                }
 
                 //Creamoos el tipo y lo asignamos
                 String t = tipo.getText().toString();
-                mDbHelper.crearTipo(t);
-                mDbHelper.añadirTipo(t, idVino);
+                if(!(t==null || t.equals(""))) {
+                    mDbHelper.crearTipo(t);
+                    mDbHelper.añadirTipo(t, idVino);
+                }
 
                 //Creamos las uvas y las asignamos
                 cambiarUvas(idVino,uva.getText().toString());
@@ -347,7 +394,7 @@ public class EditarVino extends AppCompatActivity {
             correcto=false;
         }
         String p=localizacion.getText().toString();
-        if(p!=null || !p.equals("")) {
+        if(p!=null && !p.equals("")) {
             try {
                 Long.parseLong(p);
             } catch (NumberFormatException e) {
@@ -358,7 +405,7 @@ public class EditarVino extends AppCompatActivity {
             }
         }
         String a=year.getText().toString();
-        if(a!=null || !a.equals("")) {
+        if(a!=null && !a.equals("")) {
             try {
                 Long.parseLong(a);
             } catch (NumberFormatException e) {
