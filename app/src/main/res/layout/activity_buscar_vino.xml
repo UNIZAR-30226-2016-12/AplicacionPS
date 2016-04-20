@@ -14,7 +14,7 @@
         android:id="@+id/textoBusqueda"
         android:layout_gravity="center_horizontal"
         android:background="#ffffff"
-        android:layout_marginTop="150dp" />
+        android:layout_marginTop="50dp"/>
 
     <Button
         android:layout_width="350dp"
@@ -25,7 +25,7 @@
         android:id="@+id/searchButton"
         android:textStyle="bold"
         android:layout_marginTop="50dp"
-        android:layout_marginLeft="30dp" />
+        android:layout_marginLeft="15dp" />
 
 </LinearLayout>
 
