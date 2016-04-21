@@ -211,18 +211,28 @@ public class EditarVino extends AppCompatActivity {
 
                 //Cambiamos la denominacion
                 String nd = denominacion.getText().toString();
-                String d = cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION));
-                if (!mDbHelper.cambiarDenominacion(id, d, nd)) {
+                if(cD.getCount()>0) {
+                    String d = cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION));
+                    if (!mDbHelper.cambiarDenominacion(id, d, nd)) {
+                        mDbHelper.crearDenominacion(nd);
+                        mDbHelper.cambiarDenominacion(id, d, nd);
+                    }
+                } else{
                     mDbHelper.crearDenominacion(nd);
-                    mDbHelper.cambiarDenominacion(id, d, nd);
+                    mDbHelper.añadirDenominacion(nd, id);
                 }
 
                 //Cambiamos el tipo
                 String ntp = tipo.getText().toString();
-                String tp = cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO));
-                if (!mDbHelper.cambiarTipo(id, tp, ntp)) {
+                if(cT.getCount()>0) {
+                    String tp = cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO));
+                    if (!mDbHelper.cambiarTipo(id, tp, ntp)) {
+                        mDbHelper.crearTipo(ntp);
+                        mDbHelper.cambiarTipo(id, tp, ntp);
+                    }
+                } else{
                     mDbHelper.crearTipo(ntp);
-                    mDbHelper.cambiarTipo(id, tp, ntp);
+                    mDbHelper.añadirTipo(ntp,id);
                 }
 
                 cambiarUvas(id, uva.getText().toString());
@@ -419,8 +429,8 @@ public class EditarVino extends AppCompatActivity {
         boolean correctoU = comprobarUvas(uva.getText().toString());
         if (!correctoU) {
             uva.setText("");
-            uva.setTextColor(Color.rgb(255,0,0));
-            uva.setText("Las uvas no tienen el formato correcto.");
+            uva.setHintTextColor(Color.rgb(255, 0, 0));
+            uva.setHint("Las uvas no tienen el formato correcto.");
             correcto=false;
         }
         boolean correctoP = comprobarPremios(premios.getText().toString());
@@ -438,31 +448,23 @@ public class EditarVino extends AppCompatActivity {
         if(s==null || s.equals("")){
             return true;
         }
-        Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[.][0-9]+[,])*([a-z,A-Z]+[-][0-9]+[.][0-9]+)$");
+        s = s.replace(" ", "");
+        Pattern mPattern = Pattern.compile("^(([a-zA-Z]|[0-9])+[-]([0-9])+[.]([0-9])+[,])*" +
+                                           "([a-zA-Z]|[0-9])+[-]([0-9])+[.]([0-9])+$");
 
         Matcher matcher = mPattern.matcher(s);
-        if(!matcher.find())
-        {
-            return false;
-        }
-        else{
-            return true;
-        }
+        return matcher.matches();
     }
 
     private static boolean comprobarPremios(String s){
         if(s==null || s.equals("")){
             return true;
         }
-        Pattern mPattern = Pattern.compile("^([a-z,A-Z]+[-][0-9]+[,])*([a-z,A-Z]+[-][0-9]+)$");
+        s = s.replace(" ", "");
+        Pattern mPattern = Pattern.compile("^(([a-zA-Z]|[0-9])+[-]([0-9])+[,])*" +
+                                        "([a-zA-Z]|[0-9])+[-]([0-9])+$");
 
         Matcher matcher = mPattern.matcher(s);
-        if(!matcher.find())
-        {
-            return false;
-        }
-        else{
-            return true;
-        }
+        return matcher.matches();
     }
 }
