@@ -936,7 +936,7 @@ public class VinosDbAdapter {
 
             ContentValues valores = new ContentValues();
             valores.put(KEY_VINO_ID, id);
-            valores.put(KEY_VINO_NOMBRE, nuevoNom);
+            valores.put(KEY_VINO_NOMBRE, nuevoNom.toUpperCase());
             valores.put(KEY_VINO_POSICION, nuevaPos);
             valores.put(KEY_VINO_AÑO, nuevoAño);
             valores.put(KEY_VINO_VALORACION, nuevaVal);

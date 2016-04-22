@@ -31,6 +31,14 @@
                 android:value=".MisVinos" />
         </activity>
 
+        <activity
+            android:name=".VerVino"
+            android:parentActivityName=".MisVinos">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MisVinos" />
+        </activity>
+
     </application>
 
 </manifest>
