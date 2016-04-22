@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="redwinecorp.misvinos.Inicio"
-    android:background="#ffa0a0">
+    android:background="#e0e0e0">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -26,10 +26,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/toolbar_title"
-                android:text="MIS VINOS"
+                android:text="Mis Vinos"
                 android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="60dp"
+                android:textColor="#e0e0e0"
+                android:textSize="50dp"
                 android:textStyle="bold|italic" />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -40,7 +40,7 @@
         android:layout_marginTop="70dp"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:background="#ffa0a0">
+        android:background="#e0e0e0">
 
         <Button
             android:layout_width="fill_parent"
@@ -49,7 +49,8 @@
             android:id="@+id/seeWines"
             android:layout_weight="1"
             android:background="@drawable/boton_redondeado"
-            android:textSize="35dp"
+            android:textColor="#e0e0e0"
+            android:textSize="30dp"
             android:textStyle="italic"
             android:drawableLeft="@drawable/ver_vinos"/>
 
@@ -61,7 +62,8 @@
             android:layout_weight="1"
             android:layout_marginTop="50dp"
             android:background="@drawable/boton_redondeado"
-            android:textSize="35dp"
+            android:textColor="#e0e0e0"
+            android:textSize="30dp"
             android:textStyle="italic"
             android:drawableLeft="@drawable/ver_grupos"/>
 
@@ -73,7 +75,8 @@
             android:layout_weight="1"
             android:layout_marginTop="50dp"
             android:background="@drawable/boton_redondeado"
-            android:textSize="35dp"
+            android:textColor="#e0e0e0"
+            android:textSize="30dp"
             android:textStyle="italic" />
 
     </LinearLayout>

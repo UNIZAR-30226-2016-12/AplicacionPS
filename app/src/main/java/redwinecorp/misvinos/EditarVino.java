@@ -46,7 +46,6 @@ public class EditarVino extends AppCompatActivity {
         mDbHelper.open();
 
         setContentView(R.layout.wine_edit);
-        setTitle("EDITAR VINO");
 
         nombre = (EditText) findViewById(R.id.nomVino);
         tipo = (EditText) findViewById(R.id.vino);
@@ -72,21 +71,20 @@ public class EditarVino extends AppCompatActivity {
                 }
             }
         });
-/**
-        valoracion.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            public void onRatingChanged(RatingBar ratingBar, float rating,
-                                        boolean fromUser) {
-                valoracion.setRating(rating);
 
-            }
-        });
-*/
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
         if (id == null) {
             Bundle extras = getIntent().getExtras();
             id = (extras != null) ? extras.getLong(ID)
                     : null;
+        }
+
+        if(id==null) {
+            setTitle("Crear Vino");
+        }
+        else{
+            setTitle("Editar Vino");
         }
     }
 
@@ -406,7 +404,12 @@ public class EditarVino extends AppCompatActivity {
         String p=localizacion.getText().toString();
         if(p!=null && !p.equals("")) {
             try {
-                Long.parseLong(p);
+                if(Long.parseLong(p) < 0){
+                    localizacion.setText("");
+                    localizacion.setHintTextColor(Color.rgb(255,0,0));
+                    localizacion.setHint("La localizacion tiene que ser >= 0.");
+                    correcto = false;
+                }
             } catch (NumberFormatException e) {
                 localizacion.setText("");
                 localizacion.setHintTextColor(Color.rgb(255,0,0));
@@ -417,7 +420,12 @@ public class EditarVino extends AppCompatActivity {
         String a=year.getText().toString();
         if(a!=null && !a.equals("")) {
             try {
-                Long.parseLong(a);
+                if(Long.parseLong(a) < 0){
+                    year.setText("");
+                    year.setHintTextColor(Color.rgb(255,0,0));
+                    year.setHint("El año tiene que ser >= 0.");
+                    correcto = false;
+                }
             } catch (NumberFormatException e) {
                 year.setText("");
                 year.setHintTextColor(Color.rgb(255,0,0));
