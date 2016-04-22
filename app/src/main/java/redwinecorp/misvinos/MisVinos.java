@@ -207,7 +207,9 @@ public class MisVinos extends AppCompatActivity {
     }
 
     private void verVino(long id){
-
+        Intent i = new Intent(this, VerVino.class);
+        i.putExtra(VerVino.ID,id);
+        startActivityForResult(i, ACTIVITY_EDIT);
     }
 
     @Override

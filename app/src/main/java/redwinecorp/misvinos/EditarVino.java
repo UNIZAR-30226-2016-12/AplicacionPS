@@ -42,10 +42,12 @@ public class EditarVino extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
         setContentView(R.layout.wine_edit);
+        setTitle("EDITAR VINO");
 
         nombre = (EditText) findViewById(R.id.nomVino);
         tipo = (EditText) findViewById(R.id.vino);
@@ -71,7 +73,6 @@ public class EditarVino extends AppCompatActivity {
                 }
             }
         });
-
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
         if (id == null) {
@@ -102,9 +103,9 @@ public class EditarVino extends AppCompatActivity {
 
     private void populateFields() {
         if (id != null) {
-            Cursor cV = mDbHelper.getVino(id.longValue());
-            Cursor cD = mDbHelper.getDenominacion(id.longValue());
-            Cursor cT = mDbHelper.getTipo(id.longValue());
+            Cursor cV = mDbHelper.getVino(id);
+            Cursor cD = mDbHelper.getDenominacion(id);
+            Cursor cT = mDbHelper.getTipo(id);
 
             cV.moveToFirst();
             cD.moveToFirst();
@@ -139,9 +140,9 @@ public class EditarVino extends AppCompatActivity {
             nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
-            uva.setText(tratarUvas(mDbHelper.getUvas(id.longValue())));
+            uva.setText(tratarUvas(mDbHelper.getUvas(id)));
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
-            premios.setText(tratarPremios(mDbHelper.getPremios(id.longValue())));
+            premios.setText(tratarPremios(mDbHelper.getPremios(id)));
         }
     }
 
@@ -168,11 +169,11 @@ public class EditarVino extends AppCompatActivity {
 
     private void saveState() {
         if(id!=null) {
-            Cursor cV = mDbHelper.getVino(id.longValue());
-            Cursor cU = mDbHelper.getUvas(id.longValue());
-            Cursor cP = mDbHelper.getPremios(id.longValue());
-            Cursor cD = mDbHelper.getDenominacion(id.longValue());
-            Cursor cT = mDbHelper.getTipo(id.longValue());
+            Cursor cV = mDbHelper.getVino(id);
+            Cursor cU = mDbHelper.getUvas(id);
+            Cursor cP = mDbHelper.getPremios(id);
+            Cursor cD = mDbHelper.getDenominacion(id);
+            Cursor cT = mDbHelper.getTipo(id);
 
             cV.moveToFirst();
             cU.moveToFirst();
@@ -404,12 +405,7 @@ public class EditarVino extends AppCompatActivity {
         String p=localizacion.getText().toString();
         if(p!=null && !p.equals("")) {
             try {
-                if(Long.parseLong(p) < 0){
-                    localizacion.setText("");
-                    localizacion.setHintTextColor(Color.rgb(255,0,0));
-                    localizacion.setHint("La localizacion tiene que ser >= 0.");
-                    correcto = false;
-                }
+                Long.parseLong(p);
             } catch (NumberFormatException e) {
                 localizacion.setText("");
                 localizacion.setHintTextColor(Color.rgb(255,0,0));
@@ -420,12 +416,7 @@ public class EditarVino extends AppCompatActivity {
         String a=year.getText().toString();
         if(a!=null && !a.equals("")) {
             try {
-                if(Long.parseLong(a) < 0){
-                    year.setText("");
-                    year.setHintTextColor(Color.rgb(255,0,0));
-                    year.setHint("El año tiene que ser >= 0.");
-                    correcto = false;
-                }
+                Long.parseLong(a);
             } catch (NumberFormatException e) {
                 year.setText("");
                 year.setHintTextColor(Color.rgb(255,0,0));
