@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditarVino">
+    tools:context=".VerVino">
     <ScrollView
         android:id="@+id/SView"
         android:layout_width="fill_parent"

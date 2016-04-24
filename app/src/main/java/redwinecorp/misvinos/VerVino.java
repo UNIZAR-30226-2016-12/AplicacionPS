@@ -109,7 +109,8 @@ public class VerVino extends AppCompatActivity {
         }else{
             localizacion.setText(p);
         }
-        valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION))/2);
+
+        valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION))/2.0f);
         nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
         //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)

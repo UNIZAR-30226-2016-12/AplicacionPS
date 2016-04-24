@@ -268,6 +268,7 @@ public class VinosDbAdapter {
             db.execSQL(TRIGGER_DB_DELETE_DENOMINACION);
             db.execSQL(TRIGGER_DB_UPDATE_TIPO);
             db.execSQL(TRIGGER_DB_DELETE_TIPO);
+            db.execSQL(TRIGGER_DB_DELETE_VINO);
         }
 
         @Override

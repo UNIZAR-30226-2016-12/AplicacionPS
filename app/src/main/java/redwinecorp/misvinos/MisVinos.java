@@ -1,6 +1,7 @@
 package redwinecorp.misvinos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -60,6 +61,11 @@ public class MisVinos extends AppCompatActivity {
 
         numVinos = (TextView) findViewById(R.id.numVinos);
         numVinos.setFocusable(false);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         modoVinos = (savedInstanceState == null) ? null :
                 (Boolean) savedInstanceState.getSerializable(MOSTRAR_VINOS);
