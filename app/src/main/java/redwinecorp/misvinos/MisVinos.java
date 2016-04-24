@@ -1,6 +1,7 @@
 package redwinecorp.misvinos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import redwinecorp.misvinos.VinosDbAdapter;
 
@@ -44,7 +46,7 @@ public class MisVinos extends AppCompatActivity {
     private Cursor mVinosCursor;
     private ListView mList;
 
-    private EditText numVinos;
+    private TextView numVinos;
 
 
     /** Constructor de la clase */
@@ -57,8 +59,13 @@ public class MisVinos extends AppCompatActivity {
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
-        numVinos = (EditText) findViewById(R.id.numVinos);
+        numVinos = (TextView) findViewById(R.id.numVinos);
         numVinos.setFocusable(false);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         modoVinos = (savedInstanceState == null) ? null :
                 (Boolean) savedInstanceState.getSerializable(MOSTRAR_VINOS);
@@ -107,7 +114,7 @@ public class MisVinos extends AppCompatActivity {
 
             mList.setAdapter(vinos);
 
-            numVinos.setText(""+mDbHelper.numeroVinos());
+            numVinos.setText(("Número total de vinos: "+mDbHelper.numeroVinos()));
         } else{
             //
         }
@@ -208,8 +215,8 @@ public class MisVinos extends AppCompatActivity {
 
     private void verVino(long id){
         Intent i = new Intent(this, VerVino.class);
-        i.putExtra(VerVino.ID,id);
-        startActivityForResult(i, ACTIVITY_EDIT);
+        i.putExtra(VerVino.ID,new Long(id));
+        startActivity(i);
     }
 
     @Override

@@ -136,7 +136,7 @@ public class EditarVino extends AppCompatActivity {
             }else{
                 localizacion.setText(p);
             }
-            valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)));
+            valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION))/2.0f);
             nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
@@ -204,7 +204,7 @@ public class EditarVino extends AppCompatActivity {
                 }
 
                 mDbHelper.actualizarVino(id, nombre.getText().toString(),
-                        año, pos, new Long(Math.round(valoracion.getRating() * 2)),
+                        año, pos, (long) (valoracion.getRating()*2.0),
                         nota.getText().toString());
 
 
@@ -263,7 +263,7 @@ public class EditarVino extends AppCompatActivity {
                 }
 
                 idVino = mDbHelper.crearVino(nombre.getText().toString(),
-                        pos, año, new Long(Math.round(valoracion.getRating()*2)),
+                        pos, año, (long) (valoracion.getRating()*2.0),
                         nota.getText().toString());
 
                 //Creamos la denominacion y la asignamos

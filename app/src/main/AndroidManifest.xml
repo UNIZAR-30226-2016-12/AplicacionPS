@@ -20,7 +20,11 @@
 
         <activity
             android:name=".MisVinos"
-            android:label="@string/title_activity_mis_vinos">
+            android:label="@string/title_activity_mis_vinos"
+            android:parentActivityName=".Inicio">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Inicio" />
         </activity>
 
         <activity
@@ -30,6 +34,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MisVinos" />
         </activity>
+        <activity
+            android:name=".VerVino"
+            android:parentActivityName=".MisVinos">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MisVinos" />
+        </activity>
+
         <activity
             android:name=".VerVino"
             android:parentActivityName=".MisVinos">

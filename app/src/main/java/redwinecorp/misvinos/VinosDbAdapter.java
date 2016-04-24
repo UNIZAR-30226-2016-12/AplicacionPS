@@ -268,6 +268,7 @@ public class VinosDbAdapter {
             db.execSQL(TRIGGER_DB_DELETE_DENOMINACION);
             db.execSQL(TRIGGER_DB_UPDATE_TIPO);
             db.execSQL(TRIGGER_DB_DELETE_TIPO);
+            db.execSQL(TRIGGER_DB_DELETE_VINO);
         }
 
         @Override
@@ -936,7 +937,7 @@ public class VinosDbAdapter {
 
             ContentValues valores = new ContentValues();
             valores.put(KEY_VINO_ID, id);
-            valores.put(KEY_VINO_NOMBRE, nuevoNom);
+            valores.put(KEY_VINO_NOMBRE, nuevoNom.toUpperCase());
             valores.put(KEY_VINO_POSICION, nuevaPos);
             valores.put(KEY_VINO_AÑO, nuevoAño);
             valores.put(KEY_VINO_VALORACION, nuevaVal);

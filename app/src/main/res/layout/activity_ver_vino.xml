@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditarVino">
+    tools:context=".VerVino">
     <ScrollView
         android:id="@+id/SView"
         android:layout_width="fill_parent"
@@ -22,16 +22,10 @@
                     android:layout_margin="5dp"
                     android:textStyle="bold"
                     android:text="@string/nomVino" />
-                <EditText android:id="@+id/nomVino"
+                <TextView android:id="@+id/nomVino"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:inputType="text"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -43,14 +37,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/vino" />
-                <EditText android:id="@+id/vino"
+                <TextView android:id="@+id/vino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -62,15 +52,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/uva" />
-                <EditText android:id="@+id/uva"
+                <TextView android:id="@+id/uva"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:editable="true"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -82,14 +67,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/denominacion" />
-                <EditText android:id="@+id/denominacion"
+                <TextView android:id="@+id/denominacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -101,14 +82,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/anno" />
-                <EditText android:id="@+id/anno"
+                <TextView android:id="@+id/anno"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -120,14 +97,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/localizacion" />
-                <EditText android:id="@+id/localizacion"
+                <TextView android:id="@+id/localizacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"
@@ -139,14 +112,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="@string/premios" />
-                <EditText android:id="@+id/premios"
+                <TextView android:id="@+id/premios"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
 
             <LinearLayout android:orientation="vertical"
@@ -163,6 +132,9 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/ratingBar"
                     android:layout_gravity="center"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:isIndicator="true"
                     android:numStars="5"
                     android:stepSize="0.5"
                     android:rating="0" />
@@ -177,16 +149,10 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="Notas:" />
-                <EditText android:id="@+id/notas"
+                <TextView android:id="@+id/notas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:inputType="text"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    android:layout_margin="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
