@@ -38,7 +38,7 @@ public class Inicio extends AppCompatActivity {
         //Si se pulsa el botón Buscar
         BBuscarVino.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                //buscarVino();
+                buscarVino();
             }
         });
     }

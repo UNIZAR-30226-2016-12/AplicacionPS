@@ -6,6 +6,7 @@
     <string name="menu_delete">Borrar Vino</string>
     <string name="menu_edit">Editar Vino</string>
     <string name="nomVino">Nombre:</string>
+    <string name="nomBusqueda">Valor del campo:</string>
     <string name="vino">Tipo de vino:</string>
     <string name="confirmar">Confirmar</string>
     <string name="editar_vino">Editar Vino</string>
