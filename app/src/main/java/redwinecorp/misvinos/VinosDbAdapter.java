@@ -44,6 +44,10 @@ public class VinosDbAdapter {
     private static final String DATABASE_NAME_DENOMINACION = "denominacion";
     public static final String KEY_DENOMINACION_NOMBRE = "nombre";
 
+    // Atributos de la tabla Grupo
+    private static final String DATABASE_NAME_GRUPO = "grupo";
+    public static final String KEY_GRUPO_NOMBRE = "nombre";
+
     // Atributos de la tabla Tipo
     private static final String DATABASE_NAME_TIPO = "tipo";
     public static final String KEY_TIPO_NOMBRE = "nombre";
@@ -70,6 +74,10 @@ public class VinosDbAdapter {
     public static final String KEY_ES_VINO = "vino";
     public static final String KEY_ES_TIPO = "tipo";
 
+    // Atributos de la tabla Pertenece
+    private static final String DATABASE_NAME_PERTENECE = "pertenece";
+    public static final String KEY_PERTENECE_VINO = "vino";
+    public static final String KEY_PERTENECE_GRUPO = "grupo";
 
     private static final String TAG = "VinosDbAdapter";
     private DatabaseHelper mDbHelper;
@@ -98,6 +106,10 @@ public class VinosDbAdapter {
     private static final String DATABASE_CREATE_DENOMINACION =
             "create table " + DATABASE_NAME_DENOMINACION + " (" +
                     KEY_DENOMINACION_NOMBRE + " text primary key); ";
+
+    private static final String DATABASE_CREATE_GRUPO =
+            "create table " + DATABASE_NAME_GRUPO + " (" +
+                    KEY_GRUPO_NOMBRE + " text primary key); ";
 
     private static final String DATABASE_CREATE_TIPO =
             "create table " + DATABASE_NAME_TIPO + " (" +
@@ -136,6 +148,14 @@ public class VinosDbAdapter {
                     "foreign key (" + KEY_ES_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
                     "foreign key (" + KEY_ES_TIPO + ") references " + DATABASE_NAME_TIPO + "(" + KEY_TIPO_NOMBRE + "), " +
                     "primary key (" + KEY_ES_VINO + "," + KEY_ES_TIPO + "));";
+
+    private static final String DATABASE_CREATE_PERTENECE =
+            "create table " + DATABASE_NAME_PERTENECE + " (" +
+                    KEY_PERTENECE_VINO + " integer, " +
+                    KEY_PERTENECE_GRUPO + " text, " +
+                    "foreign key (" + KEY_PERTENECE_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
+                    "foreign key (" + KEY_PERTENECE_GRUPO + ") references " + DATABASE_NAME_GRUPO + "(" + KEY_GRUPO_NOMBRE + "), " +
+                    "primary key (" + KEY_PERTENECE_VINO + "," + KEY_PERTENECE_GRUPO + "));";
 
     /**
      * *     Sentencias de creacion de los triggers
@@ -192,6 +212,19 @@ public class VinosDbAdapter {
                     "DELETE FROM " + DATABASE_NAME_ES + " WHERE " + KEY_ES_TIPO + " = old." + KEY_TIPO_NOMBRE + "; " +
                     "END;";
 
+    private static final String TRIGGER_DB_UPDATE_GRUPO =
+            "CREATE TRIGGER actualizar_grupo\n" +
+                    "BEFORE UPDATE ON " + DATABASE_NAME_GRUPO + " FOR EACH ROW BEGIN " +
+                    "UPDATE " + DATABASE_NAME_PERTENECE + " SET " + KEY_PERTENECE_GRUPO + " = new." + KEY_GRUPO_NOMBRE +
+                    " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_NOMBRE + "; " +
+                    "END;";
+
+    private static final String TRIGGER_DB_DELETE_GRUPO =
+            "CREATE TRIGGER borrar_grupo\n" +
+                    "BEFORE DELETE ON " + DATABASE_NAME_GRUPO + " FOR EACH ROW BEGIN " +
+                    "DELETE FROM " + DATABASE_NAME_PERTENECE + " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_NOMBRE + "; " +
+                    "END;";
+
     private static final String TRIGGER_DB_DELETE_VINO =
             "CREATE TRIGGER borrar_vino\n" +
                     "BEFORE DELETE ON " + DATABASE_NAME_VINO + " FOR EACH ROW BEGIN " +
@@ -199,6 +232,7 @@ public class VinosDbAdapter {
                     "DELETE FROM " + DATABASE_NAME_GANA + " WHERE " + KEY_GANA_VINO + " = old." + KEY_VINO_ID + "; " +
                     "DELETE FROM " + DATABASE_NAME_POSEE + " WHERE " + KEY_POSEE_VINO + " = old." + KEY_VINO_ID + "; " +
                     "DELETE FROM " + DATABASE_NAME_ES + " WHERE " + KEY_ES_VINO + " = old." + KEY_VINO_ID + "; " +
+                    "DELETE FROM " + DATABASE_NAME_PERTENECE + " WHERE " + KEY_PERTENECE_VINO + " = old." + KEY_VINO_ID + "; " +
                     "END;";
 
     /**
@@ -216,6 +250,9 @@ public class VinosDbAdapter {
     private static final String DATABASE_DROP_DENOMINACION =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_DENOMINACION + ";";
 
+    private static final String DATABASE_DROP_GRUPO =
+            "DROP TABLE IF EXISTS " + DATABASE_NAME_GRUPO + ";";
+
     private static final String DATABASE_DROP_TIPO =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_TIPO + ";";
 
@@ -230,6 +267,9 @@ public class VinosDbAdapter {
 
     private static final String DATABASE_DROP_ES =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_ES + ";";
+
+    private static final String DATABASE_DROP_PERTENECE =
+            "DROP TABLE IF EXISTS " + DATABASE_NAME_PERTENECE + ";";
 
 
     /**
@@ -254,11 +294,13 @@ public class VinosDbAdapter {
             db.execSQL(DATABASE_CREATE_UVA);
             db.execSQL(DATABASE_CREATE_PREMIO);
             db.execSQL(DATABASE_CREATE_DENOMINACION);
+            db.execSQL(DATABASE_CREATE_GRUPO);
             db.execSQL(DATABASE_CREATE_TIPO);
             db.execSQL(DATABASE_CREATE_COMPUESTO);
             db.execSQL(DATABASE_CREATE_GANA);
             db.execSQL(DATABASE_CREATE_POSEE);
             db.execSQL(DATABASE_CREATE_ES);
+            db.execSQL(DATABASE_CREATE_PERTENECE);
 
             db.execSQL(TRIGGER_DB_UPDATE_UVA);
             db.execSQL(TRIGGER_DB_DELETE_UVA);
@@ -266,6 +308,8 @@ public class VinosDbAdapter {
             db.execSQL(TRIGGER_DB_DELETE_PREMIO);
             db.execSQL(TRIGGER_DB_UPDATE_DENOMINACION);
             db.execSQL(TRIGGER_DB_DELETE_DENOMINACION);
+            db.execSQL(TRIGGER_DB_UPDATE_GRUPO);
+            db.execSQL(TRIGGER_DB_DELETE_GRUPO);
             db.execSQL(TRIGGER_DB_UPDATE_TIPO);
             db.execSQL(TRIGGER_DB_DELETE_TIPO);
             db.execSQL(TRIGGER_DB_DELETE_VINO);
@@ -275,12 +319,15 @@ public class VinosDbAdapter {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
+
+            db.execSQL(DATABASE_DROP_PERTENECE);
             db.execSQL(DATABASE_DROP_ES);
             db.execSQL(DATABASE_DROP_POSEE);
             db.execSQL(DATABASE_DROP_GANA);
             db.execSQL(DATABASE_DROP_COMPUESTO);
             db.execSQL(DATABASE_DROP_TIPO);
             db.execSQL(DATABASE_DROP_DENOMINACION);
+            db.execSQL(DATABASE_DROP_GRUPO);
             db.execSQL(DATABASE_DROP_PREMIO);
             db.execSQL(DATABASE_DROP_UVA);
             db.execSQL(DATABASE_DROP_VINO);
