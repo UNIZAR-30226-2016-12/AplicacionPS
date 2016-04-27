@@ -14,10 +14,11 @@
     <string name="denominacion">Denominacion:</string>
     <string name="anno">Año:</string>
     <string name="premios">Premios:</string>
-    <string name="grupo">Grupo</string>
+    <string name="grupo">Grupo:</string>
     <string name="valoracion">Valoracion personal:</string>
     <string name="localizacion">Posicion:</string>
     <string name="title_activity_inicio">Inicio</string>
+    <string name="Campo">Campo</string>
     <string name="numVinos">Numero total de vinos en la base de datos:</string>
 
     <string name="title_activity_mis_vinos">MisVinos</string>
