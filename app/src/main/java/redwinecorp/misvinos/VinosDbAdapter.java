@@ -449,6 +449,12 @@ public class VinosDbAdapter {
 
     }
 
+    public Cursor getGrupos(){
+        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null, null, null, null, null, null);
+        return c;
+
+    }
+
     /**
      * Busca la uva con el nombre dado
      *
@@ -1211,6 +1217,31 @@ public class VinosDbAdapter {
 
             return mDb.update(DATABASE_NAME_TIPO, valores,
                     new String(KEY_TIPO_NOMBRE + "=" + cT.getString(cT.getColumnIndex(KEY_TIPO_NOMBRE))), null) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza un grupo dado.
+     *
+     * @param nombre      nombre del grupo
+     * @param nuevoNombre nuevo nombre(null para mantener la anterior)
+     * @return devuelve true si existe el grupo y se ha actualizado, false en caso contrario.
+     */
+    public boolean actualizarGrupo(String nombre, String nuevoNombre) {
+
+        Cursor cG = getGrupo(nombre);
+
+        if (cG.getCount() > 0) {
+
+            cG.moveToFirst();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_GRUPO_NOMBRE, nuevoNombre.toUpperCase());
+
+            return mDb.update(DATABASE_NAME_GRUPO, valores,
+                    new String(KEY_GRUPO_NOMBRE + "=" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))), null) > 0;
         } else {
             return false;
         }
