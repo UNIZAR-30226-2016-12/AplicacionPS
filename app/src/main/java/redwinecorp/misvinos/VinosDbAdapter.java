@@ -271,6 +271,19 @@ public class VinosDbAdapter {
     private static final String DATABASE_DROP_PERTENECE =
             "DROP TABLE IF EXISTS " + DATABASE_NAME_PERTENECE + ";";
 
+    /**
+     * *     Sentencias de consulta de las tablas
+     **/
+    private static final String CONSULTA_VINOS_GRUPO_NOORD =
+            "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
+                    "WHERE v."+ KEY_VINO_NOMBRE +"=p."+ KEY_PERTENECE_VINO +" AND "+
+                    "p."+ KEY_PERTENECE_GRUPO +"='?'";        //nombre del grupo
+
+    private static final String CONSULTA_VINOS_GRUPO =
+            "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
+                    "WHERE v."+ KEY_VINO_NOMBRE +"=p."+ KEY_PERTENECE_VINO +" AND "+
+                          "p."+ KEY_PERTENECE_GRUPO +"='?'\n"+ //nombre del grupo
+                    "ORDER BY ? ?";                            //atributo y orden del OrderBy
 
     /**
      * *     Propiedades de la base de datos
@@ -401,7 +414,7 @@ public class VinosDbAdapter {
      */
     public Cursor getVino(long id){
         Cursor c = mDb.query(DATABASE_NAME_VINO, null,
-                new String(KEY_VINO_ID + "=" + id),null, null, null, null);
+                new String(KEY_VINO_ID + "=" + id), null, null, null, null);
         return c;
     }
 
@@ -427,6 +440,13 @@ public class VinosDbAdapter {
         Cursor c = mDb.query(DATABASE_NAME_ES, null,
                 new String(KEY_ES_VINO + "=" + id),null, null, null, null);
         return c;
+    }
+
+    public Cursor getGrupos(long id){
+        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
+                new String(KEY_PERTENECE_VINO + "=" + id),null, null, null, null);
+        return c;
+
     }
 
     /**
@@ -465,6 +485,13 @@ public class VinosDbAdapter {
         String denominacionUpper = nombre.toUpperCase();
         Cursor c = mDb.query(DATABASE_NAME_DENOMINACION, new String[]{KEY_DENOMINACION_NOMBRE},
                 new String(KEY_DENOMINACION_NOMBRE + "='" + denominacionUpper + "'"), null, null, null, null);
+        return c;
+    }
+
+    private Cursor getGrupo(String nombre){
+        String grupoUpper = nombre.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_GRUPO, new String[]{KEY_GRUPO_NOMBRE},
+                new String(KEY_GRUPO_NOMBRE + "='" + grupoUpper + "'"), null, null, null, null);
         return c;
     }
 
@@ -537,6 +564,14 @@ public class VinosDbAdapter {
         String tipoUpper = tipo.toUpperCase();
         Cursor c = mDb.query(DATABASE_NAME_ES, null,
                 new String(KEY_ES_VINO + "=" + vino + " AND " + KEY_ES_TIPO + "='" + tipoUpper + "'"),
+                null, null, null, null);
+        return c;
+    }
+
+    private Cursor getPertenece(long vino, String grupo){
+        String grupoUpper = grupo.toUpperCase();
+        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
+                new String(KEY_PERTENECE_VINO + "=" + vino + " AND " + KEY_PERTENECE_GRUPO + "='" + grupoUpper + "'"),
                 null, null, null, null);
         return c;
     }
@@ -661,6 +696,23 @@ public class VinosDbAdapter {
             valores.put(KEY_TIPO_NOMBRE, nombreUpper);
 
             return mDb.insert(DATABASE_NAME_TIPO, null, valores) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean crearGrupo(String nombre) {
+
+        //Si no existe el grupo se crea
+        if (getGrupo(nombre).getCount() == 0) {
+
+            // Usamos las cadenas en mayusculas
+            String nombreUpper = nombre.toUpperCase();
+
+            ContentValues valores = new ContentValues();
+            valores.put(KEY_GRUPO_NOMBRE, nombreUpper);
+
+            return mDb.insert(DATABASE_NAME_GRUPO, null, valores) > 0;
         } else {
             return false;
         }
@@ -820,6 +872,43 @@ public class VinosDbAdapter {
     }
 
     /**
+     * Añade un vino a un grupo dado.
+     *
+     * @param grupo   nombre de un grupo
+     * @param id       id del vino
+     * @return devuelve true si existe el vino y el tipo, false si no existen.
+     */
+    public boolean añadirGrupo(String grupo, long id) {
+
+        Cursor cG = getGrupo(grupo);
+        Cursor cV = getVino(id);
+        //Si existe el premio y el vino, se relacionan.
+        if (cG.getCount() > 0 && cV.getCount() > 0) {
+
+            cG.moveToFirst();
+            cV.moveToFirst();
+
+            Cursor cP = getPertenece(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+
+            if (cP.getCount() == 0) {
+                cG.moveToFirst();
+                cV.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_ES_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
+                valores.put(KEY_PERTENECE_GRUPO, cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+
+                return mDb.insert(DATABASE_NAME_PERTENECE, null, valores) > 0;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Elimina un vino dado.
      *
      * @param id del vino
@@ -857,6 +946,27 @@ public class VinosDbAdapter {
 
             return mDb.delete(DATABASE_NAME_UVA,
                     new String(KEY_UVA_NOMBRE + "=" + cU.getString(cU.getColumnIndex(KEY_UVA_NOMBRE))), null) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un grupo dado.
+     *
+     * @param nombre nombre de un grupo
+     * @return devuelve true si existe el grupo y es borrado, false si no existe o no se puede eliminar.
+     */
+    public boolean borrarGrupo(String nombre) {
+
+        Cursor cG = getGrupo(nombre);
+
+        if (cG.getCount() > 0) {
+
+            cG.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_GRUPO,
+                    new String(KEY_GRUPO_NOMBRE + "=" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))), null) > 0;
         } else {
             return false;
         }
@@ -949,18 +1059,27 @@ public class VinosDbAdapter {
             cG.moveToFirst();
 
             return mDb.delete(DATABASE_NAME_GANA,
-                    new String(KEY_GANA_VINO+"="+id+" AND "+KEY_GANA_PREMIO+"='"+nombre+"' AND "+
-                    KEY_GANA_AÑO+"="+año), null) > 0;
+                    new String(KEY_GANA_VINO + "=" + id + " AND " + KEY_GANA_PREMIO + "='" + nombre + "' AND " +
+                            KEY_GANA_AÑO + "=" + año), null) > 0;
         } else {
             return false;
         }
     }
 
-    /*--------------------------------------------------------------------------------------------*/
-    /*--------------------------------------------------------------------------------------------*/
-    /*-----------------------------------    HASTA AQUI HECHO    ---------------------------------*/
-    /*--------------------------------------------------------------------------------------------*/
-    /*--------------------------------------------------------------------------------------------*/
+    public boolean borrarPertenece(long id, String nombre) {
+
+        Cursor cP = getPertenece(id, nombre);
+
+        if (cP.getCount() > 0) {
+
+            cP.moveToFirst();
+
+            return mDb.delete(DATABASE_NAME_PERTENECE,
+                    new String(KEY_PERTENECE_VINO + "=" + id + " AND " + KEY_PERTENECE_GRUPO + "='" + nombre + "'"), null) > 0;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Actualiza un vino dado.
@@ -1302,12 +1421,167 @@ public class VinosDbAdapter {
     }
 
     /**
+     * Cambia la relacion vino-grupo por vino-nuevoG.
+     *
+     * @param id id del vino
+     * @param grupo   nombre del grupo
+     * @param nuevoG nombre del nuevo grupo
+     * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
+     */
+    public boolean cambiarGrupo(long id, String grupo, String nuevoG) {
+
+        Cursor cV = getVino(id);
+        Cursor cG = getGrupo(grupo);
+
+        //Si existe el vino, el grupo y el nuevo grupo
+        if (cV.getCount() > 0 && cG.getCount() > 0) {
+
+            cV.moveToFirst();
+            cG.moveToFirst();
+
+            Cursor cP = getPertenece(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
+                    cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+
+            //Si existe la relacion vino-grupo
+            if (cP.getCount() > 0) {
+
+                cP.moveToFirst();
+
+                Cursor cNG = getGrupo(nuevoG);
+                if(cNG.getCount() > 0){
+                    crearGrupo(nuevoG.toUpperCase());
+                    cNG = getGrupo(nuevoG.toUpperCase());
+                }
+
+                cNG.moveToFirst();
+
+                ContentValues valores = new ContentValues();
+                valores.put(KEY_PERTENECE_VINO, id);
+                valores.put(KEY_PERTENECE_GRUPO, nuevoG.toUpperCase());
+
+                return mDb.update(DATABASE_NAME_PERTENECE, valores,
+                        new String(KEY_PERTENECE_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
+                                " AND " + KEY_PERTENECE_GRUPO + "='" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))+"'"), null) > 0;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Devuelve un cursor con todos los vinos almacenados.
      *
      * @return devuelve un cursor con los vinos.
      */
     public Cursor obtenerVinos() {
         return mDb.query(DATABASE_NAME_VINO,null,null,null,null,null,null);
+    }
+
+
+    /**
+     * Devuelve un cursor con todos los vinos almacenados ordenados sergun orden:
+     * 0: nombre -> Alfabetico creciente
+     * 1: nombre -> Alfabetico descendiente
+     * 2: año ->  Creciente
+     * 3: año ->  Decreciente
+     * 4: posicion -> Creciente
+     * 5: posicion -> Descreciente
+     * 6: valoracion -> Creciente
+     * 7: valoracion -> Descreciente
+     * otro: id
+     *
+     * @return devuelve un cursor con los vinos ordenados.
+     */
+    public Cursor obtenerVinosOrdenados(int orden) {
+        switch(orden){
+            case 0:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_NOMBRE);
+            case 1:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_NOMBRE+" DESC");
+            case 2:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_AÑO);
+            case 3:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_AÑO+" DESC");
+            case 4:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_POSICION);
+            case 5:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_POSICION+" DESC");
+            case 6:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_POSICION);
+            case 7:
+                return mDb.query(DATABASE_NAME_VINO, null, null, null, null, null,
+                        KEY_VINO_POSICION+" DESC");
+            default:
+                return obtenerVinos();
+        }
+    }
+
+    /**
+     * Devuelve un cursor con todos los vinos de un grupo ordenados segun orden:
+     * 0: nombre -> Alfabetico creciente
+     * 1: nombre -> Alfabetico descendiente
+     * 2: año ->  Creciente
+     * 3: año ->  Decreciente
+     * 4: posicion -> Creciente
+     * 5: posicion -> Descreciente
+     * 6: valoracion -> Creciente
+     * 7: valoracion -> Descreciente
+     * otro: id
+     *
+     * @return devuelve un cursor con los vinos ordenados.
+     */
+    public Cursor obtenerVinosOrdenadosGrupo(String grupo, int orden) {
+        if(grupo == null){
+            return obtenerVinosOrdenados(orden);
+        } else {
+            String[] args = new String[3];
+            args[0] = grupo;
+            switch (orden) {
+                case 0:
+                    args[1] = KEY_VINO_NOMBRE;
+                    args[2] = "";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO,args);
+                case 1:
+                    args[1] = KEY_VINO_NOMBRE;
+                    args[2] = "DESC";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 2:
+                    args[1] = KEY_VINO_AÑO;
+                    args[2] = "";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 3:
+                    args[1] = KEY_VINO_AÑO;
+                    args[2] = "DESC";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 4:
+                    args[1] = KEY_VINO_POSICION;
+                    args[2] = "";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 5:
+                    args[1] = KEY_VINO_POSICION;
+                    args[2] = "DESC";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 6:
+                    args[1] = KEY_VINO_VALORACION;
+                    args[2] = "";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                case 7:
+                    args[1] = KEY_VINO_VALORACION;
+                    args[2] = "DESC";
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                default:
+                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{grupo});
+            }
+        }
     }
 
     public long numeroVinos(){
