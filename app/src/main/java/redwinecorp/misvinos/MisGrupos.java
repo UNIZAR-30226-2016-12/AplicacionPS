@@ -71,8 +71,9 @@ public class MisGrupos extends AppCompatActivity {
                 (Long) savedInstanceState.getSerializable(ID_VINO);
         if (idVino == null) {
             Bundle extras = getIntent().getExtras();
-            idVino = (extras != null) ? extras.getLong(ID_VINO)
+            idVino = (extras != null) ? extras.getLong(ID_VINO,-1)
                     : null;
+            if(idVino.longValue()==-1) idVino=null;
         }
 
         inicio = (savedInstanceState == null) ? null :

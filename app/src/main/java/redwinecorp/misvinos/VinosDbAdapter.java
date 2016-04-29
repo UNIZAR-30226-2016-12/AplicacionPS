@@ -110,7 +110,7 @@ public class VinosDbAdapter {
 
     private static final String DATABASE_CREATE_GRUPO =
             "create table " + DATABASE_NAME_GRUPO + " (" +
-                    KEY_GRUPO_ID + "integer primary key, " +
+                    KEY_GRUPO_ID + " integer primary key, " +
                     KEY_GRUPO_NOMBRE + " text); ";
 
     private static final String DATABASE_CREATE_TIPO =
@@ -156,7 +156,7 @@ public class VinosDbAdapter {
                     KEY_PERTENECE_VINO + " integer, " +
                     KEY_PERTENECE_GRUPO + " integer, " +
                     "foreign key (" + KEY_PERTENECE_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
-                    "foreign key (" + KEY_PERTENECE_GRUPO + ") references " + DATABASE_NAME_GRUPO + "(" + KEY_GRUPO_NOMBRE + "), " +
+                    "foreign key (" + KEY_PERTENECE_GRUPO + ") references " + DATABASE_NAME_GRUPO + "(" + KEY_GRUPO_ID + "), " +
                     "primary key (" + KEY_PERTENECE_VINO + "," + KEY_PERTENECE_GRUPO + "));";
 
     /**
@@ -217,14 +217,14 @@ public class VinosDbAdapter {
     private static final String TRIGGER_DB_UPDATE_GRUPO =
             "CREATE TRIGGER actualizar_grupo\n" +
                     "BEFORE UPDATE ON " + DATABASE_NAME_GRUPO + " FOR EACH ROW BEGIN " +
-                    "UPDATE " + DATABASE_NAME_PERTENECE + " SET " + KEY_PERTENECE_GRUPO + " = new." + KEY_GRUPO_NOMBRE +
-                    " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_NOMBRE + "; " +
+                    "UPDATE " + DATABASE_NAME_PERTENECE + " SET " + KEY_PERTENECE_GRUPO + " = new." + KEY_GRUPO_ID +
+                    " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_ID + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_GRUPO =
             "CREATE TRIGGER borrar_grupo\n" +
                     "BEFORE DELETE ON " + DATABASE_NAME_GRUPO + " FOR EACH ROW BEGIN " +
-                    "DELETE FROM " + DATABASE_NAME_PERTENECE + " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_NOMBRE + "; " +
+                    "DELETE FROM " + DATABASE_NAME_PERTENECE + " WHERE " + KEY_PERTENECE_GRUPO + " = old." + KEY_GRUPO_ID + "; " +
                     "END;";
 
     private static final String TRIGGER_DB_DELETE_VINO =
@@ -461,6 +461,18 @@ public class VinosDbAdapter {
         return c;
     }
 
+    public Cursor getGrupo(long grupo){
+        Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
+                new String(KEY_GRUPO_ID + "=" + grupo), null, null, null, null);
+        return c;
+    }
+
+    public Cursor getGrupos(long id){
+        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
+                new String(KEY_PERTENECE_VINO + "=" + id),null, null, null, null);
+        return c;
+    }
+
     /**
      * Busca la uva con el nombre dado
      *
@@ -500,15 +512,9 @@ public class VinosDbAdapter {
         return c;
     }
 
-    public Cursor getGrupo(long grupo){
+    private Cursor getGrupo(String grupo){
         Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
-                new String(KEY_GRUPO_ID + "=" + grupo), null, null, null, null);
-        return c;
-    }
-
-    public Cursor getGrupo(String grupo){
-        Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
-                new String(KEY_GRUPO_NOMBRE + "='" + grupo.toUpperCase() + "'"), null, null, null, null);
+                new String(KEY_GRUPO_NOMBRE + "='" + grupo + "'"), null, null, null, null);
         return c;
     }
 
@@ -1633,12 +1639,10 @@ public class VinosDbAdapter {
     public Cursor obtenerGrupos(long id){
         Cursor c = mDb.rawQuery(CONSULTA_VINOS_GRUPO, new String[]{""+id});
         return c;
-
     }
 
     public Cursor obtenerGrupos(){
         Cursor c = mDb.query(DATABASE_NAME_GRUPO, null, null, null, null, null, null);
         return c;
-
     }
 }
