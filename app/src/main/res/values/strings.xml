@@ -6,6 +6,7 @@
     <string name="menu_delete">Borrar Vino</string>
     <string name="menu_edit">Editar Vino</string>
     <string name="nomVino">Nombre:</string>
+    <string name="nomGrupo">Nombre:</string>
     <string name="nomBusqueda">Valor del campo:</string>
     <string name="vino">Tipo de vino:</string>
     <string name="confirmar">Confirmar</string>
@@ -23,4 +24,6 @@
     <string name="numVinos">Numero total de vinos en la base de datos:</string>
 
     <string name="title_activity_mis_vinos">MisVinos</string>
+    <string name="title_activity_mis_grupos">MisGrupos</string>
+    <string name="title_activity_editar_grupo">EditarGrupo</string>
 </resources>
