@@ -48,7 +48,6 @@ public class Inicio extends AppCompatActivity {
      */
     private void mostrarVinos() {
         Intent i = new Intent(this, MisVinos.class);
-        i.putExtra(MisVinos.MOSTRAR_VINOS, new Boolean(true));
         startActivity(i);
     }
 

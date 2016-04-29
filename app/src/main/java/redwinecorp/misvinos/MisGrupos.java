@@ -28,16 +28,27 @@ public class MisGrupos extends AppCompatActivity {
     public static final String INICIO = "inicio"; //true-> al pulsar un grupo se va a ver los vinos de ese grupo
                                                   //false-> al pulsar un grupo se devuelve el nombre de ese grupo
 
-    //Opciones del menu de los vinos
+    //Opciones del menu de todos los grupos(id==null)
     private static final int AÑADIR_GRUPO = Menu.FIRST;
+    private static final int ORDENAR_POR_NOMBRE_ASC = Menu.FIRST+1;
+    private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+2;
+    private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+3;
+
+    //Opciones del menu de todos los grupos(id!=null)
+    private static final int ORDENARV_POR_NOMBRE_ASC = Menu.FIRST;
+    private static final int ORDENARV_POR_NOMBRE_DESC = Menu.FIRST+1;
+    private static final int ORDENARV_POR_DEFECTO = Menu.FIRST+2;
 
     //Opciones del vino
     private static final int EDITAR_GRUPO = Menu.FIRST;
     private static final int BORRAR_GRUPO = Menu.FIRST+1;
+    private static final int QUITAR_GRUPO = Menu.FIRST+2;
 
     //Para saber que hay que mostrar(null->todos , !null->los del vino)
     private Long idVino = null;
     private Boolean inicio = null;
+
+    private int orden = -1;
 
     //Base de datos
     private VinosDbAdapter mDbHelper;
@@ -89,7 +100,7 @@ public class MisGrupos extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
                 if(idVino==null && inicio!=null && inicio.booleanValue()){
-                    // Ir a MisVinos pasando el nombre del vino pulsado
+                    // Ir a MisVinos pasando el id del grupo pulsado
                 }
                 else if(idVino==null && inicio!=null && !inicio.booleanValue()){
                     // Devolver a la actividad invocante el id del grupo seleccionado
@@ -107,10 +118,10 @@ public class MisGrupos extends AppCompatActivity {
 
         Cursor cGrupos;
         if(idVino==null) {
-            cGrupos = mDbHelper.obtenerGrupos();
+            cGrupos = mDbHelper.obtenerGruposOrdenados(orden);
         }
         else{
-            cGrupos = mDbHelper.obtenerGrupos(idVino.longValue());
+            cGrupos = mDbHelper.obtenerGruposOrdenadosVino(idVino.longValue(), orden);
         }
 
         startManagingCursor(cGrupos);
@@ -127,7 +138,7 @@ public class MisGrupos extends AppCompatActivity {
 
         mList.setAdapter(grupos);
 
-        numGrupos.setText(("Número total de grupos: "+cGrupos.getCount()));
+        numGrupos.setText(("Número total de grupos: " + cGrupos.getCount()));
     }
 
 
@@ -136,9 +147,14 @@ public class MisGrupos extends AppCompatActivity {
         boolean resultado = super.onCreateOptionsMenu(m);
         if(idVino==null) {
             m.add(Menu.NONE, AÑADIR_GRUPO, Menu.NONE, "Añadir Grupo");
+            m.add(Menu.NONE, ORDENAR_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
+            m.add(Menu.NONE, ORDENAR_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
+            m.add(Menu.NONE, ORDENAR_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
         }
         else{
-            //
+            m.add(Menu.NONE, ORDENARV_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
+            m.add(Menu.NONE, ORDENARV_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
+            m.add(Menu.NONE, ORDENARV_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
         }
         menu = m;
         return resultado;
@@ -151,6 +167,34 @@ public class MisGrupos extends AppCompatActivity {
             switch (item.getItemId()){
                 case AÑADIR_GRUPO:
                     añadirGrupo();
+                    return true;
+                case ORDENAR_POR_NOMBRE_ASC:
+                    orden=0;
+                    fillData();
+                    return true;
+                case ORDENAR_POR_NOMBRE_DESC:
+                    orden=1;
+                    fillData();
+                    return true;
+                case ORDENAR_POR_DEFECTO:
+                    orden=-1;
+                    fillData();
+                    return true;
+            }
+        }
+        else{
+            switch (item.getItemId()){
+                case ORDENAR_POR_NOMBRE_ASC:
+                    orden=0;
+                    fillData();
+                    return true;
+                case ORDENAR_POR_NOMBRE_DESC:
+                    orden=1;
+                    fillData();
+                    return true;
+                case ORDENAR_POR_DEFECTO:
+                    orden=-1;
+                    fillData();
                     return true;
             }
         }
@@ -165,6 +209,11 @@ public class MisGrupos extends AppCompatActivity {
         if(idVino==null){
             m.add(Menu.NONE, EDITAR_GRUPO, Menu.NONE, "Editar grupo");
             m.add(Menu.NONE, BORRAR_GRUPO, Menu.NONE, "Borrar grupo");
+        }
+        else{
+            m.add(Menu.NONE, EDITAR_GRUPO, Menu.NONE, "Editar grupo");
+            m.add(Menu.NONE, BORRAR_GRUPO, Menu.NONE, "Borrar grupo");
+            m.add(Menu.NONE, QUITAR_GRUPO, Menu.NONE, "Quitar grupo del vino");
         }
     }
 
@@ -186,6 +235,21 @@ public class MisGrupos extends AppCompatActivity {
                     return true;
             }
         }
+        else{
+            switch (item.getItemId()) {
+                case EDITAR_GRUPO:
+                    info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                    editarGrupo(info.id);
+                    fillData();
+                    return true;
+                case BORRAR_GRUPO:
+                    borrarGrupo(info.id);
+                    return true;
+                case QUITAR_GRUPO:
+                    quitarGrupo(idVino,info.id);
+                    return true;
+            }
+        }
         return super.onContextItemSelected(item);
     }
 
@@ -203,6 +267,10 @@ public class MisGrupos extends AppCompatActivity {
     private void borrarGrupo(long grupo){
         mDbHelper.borrarGrupo(grupo);
         fillData();
+    }
+
+    private void quitarGrupo(long vino, long grupo){
+        mDbHelper.borrarPertenece(vino,grupo);
     }
 
 
