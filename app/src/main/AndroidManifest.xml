@@ -49,16 +49,14 @@
         <activity
             android:name=".MisGrupos"
             android:label="@string/title_activity_mis_grupos"
-            android:parentActivityName=".Inicio"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:parentActivityName=".Inicio" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="redwinecorp.misvinos.Inicio" />
+                android:value=".Inicio" />
         </activity>
         <activity
             android:name=".EditarGrupo"
-            android:label="@string/title_activity_editar_grupo"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:parentActivityName=".MisGrupos" >
         </activity>
     </application>
 

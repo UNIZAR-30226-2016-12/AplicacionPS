@@ -31,7 +31,7 @@ public class Inicio extends AppCompatActivity {
         //Si se pulsa el botón VerGrupos
         BVerGrupos.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                //mostrarGrupos();
+                mostrarGrupos();
             }
         });
 
@@ -48,7 +48,16 @@ public class Inicio extends AppCompatActivity {
      */
     private void mostrarVinos() {
         Intent i = new Intent(this, MisVinos.class);
-        i.putExtra(MisVinos.MOSTRAR_VINOS,new Boolean(true));
+        i.putExtra(MisVinos.MOSTRAR_VINOS, new Boolean(true));
+        startActivity(i);
+    }
+
+    /**
+     * Inicia una nueva actividad MisGrupos para mostrar todos los grupos
+     */
+    private void mostrarGrupos(){
+        Intent i = new Intent(this, MisGrupos.class);
+        i.putExtra(MisGrupos.INICIO, new Boolean(true));
         startActivity(i);
     }
 
@@ -59,4 +68,5 @@ public class Inicio extends AppCompatActivity {
         Intent i = new Intent(this, BuscarVino.class);
         startActivity(i);
     }
+
 }

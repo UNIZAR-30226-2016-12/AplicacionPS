@@ -46,6 +46,7 @@ public class VinosDbAdapter {
 
     // Atributos de la tabla Grupo
     private static final String DATABASE_NAME_GRUPO = "grupo";
+    public static final String KEY_GRUPO_ID = "_id";
     public static final String KEY_GRUPO_NOMBRE = "nombre";
 
     // Atributos de la tabla Tipo
@@ -109,7 +110,8 @@ public class VinosDbAdapter {
 
     private static final String DATABASE_CREATE_GRUPO =
             "create table " + DATABASE_NAME_GRUPO + " (" +
-                    KEY_GRUPO_NOMBRE + " text primary key); ";
+                    KEY_GRUPO_ID + "integer primary key, " +
+                    KEY_GRUPO_NOMBRE + " text); ";
 
     private static final String DATABASE_CREATE_TIPO =
             "create table " + DATABASE_NAME_TIPO + " (" +
@@ -152,7 +154,7 @@ public class VinosDbAdapter {
     private static final String DATABASE_CREATE_PERTENECE =
             "create table " + DATABASE_NAME_PERTENECE + " (" +
                     KEY_PERTENECE_VINO + " integer, " +
-                    KEY_PERTENECE_GRUPO + " text, " +
+                    KEY_PERTENECE_GRUPO + " integer, " +
                     "foreign key (" + KEY_PERTENECE_VINO + ") references " + DATABASE_NAME_VINO + "(" + KEY_VINO_ID + "), " +
                     "foreign key (" + KEY_PERTENECE_GRUPO + ") references " + DATABASE_NAME_GRUPO + "(" + KEY_GRUPO_NOMBRE + "), " +
                     "primary key (" + KEY_PERTENECE_VINO + "," + KEY_PERTENECE_GRUPO + "));";
@@ -276,14 +278,19 @@ public class VinosDbAdapter {
      **/
     private static final String CONSULTA_VINOS_GRUPO_NOORD =
             "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE v."+ KEY_VINO_NOMBRE +"=p."+ KEY_PERTENECE_VINO +" AND "+
-                    "p."+ KEY_PERTENECE_GRUPO +"='?'";        //nombre del grupo
+                    "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
+                    "p."+ KEY_PERTENECE_GRUPO +"=?";        //id del grupo
 
     private static final String CONSULTA_VINOS_GRUPO =
             "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE v."+ KEY_VINO_NOMBRE +"=p."+ KEY_PERTENECE_VINO +" AND "+
-                          "p."+ KEY_PERTENECE_GRUPO +"='?'\n"+ //nombre del grupo
-                    "ORDER BY ? ?";                            //atributo y orden del OrderBy
+                    "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
+                          "p."+ KEY_PERTENECE_GRUPO +"=?\n";//+ //id del grupo
+                    //"ORDER BY ? ?";                            //atributo y orden del OrderBy
+
+    private static final String CONSULTA_GRUPOS_VINO =
+            "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
+                    "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
+                    "p."+ KEY_PERTENECE_VINO +"=?"; //id del vino
 
     /**
      * *     Propiedades de la base de datos
@@ -384,9 +391,21 @@ public class VinosDbAdapter {
      *
      * @return siguiente id libre de la tabla Vino.
      */
-    private long getSiguienteId() {
+    private long getSiguienteIdVino() {
 
         Cursor c = mDb.rawQuery("SELECT MAX(" + KEY_VINO_ID + ") as max FROM " + DATABASE_NAME_VINO, null);
+        c.moveToFirst();
+        return c.getLong(c.getColumnIndex("max")) + 1;
+    }
+
+    /**
+     * Consulta y devuelve el siguiente id libre de la tabla Grupo
+     *
+     * @return siguiente id libre de la tabla Grupo.
+     */
+    private long getSiguienteIdGrupo() {
+
+        Cursor c = mDb.rawQuery("SELECT MAX(" + KEY_GRUPO_ID + ") as max FROM " + DATABASE_NAME_GRUPO, null);
         c.moveToFirst();
         return c.getLong(c.getColumnIndex("max")) + 1;
     }
@@ -442,19 +461,6 @@ public class VinosDbAdapter {
         return c;
     }
 
-    public Cursor getGrupos(long id){
-        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
-                new String(KEY_PERTENECE_VINO + "=" + id),null, null, null, null);
-        return c;
-
-    }
-
-    public Cursor getGrupos(){
-        Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null, null, null, null, null, null);
-        return c;
-
-    }
-
     /**
      * Busca la uva con el nombre dado
      *
@@ -494,10 +500,15 @@ public class VinosDbAdapter {
         return c;
     }
 
-    private Cursor getGrupo(String nombre){
-        String grupoUpper = nombre.toUpperCase();
-        Cursor c = mDb.query(DATABASE_NAME_GRUPO, new String[]{KEY_GRUPO_NOMBRE},
-                new String(KEY_GRUPO_NOMBRE + "='" + grupoUpper + "'"), null, null, null, null);
+    public Cursor getGrupo(long grupo){
+        Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
+                new String(KEY_GRUPO_ID + "=" + grupo), null, null, null, null);
+        return c;
+    }
+
+    public Cursor getGrupo(String grupo){
+        Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
+                new String(KEY_GRUPO_NOMBRE + "='" + grupo.toUpperCase() + "'"), null, null, null, null);
         return c;
     }
 
@@ -574,10 +585,9 @@ public class VinosDbAdapter {
         return c;
     }
 
-    private Cursor getPertenece(long vino, String grupo){
-        String grupoUpper = grupo.toUpperCase();
+    private Cursor getPertenece(long vino, long grupo){
         Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
-                new String(KEY_PERTENECE_VINO + "=" + vino + " AND " + KEY_PERTENECE_GRUPO + "='" + grupoUpper + "'"),
+                new String(KEY_PERTENECE_VINO + "=" + vino + " AND " + KEY_PERTENECE_GRUPO + "=" + grupo),
                 null, null, null, null);
         return c;
     }
@@ -598,7 +608,7 @@ public class VinosDbAdapter {
             String notaUpper = nota.toUpperCase();
 
             // Calculamos el siguiente id
-            long id = getSiguienteId();
+            long id = getSiguienteIdVino();
 
             ContentValues valores = new ContentValues();
             valores.put(KEY_VINO_ID, id);
@@ -707,20 +717,25 @@ public class VinosDbAdapter {
         }
     }
 
-    public boolean crearGrupo(String nombre) {
+    public long crearGrupo(String nombre) {
 
-        //Si no existe el grupo se crea
+        //Si no existe el vino se crea
         if (getGrupo(nombre).getCount() == 0) {
 
             // Usamos las cadenas en mayusculas
             String nombreUpper = nombre.toUpperCase();
 
+            // Calculamos el siguiente id
+            long id = getSiguienteIdGrupo();
+
             ContentValues valores = new ContentValues();
+            valores.put(KEY_GRUPO_ID, id);
             valores.put(KEY_GRUPO_NOMBRE, nombreUpper);
 
-            return mDb.insert(DATABASE_NAME_GRUPO, null, valores) > 0;
+            mDb.insert(DATABASE_NAME_GRUPO, null, valores);
+            return id;
         } else {
-            return false;
+            return -1;
         }
     }
 
@@ -884,7 +899,7 @@ public class VinosDbAdapter {
      * @param id       id del vino
      * @return devuelve true si existe el vino y el tipo, false si no existen.
      */
-    public boolean añadirGrupo(String grupo, long id) {
+    public boolean añadirGrupo(long grupo, long id) {
 
         Cursor cG = getGrupo(grupo);
         Cursor cV = getVino(id);
@@ -895,7 +910,7 @@ public class VinosDbAdapter {
             cV.moveToFirst();
 
             Cursor cP = getPertenece(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
-                    cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+                    cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID)));
 
             if (cP.getCount() == 0) {
                 cG.moveToFirst();
@@ -903,7 +918,7 @@ public class VinosDbAdapter {
 
                 ContentValues valores = new ContentValues();
                 valores.put(KEY_ES_VINO, cV.getLong(cV.getColumnIndex(KEY_VINO_ID)));
-                valores.put(KEY_PERTENECE_GRUPO, cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+                valores.put(KEY_PERTENECE_GRUPO, cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID)));
 
                 return mDb.insert(DATABASE_NAME_PERTENECE, null, valores) > 0;
             }
@@ -960,19 +975,19 @@ public class VinosDbAdapter {
     /**
      * Elimina un grupo dado.
      *
-     * @param nombre nombre de un grupo
+     * @param id id de un grupo
      * @return devuelve true si existe el grupo y es borrado, false si no existe o no se puede eliminar.
      */
-    public boolean borrarGrupo(String nombre) {
+    public boolean borrarGrupo(long id) {
 
-        Cursor cG = getGrupo(nombre);
+        Cursor cG = getGrupo(id);
 
         if (cG.getCount() > 0) {
 
             cG.moveToFirst();
 
             return mDb.delete(DATABASE_NAME_GRUPO,
-                    new String(KEY_GRUPO_NOMBRE + "=" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))), null) > 0;
+                    new String(KEY_GRUPO_ID + "=" + cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID))), null) > 0;
         } else {
             return false;
         }
@@ -1072,16 +1087,16 @@ public class VinosDbAdapter {
         }
     }
 
-    public boolean borrarPertenece(long id, String nombre) {
+    public boolean borrarPertenece(long id, long grupo) {
 
-        Cursor cP = getPertenece(id, nombre);
+        Cursor cP = getPertenece(id, grupo);
 
         if (cP.getCount() > 0) {
 
             cP.moveToFirst();
 
             return mDb.delete(DATABASE_NAME_PERTENECE,
-                    new String(KEY_PERTENECE_VINO + "=" + id + " AND " + KEY_PERTENECE_GRUPO + "='" + nombre + "'"), null) > 0;
+                    new String(KEY_PERTENECE_VINO + "=" + id + " AND " + KEY_PERTENECE_GRUPO + "=" + grupo), null) > 0;
         } else {
             return false;
         }
@@ -1225,13 +1240,13 @@ public class VinosDbAdapter {
     /**
      * Actualiza un grupo dado.
      *
-     * @param nombre      nombre del grupo
+     * @param grupo id del grupo
      * @param nuevoNombre nuevo nombre(null para mantener la anterior)
      * @return devuelve true si existe el grupo y se ha actualizado, false en caso contrario.
      */
-    public boolean actualizarGrupo(String nombre, String nuevoNombre) {
+    public boolean actualizarGrupo(long grupo, String nuevoNombre) {
 
-        Cursor cG = getGrupo(nombre);
+        Cursor cG = getGrupo(grupo);
 
         if (cG.getCount() > 0) {
 
@@ -1241,7 +1256,7 @@ public class VinosDbAdapter {
             valores.put(KEY_GRUPO_NOMBRE, nuevoNombre.toUpperCase());
 
             return mDb.update(DATABASE_NAME_GRUPO, valores,
-                    new String(KEY_GRUPO_NOMBRE + "=" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))), null) > 0;
+                    new String(KEY_GRUPO_ID + "=" + cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID))), null) > 0;
         } else {
             return false;
         }
@@ -1459,7 +1474,7 @@ public class VinosDbAdapter {
      * @param nuevoG nombre del nuevo grupo
      * @return devuelve true si existen los elementos y se ha cambiado, false en caso contrario.
      */
-    public boolean cambiarGrupo(long id, String grupo, String nuevoG) {
+    public boolean cambiarGrupo(long id, long grupo, long nuevoG, String nuevoN) {
 
         Cursor cV = getVino(id);
         Cursor cG = getGrupo(grupo);
@@ -1471,7 +1486,7 @@ public class VinosDbAdapter {
             cG.moveToFirst();
 
             Cursor cP = getPertenece(cV.getLong(cV.getColumnIndex(KEY_VINO_ID)),
-                    cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE)));
+                    cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID)));
 
             //Si existe la relacion vino-grupo
             if (cP.getCount() > 0) {
@@ -1480,19 +1495,19 @@ public class VinosDbAdapter {
 
                 Cursor cNG = getGrupo(nuevoG);
                 if(cNG.getCount() > 0){
-                    crearGrupo(nuevoG.toUpperCase());
-                    cNG = getGrupo(nuevoG.toUpperCase());
+                    crearGrupo(nuevoN.toUpperCase());
+                    cNG = getGrupo(nuevoG);
                 }
 
                 cNG.moveToFirst();
 
                 ContentValues valores = new ContentValues();
                 valores.put(KEY_PERTENECE_VINO, id);
-                valores.put(KEY_PERTENECE_GRUPO, nuevoG.toUpperCase());
+                valores.put(KEY_PERTENECE_GRUPO, nuevoG);
 
                 return mDb.update(DATABASE_NAME_PERTENECE, valores,
-                        new String(KEY_PERTENECE_VINO + "=" + cV.getInt(cV.getColumnIndex(KEY_VINO_ID)) +
-                                " AND " + KEY_PERTENECE_GRUPO + "='" + cG.getString(cG.getColumnIndex(KEY_GRUPO_NOMBRE))+"'"), null) > 0;
+                        new String(KEY_PERTENECE_VINO + "=" + cV.getLong(cV.getColumnIndex(KEY_VINO_ID)) +
+                                " AND " + KEY_PERTENECE_GRUPO + "=" + cG.getLong(cG.getColumnIndex(KEY_GRUPO_ID))), null) > 0;
             } else {
                 return false;
             }
@@ -1570,52 +1585,60 @@ public class VinosDbAdapter {
      *
      * @return devuelve un cursor con los vinos ordenados.
      */
-    public Cursor obtenerVinosOrdenadosGrupo(String grupo, int orden) {
-        if(grupo == null){
-            return obtenerVinosOrdenados(orden);
-        } else {
-            String[] args = new String[3];
-            args[0] = grupo;
-            switch (orden) {
-                case 0:
-                    args[1] = KEY_VINO_NOMBRE;
-                    args[2] = "";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO,args);
-                case 1:
-                    args[1] = KEY_VINO_NOMBRE;
-                    args[2] = "DESC";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 2:
-                    args[1] = KEY_VINO_AÑO;
-                    args[2] = "";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 3:
-                    args[1] = KEY_VINO_AÑO;
-                    args[2] = "DESC";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 4:
-                    args[1] = KEY_VINO_POSICION;
-                    args[2] = "";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 5:
-                    args[1] = KEY_VINO_POSICION;
-                    args[2] = "DESC";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 6:
-                    args[1] = KEY_VINO_VALORACION;
-                    args[2] = "";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                case 7:
-                    args[1] = KEY_VINO_VALORACION;
-                    args[2] = "DESC";
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
-                default:
-                    return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{grupo});
-            }
+    public Cursor obtenerVinosOrdenadosGrupo(long grupo, int orden) {
+        String[] args = new String[3];
+        args[0] = ""+grupo;
+        switch (orden) {
+            case 0:
+                args[1] = KEY_VINO_NOMBRE;
+                args[2] = "";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO,args);
+            case 1:
+                args[1] = KEY_VINO_NOMBRE;
+                args[2] = "DESC";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 2:
+                args[1] = KEY_VINO_AÑO;
+                args[2] = "";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 3:
+                args[1] = KEY_VINO_AÑO;
+                args[2] = "DESC";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 4:
+                args[1] = KEY_VINO_POSICION;
+                args[2] = "";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 5:
+                args[1] = KEY_VINO_POSICION;
+                args[2] = "DESC";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 6:
+                args[1] = KEY_VINO_VALORACION;
+                args[2] = "";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            case 7:
+                args[1] = KEY_VINO_VALORACION;
+                args[2] = "DESC";
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+            default:
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{""+grupo});
         }
     }
 
     public long numeroVinos(){
         return mDb.query(DATABASE_NAME_VINO,null,null,null,null,null,null).getCount();
+    }
+
+    public Cursor obtenerGrupos(long id){
+        Cursor c = mDb.rawQuery(CONSULTA_VINOS_GRUPO, new String[]{""+id});
+        return c;
+
+    }
+
+    public Cursor obtenerGrupos(){
+        Cursor c = mDb.query(DATABASE_NAME_GRUPO, null, null, null, null, null, null);
+        return c;
+
     }
 }

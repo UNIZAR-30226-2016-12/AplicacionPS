@@ -20,11 +20,11 @@ import java.util.regex.Pattern;
 public class EditarGrupo extends AppCompatActivity {
 
 
-    public static final String NOMBRE = "nombre";
+    public static final String ID = "id";
 
     private EditText nombre;
 
-    private String nom;
+    private Long grupo;
 
     private VinosDbAdapter mDbHelper;
 
@@ -52,15 +52,15 @@ public class EditarGrupo extends AppCompatActivity {
             }
         });
 
-        nom = (savedInstanceState == null) ? null :
-                (String) savedInstanceState.getSerializable(NOMBRE);
-        if (nom == null) {
+        grupo = (savedInstanceState == null) ? null :
+                (Long) savedInstanceState.getSerializable(ID);
+        if (grupo == null) {
             Bundle extras = getIntent().getExtras();
-            nom = (extras != null) ? extras.getString(NOMBRE)
+            grupo = (extras != null) ? extras.getLong(ID)
                     : null;
         }
 
-        if(nom==null) {
+        if(grupo==null) {
             setTitle("Crear Grupo");
         }
         else{
@@ -81,8 +81,10 @@ public class EditarGrupo extends AppCompatActivity {
     }
 
     private void populateFields() {
-        if (nom != null) {
-            nombre.setText(nom);
+        if (grupo != null) {
+            Cursor cG = mDbHelper.getGrupo(grupo.longValue());
+            cG.moveToFirst();
+            nombre.setText(cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE)));
         }
     }
 
@@ -90,7 +92,7 @@ public class EditarGrupo extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putSerializable(NOMBRE, nom);
+        outState.putSerializable(ID, grupo);
     }
 
     @Override
@@ -106,8 +108,8 @@ public class EditarGrupo extends AppCompatActivity {
     }
 
     private void saveState() {
-        if(nom!=null) {
-            mDbHelper.actualizarGrupo(nom,nombre.getText().toString());
+        if(grupo!=null) {
+            mDbHelper.actualizarGrupo(grupo.longValue(),nombre.getText().toString());
         }
         else{
             mDbHelper.crearGrupo(nombre.getText().toString());
