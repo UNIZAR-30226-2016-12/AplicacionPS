@@ -103,7 +103,11 @@ public class MisGrupos extends AppCompatActivity {
                     // Ir a MisVinos pasando el id del grupo pulsado
                 }
                 else if(idVino==null && inicio!=null && !inicio.booleanValue()){
-                    // Devolver a la actividad invocante el id del grupo seleccionado
+                    // Devolver a la actividad invocante el id del grupo seleccionado y del nombre
+                    Intent data = new Intent();
+                    data.putExtra("id",id);
+                    setResult(RESULT_OK, data);
+                    finish();
                 }
             }
         });

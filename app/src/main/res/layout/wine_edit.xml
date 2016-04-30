@@ -140,11 +140,15 @@
                     android:textColor="#a80038"
                     android:layout_margin="5dp"
                     android:text="Grupo:" />
-                <Spinner
-                    android:id="@+id/group_list"
-                    android:layout_width="fill_parent"
+                <EditText android:id="@+id/grupo"
+                    android:hint="Ningun grupo asignado"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    />
+                    android:layout_weight="1"/>
+                <Button android:id="@+id/select_group"
+                    android:text="seleccionar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout android:orientation="vertical"

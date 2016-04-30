@@ -33,8 +33,12 @@ public class EditarVino extends AppCompatActivity {
     private EditText premios;
     private RatingBar valoracion;
     private EditText nota;
+    private EditText grupo;
 
     private Long id;
+
+    private String nombreGrupo;
+    private Long idGrupo;
 
     private VinosDbAdapter mDbHelper;
 
@@ -58,6 +62,7 @@ public class EditarVino extends AppCompatActivity {
         premios = (EditText) findViewById(R.id.premios);
         valoracion = (RatingBar) findViewById(R.id.ratingBar);
         nota = (EditText) findViewById(R.id.notas);
+        grupo = (EditText) findViewById(R.id.grupo);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -73,6 +78,10 @@ public class EditarVino extends AppCompatActivity {
                 }
             }
         });
+
+        //Boton para ir a MisGrupos y elegir uno.
+        Button selectGroupButtom = (Button) findViewById(R.id.select_group);
+
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
         if (id == null) {
@@ -87,6 +96,14 @@ public class EditarVino extends AppCompatActivity {
         else{
             setTitle("Editar Vino");
         }
+
+        selectGroupButtom.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                grupos();
+            }
+
+        });
     }
 
     @Override
@@ -136,13 +153,21 @@ public class EditarVino extends AppCompatActivity {
             }else{
                 localizacion.setText(p);
             }
-            valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION))/2.0f);
+            valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)) / 2.0f);
             nota.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOTA)));
 
             //Dado un cursor con las uvas y los porcentajes, se convierte en un String("u1-p1, u2-p2...)
             uva.setText(tratarUvas(mDbHelper.getUvas(id)));
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
             premios.setText(tratarPremios(mDbHelper.getPremios(id)));
+
+            if(idGrupo!=null) {
+                Cursor cGrupo = mDbHelper.getGrupo(idGrupo);
+                startManagingCursor(cGrupo);
+                nombreGrupo = cGrupo.getString(cGrupo.getColumnIndexOrThrow(
+                        VinosDbAdapter.KEY_GRUPO_NOMBRE));
+                grupo.setText(nombreGrupo);
+            }
         }
     }
 
@@ -449,7 +474,7 @@ public class EditarVino extends AppCompatActivity {
         }
         s = s.replace(" ", "");
         Pattern mPattern = Pattern.compile("^(([a-zA-Z]|[0-9])+[-]([0-9])+[.]([0-9])+[,])*" +
-                                           "([a-zA-Z]|[0-9])+[-]([0-9])+[.]([0-9])+$");
+                "([a-zA-Z]|[0-9])+[-]([0-9])+[.]([0-9])+$");
 
         Matcher matcher = mPattern.matcher(s);
         return matcher.matches();
@@ -465,5 +490,15 @@ public class EditarVino extends AppCompatActivity {
 
         Matcher matcher = mPattern.matcher(s);
         return matcher.matches();
+    }
+    private void grupos(){
+        Intent i = new Intent(this, MisGrupos.class);
+        i.putExtra(MisGrupos.INICIO, new Integer(1));
+        startActivityForResult(i, 2);
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK){
+            idGrupo = data.getLongExtra("id",0);
+        }
     }
 }
