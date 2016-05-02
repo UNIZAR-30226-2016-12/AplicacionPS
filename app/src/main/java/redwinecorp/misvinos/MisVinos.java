@@ -275,9 +275,9 @@ public class MisVinos extends AppCompatActivity {
             m.add(Menu.NONE, BORRAR_VINO, Menu.NONE, "Borrar vino");
         }
         else{
-            m.add(Menu.NONE, EDITAR_VINO, Menu.NONE, "Editar vino");
-            m.add(Menu.NONE, BORRAR_VINO, Menu.NONE, "Borrar vino");
-            m.add(Menu.NONE, BORRAR_VINO, Menu.NONE, "Quitar vino del grupo");
+            m.add(Menu.NONE, EDITAR_VINOG, Menu.NONE, "Editar vino");
+            m.add(Menu.NONE, BORRAR_VINOG, Menu.NONE, "Borrar vino");
+            m.add(Menu.NONE, QUITAR_VINOG, Menu.NONE, "Quitar vino del grupo");
         }
     }
 
@@ -330,6 +330,7 @@ public class MisVinos extends AppCompatActivity {
 
     private void quitarVino(long vino, long grupo){
         mDbHelper.borrarPertenece(vino,grupo);
+        fillData();
     }
 
     private void borrarVino(long id){
