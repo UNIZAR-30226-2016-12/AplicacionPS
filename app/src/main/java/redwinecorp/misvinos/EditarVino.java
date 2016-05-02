@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
 public class EditarVino extends AppCompatActivity {
 
     public static final String ID = "id";
-    public static final String GRUPO = "grupo";
+    public static final String ELIMINAR = "eliminar";
+    public static final String ASIGNAR = "asignar";
 
     private EditText nombre;
     private EditText tipo;
@@ -37,9 +38,6 @@ public class EditarVino extends AppCompatActivity {
     private EditText grupo;
 
     private Long id;
-
-    private String nombreGrupo;
-    private Long idGrupo;
 
     private VinosDbAdapter mDbHelper;
 
@@ -80,8 +78,25 @@ public class EditarVino extends AppCompatActivity {
             }
         });
 
-        //Boton para ir a MisGrupos y elegir uno.
-        Button selectGroupButtom = (Button) findViewById(R.id.select_group);
+        //Boton para ir a MisGrupos para quitar uno.
+        Button quitarGrupoButtom = (Button) findViewById(R.id.quitar_grupo);
+        quitarGrupoButtom.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+               quitarGrupo();
+            }
+
+        });
+
+        //Boton para ir a MisGrupos para añadir uno.
+        Button añadirGrupoButtom = (Button) findViewById(R.id.añadir_grupo);
+        añadirGrupoButtom.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                añadirGrupo();
+            }
+
+        });
 
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
@@ -97,14 +112,6 @@ public class EditarVino extends AppCompatActivity {
         else{
             setTitle("Editar Vino");
         }
-
-        selectGroupButtom.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                grupos();
-            }
-
-        });
     }
 
     @Override
@@ -164,6 +171,7 @@ public class EditarVino extends AppCompatActivity {
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
             premios.setText(tratarPremios(mDbHelper.getPremios(id)));
 
+            if(cG.getCount()==0) grupo.setText("");
             if(cG.getCount()>0) {
                 String grupos = cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE));
                 cG.moveToNext();
@@ -497,18 +505,30 @@ public class EditarVino extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private void grupos(){
+    private void añadirGrupo(){
         Intent i = new Intent(this, MisGrupos.class);
-        i.putExtra(MisGrupos.INICIO, new Integer(1));
+        i.putExtra(MisGrupos.INICIO, new Boolean(false));
+        startActivityForResult(i, 2);
+    }
+
+    private void quitarGrupo(){
+        Intent i = new Intent(this, MisGrupos.class);
+        i.putExtra(MisGrupos.ID_VINO, id);
+        i.putExtra(MisGrupos.VER, new Boolean(false));
         startActivityForResult(i, 2);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK){
-            idGrupo = data.getLongExtra(GRUPO,-1);
-            if(idGrupo.longValue()!=-1){
-                boolean resultado = mDbHelper.añadirGrupo(idGrupo.longValue(),id);
+        if (resultCode == RESULT_OK) {
+            Long idGrupoA = data.getLongExtra(ASIGNAR, -1);
+            if (idGrupoA.longValue() != -1) {
+                mDbHelper.añadirGrupo(idGrupoA.longValue(), id);
             }
+            Long idGrupoE = data.getLongExtra(ELIMINAR, -1);
+            if (idGrupoE.longValue() != -1) {
+                mDbHelper.borrarPertenece(id, idGrupoE.longValue());
+            }
+            populateFields();
         }
     }
 }

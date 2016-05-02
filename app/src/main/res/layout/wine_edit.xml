@@ -145,11 +145,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"/>
-                <Button android:id="@+id/select_group"
-                    android:text="seleccionar"
+            </LinearLayout>
+
+            <LinearLayout android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button android:id="@+id/añadir_grupo"
+                    android:text="Añadir Grupo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Button android:id="@+id/quitar_grupo"
+                    android:text="Quitar Grupo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
+
 
             <LinearLayout android:orientation="vertical"
                 android:layout_width="match_parent"

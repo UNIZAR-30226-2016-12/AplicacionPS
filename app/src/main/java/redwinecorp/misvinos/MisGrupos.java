@@ -25,6 +25,8 @@ public class MisGrupos extends AppCompatActivity {
     //Cadenas para crear el intent de esta actividad
     public static final String ID_VINO = "id"; //id-> muestra los grupos de ese vino
                                                //null-> muestra todos los grupos
+    public static final String VER = "ver";    //true-> sin opciones
+                                                //false-> con opciones
     public static final String INICIO = "inicio"; //true-> al pulsar un grupo se va a ver los vinos de ese grupo
                                                   //false-> al pulsar un grupo se devuelve el nombre de ese grupo
 
@@ -47,6 +49,7 @@ public class MisGrupos extends AppCompatActivity {
     //Para saber que hay que mostrar(null->todos , !null->los del vino)
     private Long idVino = null;
     private Boolean inicio = null;
+    private Boolean ver = null;
 
     private int orden = -1;
 
@@ -95,6 +98,14 @@ public class MisGrupos extends AppCompatActivity {
                     : null;
         }
 
+        ver = (savedInstanceState == null) ? null :
+                (Boolean) savedInstanceState.getSerializable(VER);
+        if (ver == null) {
+            Bundle extras = getIntent().getExtras();
+            ver = (extras != null) ? extras.getBoolean(VER)
+                    : null;
+        }
+
         mList = (ListView) findViewById(R.id.listG);
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,7 +116,11 @@ public class MisGrupos extends AppCompatActivity {
                 }
                 else if(idVino==null && inicio!=null && !inicio.booleanValue()){
                     // Devolver a la actividad invocante el id del grupo seleccionado y del nombre
-                    devolverGrupo(id);
+                    devolverGrupoAsignar(id);
+                }
+                else if(idVino!=null && (ver==null || !ver.booleanValue())){
+                    // Devolver a la actividad invocante el id del grupo seleccionado y del nombre
+                    devolverGrupoEliminar(id);
                 }
             }
         });
@@ -208,14 +223,12 @@ public class MisGrupos extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu m, View v,
                                     ContextMenu.ContextMenuInfo mInfo) {
         super.onCreateContextMenu(m, v, mInfo);
-        if(idVino==null){
+        if(idVino==null && inicio.booleanValue()){
             m.add(Menu.NONE, EDITAR_GRUPO, Menu.NONE, "Editar grupo");
             m.add(Menu.NONE, BORRAR_GRUPO, Menu.NONE, "Borrar grupo");
         }
-        else{
+        else if((idVino==null && !inicio.booleanValue()) || (idVino!=null && !ver.booleanValue())){
             m.add(Menu.NONE, EDITAR_GRUPO, Menu.NONE, "Editar grupo");
-            m.add(Menu.NONE, BORRAR_GRUPO, Menu.NONE, "Borrar grupo");
-            m.add(Menu.NONE, QUITAR_GRUPO, Menu.NONE, "Quitar grupo del vino");
         }
     }
 
@@ -225,7 +238,7 @@ public class MisGrupos extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        if(idVino==null){
+        if(idVino==null && inicio.booleanValue()){
             switch (item.getItemId()) {
                 case EDITAR_GRUPO:
                     info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -237,18 +250,12 @@ public class MisGrupos extends AppCompatActivity {
                     return true;
             }
         }
-        else{
+        else if((idVino==null && !inicio.booleanValue()) || (idVino!=null && !ver.booleanValue())){
             switch (item.getItemId()) {
                 case EDITAR_GRUPO:
                     info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                     editarGrupo(info.id);
                     fillData();
-                    return true;
-                case BORRAR_GRUPO:
-                    borrarGrupo(info.id);
-                    return true;
-                case QUITAR_GRUPO:
-                    quitarGrupo(idVino,info.id);
                     return true;
             }
         }
@@ -271,20 +278,22 @@ public class MisGrupos extends AppCompatActivity {
         fillData();
     }
 
-    private void quitarGrupo(long vino, long grupo){
-        mDbHelper.borrarPertenece(vino, grupo);
-    }
-
-
     private void verVinos(long id){
         Intent i = new Intent(this, MisVinos.class);
         i.putExtra(MisVinos.MOSTRAR_GRUPO, new Long(id));
         startActivity(i);
     }
 
-    private void devolverGrupo(long id){
+    private void devolverGrupoAsignar(long id){
         Intent data = new Intent();
-        data.putExtra(EditarVino.GRUPO, new Long(id));
+        data.putExtra(EditarVino.ASIGNAR, new Long(id));
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    private void devolverGrupoEliminar(long id){
+        Intent data = new Intent();
+        data.putExtra(EditarVino.ELIMINAR, new Long(id));
         setResult(RESULT_OK, data);
         finish();
     }
