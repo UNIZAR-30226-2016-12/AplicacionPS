@@ -101,13 +101,11 @@ public class MisGrupos extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
                 if(idVino==null && inicio!=null && inicio.booleanValue()){
                     // Ir a MisVinos pasando el id del grupo pulsado
+                    verVinos(id);
                 }
                 else if(idVino==null && inicio!=null && !inicio.booleanValue()){
                     // Devolver a la actividad invocante el id del grupo seleccionado y del nombre
-                    Intent data = new Intent();
-                    data.putExtra("id",id);
-                    setResult(RESULT_OK, data);
-                    finish();
+                    devolverGrupo(id);
                 }
             }
         });
@@ -274,9 +272,22 @@ public class MisGrupos extends AppCompatActivity {
     }
 
     private void quitarGrupo(long vino, long grupo){
-        mDbHelper.borrarPertenece(vino,grupo);
+        mDbHelper.borrarPertenece(vino, grupo);
     }
 
+
+    private void verVinos(long id){
+        Intent i = new Intent(this, MisVinos.class);
+        i.putExtra(MisVinos.MOSTRAR_GRUPO, new Long(id));
+        startActivity(i);
+    }
+
+    private void devolverGrupo(long id){
+        Intent data = new Intent();
+        data.putExtra(EditarVino.GRUPO, new Long(id));
+        setResult(RESULT_OK, data);
+        finish();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

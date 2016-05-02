@@ -295,8 +295,8 @@ public class VinosDbAdapter {
     private static final String CONSULTA_GRUPOS_VINO =
             "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
                     "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
-                    "p."+ KEY_PERTENECE_VINO +"=?" +            //id del vino
-                    "ORDER BY "+ KEY_GRUPO_NOMBRE +" ?";        //asc o desc
+                    "p."+ KEY_PERTENECE_VINO +"=?\n" +          //id del vino
+                    "ORDER BY ? ?";                            //atributo y orden del OrderBy
 
     /**
      * *     Propiedades de la base de datos
@@ -1678,14 +1678,15 @@ public class VinosDbAdapter {
      * @return devuelve un cursor con los grupos ordenados.
      */
     public Cursor obtenerGruposOrdenadosVino(long vino, int orden) {
-        String[] args = new String[2];
+        String[] args = new String[3];
         args[0] = ""+vino;
+        args[1] = KEY_GRUPO_NOMBRE;
         switch (orden) {
             case 0:
-                args[1] = "";
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO,args);
+                args[2] = "";
+                return mDb.rawQuery(CONSULTA_GRUPOS_VINO, args);
             case 1:
-                args[1] = "DESC";
+                args[2] = "DESC";
                 return mDb.rawQuery(CONSULTA_GRUPOS_VINO, args);
             default:
                 return mDb.rawQuery(CONSULTA_GRUPOS_VINO_NOORD,new String[]{""+vino});

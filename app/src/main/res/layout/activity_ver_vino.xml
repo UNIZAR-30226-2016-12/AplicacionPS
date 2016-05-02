@@ -118,21 +118,6 @@
                     android:layout_margin="5dp"/>
             </LinearLayout>
 
-            <LinearLayout android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="#a80038"
-                    android:layout_margin="5dp"
-                    android:text="@string/grupo" />
-                <TextView android:id="@+id/grupo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"/>
-            </LinearLayout>
-
             <LinearLayout android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -153,6 +138,21 @@
                     android:numStars="5"
                     android:stepSize="0.5"
                     android:rating="0" />
+            </LinearLayout>
+
+            <LinearLayout android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#a80038"
+                    android:layout_margin="5dp"
+                    android:text="Grupos:" />
+                <Button android:id="@+id/see_groups"
+                    android:text="Ver Grupos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout android:orientation="horizontal"

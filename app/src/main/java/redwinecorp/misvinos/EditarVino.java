@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 public class EditarVino extends AppCompatActivity {
 
     public static final String ID = "id";
+    public static final String GRUPO = "grupo";
 
     private EditText nombre;
     private EditText tipo;
@@ -62,7 +63,7 @@ public class EditarVino extends AppCompatActivity {
         premios = (EditText) findViewById(R.id.premios);
         valoracion = (RatingBar) findViewById(R.id.ratingBar);
         nota = (EditText) findViewById(R.id.notas);
-        grupo = (EditText) findViewById(R.id.grupo);
+        grupo = (EditText) findViewById(R.id.grupos);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -123,10 +124,12 @@ public class EditarVino extends AppCompatActivity {
             Cursor cV = mDbHelper.getVino(id);
             Cursor cD = mDbHelper.getDenominacion(id);
             Cursor cT = mDbHelper.getTipo(id);
+            Cursor cG = mDbHelper.obtenerGruposOrdenadosVino(id,10);
 
             cV.moveToFirst();
             cD.moveToFirst();
             cT.moveToFirst();
+            cG.moveToFirst();
 
             nombre.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
             if(cT.getCount()>0) {
@@ -161,12 +164,14 @@ public class EditarVino extends AppCompatActivity {
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
             premios.setText(tratarPremios(mDbHelper.getPremios(id)));
 
-            if(idGrupo!=null) {
-                Cursor cGrupo = mDbHelper.getGrupo(idGrupo);
-                startManagingCursor(cGrupo);
-                nombreGrupo = cGrupo.getString(cGrupo.getColumnIndexOrThrow(
-                        VinosDbAdapter.KEY_GRUPO_NOMBRE));
-                grupo.setText(nombreGrupo);
+            if(cG.getCount()>0) {
+                String grupos = cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE));
+                cG.moveToNext();
+                for(int i=1 ; i<cG.getCount() ; i++){
+                    grupos = grupos + "," + cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE));
+                    cG.moveToNext();
+                }
+                grupo.setText(grupos);
             }
         }
     }
@@ -491,14 +496,19 @@ public class EditarVino extends AppCompatActivity {
         Matcher matcher = mPattern.matcher(s);
         return matcher.matches();
     }
+
     private void grupos(){
         Intent i = new Intent(this, MisGrupos.class);
         i.putExtra(MisGrupos.INICIO, new Integer(1));
         startActivityForResult(i, 2);
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK){
-            idGrupo = data.getLongExtra("id",0);
+            idGrupo = data.getLongExtra(GRUPO,-1);
+            if(idGrupo.longValue()!=-1){
+                boolean resultado = mDbHelper.añadirGrupo(idGrupo.longValue(),id);
+            }
         }
     }
 }

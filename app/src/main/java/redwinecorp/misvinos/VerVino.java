@@ -1,10 +1,13 @@
 package redwinecorp.misvinos;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -53,6 +56,13 @@ public class VerVino extends AppCompatActivity {
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        Button verGrupos = (Button) findViewById(R.id.see_groups);
+        verGrupos.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                verGrupos();
+            }
+        });
 
         id = (savedInstanceState == null) ? null :
                 (Long) savedInstanceState.getSerializable(ID);
@@ -171,5 +181,11 @@ public class VerVino extends AppCompatActivity {
             devolver = devolver.substring(0,devolver.length() - 2);
         }
         return devolver;
+    }
+
+    private void verGrupos(){
+        Intent i = new Intent(this, MisGrupos.class);
+        i.putExtra(MisGrupos.ID_VINO, id);
+        startActivity(i);
     }
 }
