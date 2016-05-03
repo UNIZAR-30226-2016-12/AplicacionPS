@@ -143,11 +143,11 @@ public class EditarVino extends AppCompatActivity {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = { "Cámara", "Elegir de la galería",
+                "Cancelar" };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(EditarVino.this);
-        builder.setTitle("Add Photo!");
+        builder.setTitle("Elige una foto!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
