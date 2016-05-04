@@ -59,6 +59,7 @@ public class MisGrupos extends AppCompatActivity {
     private Menu menu;
     private Cursor mGruposCursor;
     private ListView mList;
+    private FloatingActionButton bNuevo;
 
     private TextView numGrupos;
 
@@ -85,7 +86,7 @@ public class MisGrupos extends AppCompatActivity {
                 (Long) savedInstanceState.getSerializable(ID_VINO);
         if (idVino == null) {
             Bundle extras = getIntent().getExtras();
-            idVino = (extras != null) ? extras.getLong(ID_VINO,-1)
+            idVino = (extras != null) ? extras.getLong(ID_VINO, -1)
                     : null;
             if(idVino.longValue()==-1) idVino=null;
         }
@@ -122,6 +123,14 @@ public class MisGrupos extends AppCompatActivity {
                     // Devolver a la actividad invocante el id del grupo seleccionado y del nombre
                     devolverGrupoEliminar(id);
                 }
+            }
+        });
+
+        bNuevo = (FloatingActionButton) findViewById(R.id.nuevo);
+        bNuevo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                añadirGrupo();
             }
         });
 
