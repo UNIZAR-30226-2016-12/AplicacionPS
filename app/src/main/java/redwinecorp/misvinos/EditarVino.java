@@ -101,7 +101,14 @@ public class EditarVino extends AppCompatActivity {
         quitarGrupoButtom.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-               quitarGrupo();
+                if(id==null){
+                    grupo.setText("");
+                    grupo.setHintTextColor(Color.rgb(255, 0, 0));
+                    grupo.setHint("Antes de quitar un grupo debes crear el vino.");
+                }
+                else {
+                    quitarGrupo();
+                }
             }
 
         });
@@ -111,7 +118,14 @@ public class EditarVino extends AppCompatActivity {
         añadirGrupoButtom.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                añadirGrupo();
+                if(id==null){
+                    grupo.setText("");
+                    grupo.setHintTextColor(Color.rgb(255, 0, 0));
+                    grupo.setHint("Antes de añadir un grupo debes crear el vino.");
+                }
+                else {
+                    añadirGrupo();
+                }
             }
 
         });

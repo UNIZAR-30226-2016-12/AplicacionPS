@@ -281,22 +281,34 @@ public class VinosDbAdapter {
                     "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
                     "p."+ KEY_PERTENECE_GRUPO +"=?";        //id del grupo
 
-    private static final String CONSULTA_VINOS_GRUPO =
+    private static final String CONSULTA_VINOS_GRUPO_ASC =
             "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
                     "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
-                          "p."+ KEY_PERTENECE_GRUPO +"=?\n" + //id del grupo
-                    "ORDER BY ? ?";                            //atributo y orden del OrderBy
+                    "p."+ KEY_PERTENECE_GRUPO +"=?\n"+        //id del grupo
+                    "ORDER BY ?";                         //atributo y orden del OrderBy
+
+    private static final String CONSULTA_VINOS_GRUPO_DESC =
+            "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
+                    "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
+                    "p."+ KEY_PERTENECE_GRUPO +"=?\n"+        //id del grupo
+                    "ORDER BY ? DESC";                            //atributo y orden del OrderBy
 
     private static final String CONSULTA_GRUPOS_VINO_NOORD =
             "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
                     "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
                     "p."+ KEY_PERTENECE_VINO +"=?"; //id del vino
 
-    private static final String CONSULTA_GRUPOS_VINO =
+    private static final String CONSULTA_GRUPOS_VINO_ASC =
             "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
                     "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
                     "p."+ KEY_PERTENECE_VINO +"=?\n" +          //id del vino
-                    "ORDER BY ? ?";                            //atributo y orden del OrderBy
+                    "ORDER BY ?";                            //atributo y orden del OrderBy
+
+    private static final String CONSULTA_GRUPOS_VINO_DESC =
+            "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
+                    "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
+                    "p."+ KEY_PERTENECE_VINO +"=?\n" +          //id del vino
+                    "ORDER BY ? DESC";                            //atributo y orden del OrderBy
 
     /**
      * *     Propiedades de la base de datos
@@ -1607,41 +1619,33 @@ public class VinosDbAdapter {
      * @return devuelve un cursor con los vinos ordenados.
      */
     public Cursor obtenerVinosOrdenadosGrupo(long grupo, int orden) {
-        String[] args = new String[3];
+        String[] args = new String[2];
         args[0] = ""+grupo;
         switch (orden) {
             case 0:
                 args[1] = KEY_VINO_NOMBRE;
-                args[2] = "";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO,args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC,args);
             case 1:
                 args[1] = KEY_VINO_NOMBRE;
-                args[2] = "DESC";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
             case 2:
                 args[1] = KEY_VINO_AÑO;
-                args[2] = "";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
             case 3:
                 args[1] = KEY_VINO_AÑO;
-                args[2] = "DESC";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
             case 4:
                 args[1] = KEY_VINO_POSICION;
-                args[2] = "";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
             case 5:
                 args[1] = KEY_VINO_POSICION;
-                args[2] = "DESC";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
             case 6:
                 args[1] = KEY_VINO_VALORACION;
-                args[2] = "";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
             case 7:
                 args[1] = KEY_VINO_VALORACION;
-                args[2] = "DESC";
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO, args);
+                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
             default:
                 return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{""+grupo});
         }
@@ -1678,16 +1682,14 @@ public class VinosDbAdapter {
      * @return devuelve un cursor con los grupos ordenados.
      */
     public Cursor obtenerGruposOrdenadosVino(long vino, int orden) {
-        String[] args = new String[3];
+        String[] args = new String[2];
         args[0] = ""+vino;
         args[1] = KEY_GRUPO_NOMBRE;
         switch (orden) {
             case 0:
-                args[2] = "";
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO, args);
+                return mDb.rawQuery(CONSULTA_GRUPOS_VINO_ASC, args);
             case 1:
-                args[2] = "DESC";
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO, args);
+                return mDb.rawQuery(CONSULTA_GRUPOS_VINO_DESC, args);
             default:
                 return mDb.rawQuery(CONSULTA_GRUPOS_VINO_NOORD,new String[]{""+vino});
         }
