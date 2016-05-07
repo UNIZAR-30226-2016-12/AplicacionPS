@@ -25,6 +25,9 @@ public class MisVinos extends AppCompatActivity {
 
     //Cadenas para crear el intent de esta actividad
     public static final String MOSTRAR_GRUPO = "grupo"; //null-todos, !null-vinos del grupo
+    public static final String MOSTRAR_BUSQUEDA_P = "parametro";
+    public static final String MOSTRAR_BUSQUEDA_V = "valor";
+
 
     //Opciones del menu de todos los vinos
     private static final int AÑADIR_VINO = Menu.FIRST;
