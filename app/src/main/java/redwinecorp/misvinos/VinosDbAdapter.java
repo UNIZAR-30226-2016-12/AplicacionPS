@@ -326,6 +326,9 @@ public class VinosDbAdapter {
         }
 
         @Override
+        /**
+         * *     creacion de las tablas de la base de datos y los triggers
+         **/
         public void onCreate(SQLiteDatabase db) {
 
             db.execSQL(DATABASE_CREATE_VINO);
@@ -354,6 +357,9 @@ public class VinosDbAdapter {
         }
 
         @Override
+        /**
+         * *    Eliminacion de las tablas de la base de datos
+         **/
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
@@ -447,44 +453,74 @@ public class VinosDbAdapter {
      * Busca el vino con el id dados
      *
      * @param id es el id del vino
-     * @return devuelve un cursor con el resultado de la búsqueda
+     * @return devuelve un cursor con el resultado de la búsqueda del vino
      */
     public Cursor getVino(long id){
         Cursor c = mDb.query(DATABASE_NAME_VINO, null,
                 new String(KEY_VINO_ID + "=" + id), null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca las uvas con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda de las uvas
+     */
     public Cursor getUvas(long id){
         Cursor c = mDb.query(DATABASE_NAME_COMPUESTO, null,
                 new String(KEY_COMPUESTO_VINO + "=" + id),null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca el premio con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda de los premios
+     */
     public Cursor getPremios(long id){
         Cursor c = mDb.query(DATABASE_NAME_GANA, null,
                 new String(KEY_GANA_VINO + "=" + id),null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca la denominacion con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda de la denominacion
+     */
     public Cursor getDenominacion(long id){
         Cursor c = mDb.query(DATABASE_NAME_POSEE, null,
                 new String(KEY_POSEE_VINO + "=" + id),null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca el tipo con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda del tipo
+     */
     public Cursor getTipo(long id){
         Cursor c = mDb.query(DATABASE_NAME_ES, null,
                 new String(KEY_ES_VINO + "=" + id),null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca el grupo con el id dados
+     *
+     * @param grupo es el id del grupo
+     * @return devuelve un cursor con el resultado de la búsqueda del grupo
+     */
     public Cursor getGrupo(long grupo){
         Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
                 new String(KEY_GRUPO_ID + "=" + grupo), null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca los grupos con el id dados
+     *
+     * @param id es el id del vino
+     * @return devuelve un cursor con el resultado de la búsqueda de los grupos
+     */
     public Cursor getGrupos(long id){
         Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
                 new String(KEY_PERTENECE_VINO + "=" + id),null, null, null, null);
@@ -529,7 +565,12 @@ public class VinosDbAdapter {
                 new String(KEY_DENOMINACION_NOMBRE + "='" + denominacionUpper + "'"), null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca el grupo con el nombre dado
+     *
+     * @param grupo es el nombre de un grupo
+     * @return devuelve un cursor con el resultado de la búsqueda del grupo
+     */
     private Cursor getGrupo(String grupo){
         Cursor c = mDb.query(DATABASE_NAME_GRUPO, null,
                 new String(KEY_GRUPO_NOMBRE + "='" + grupo + "'"), null, null, null, null);
@@ -608,7 +649,13 @@ public class VinosDbAdapter {
                 null, null, null, null);
         return c;
     }
-
+    /**
+     * Busca la existencia de un vino en un tipo
+     *
+     * @param vino es el id del vino
+     * @param grupo es el nombre de un grupo
+     * @return devuelve un cursor con el resultado de la búsqueda
+     */
     private Cursor getPertenece(long vino, long grupo){
         Cursor c = mDb.query(DATABASE_NAME_PERTENECE, null,
                 new String(KEY_PERTENECE_VINO + "=" + vino + " AND " + KEY_PERTENECE_GRUPO + "=" + grupo),
@@ -740,7 +787,12 @@ public class VinosDbAdapter {
             return false;
         }
     }
-
+    /**
+     * Inserta en la tabla grupo el grupo si no existe.
+     *
+     * @return devuelve true si se ha creado, false si ya estaba.
+     * @params atributos de la tabla nombre
+     */
     public long crearGrupo(String nombre) {
 
         //Si no existe el vino se crea
@@ -1079,7 +1131,13 @@ public class VinosDbAdapter {
             return false;
         }
     }
-
+    /**
+     * Elimina un compuesto dado.
+     *
+     * @param nombre es el nombre de un compuesto
+     * @param id es el id de un compuesto
+     * @return devuelve true si existe el compuesto y es borrado, false si no existe o no se puede eliminar.
+     */
     public boolean borrarCompuesto(long id, String nombre) {
 
         Cursor cC = getCompuesto(id, nombre);
@@ -1094,7 +1152,14 @@ public class VinosDbAdapter {
             return false;
         }
     }
-
+    /**
+     * Elimina un premio dado.
+     *
+     * @param nombre nombre de un premio
+     * @param año es el año de un premio
+     * @param id es el id de un premio
+     * @return devuelve true si existe el premio y es borrado, false si no existe o no se puede eliminar.
+     */
     public boolean borrarGana(long id, String nombre, long año) {
 
         Cursor cG = getGana(id, nombre, año);
@@ -1110,7 +1175,13 @@ public class VinosDbAdapter {
             return false;
         }
     }
-
+    /**
+     * Elimina una relacion de un vino y un grupo dado.
+     *
+     * @param grupo es el  nombre de un grupo
+     * @param id es el id de un vino
+     * @return devuelve true si existe la relacion y es borrado, false si no existe o no se puede eliminar.
+     */
     public boolean borrarPertenece(long id, long grupo) {
 
         Cursor cP = getPertenece(id, grupo);
