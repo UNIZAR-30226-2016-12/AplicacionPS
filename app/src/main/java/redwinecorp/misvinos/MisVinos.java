@@ -1,6 +1,7 @@
 package redwinecorp.misvinos;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class MisVinos extends AppCompatActivity {
     private Menu menu;
     private Cursor mVinosCursor;
     private ListView mList;
+    private FloatingActionButton bNuevo;
 
     private TextView numVinos;
 
@@ -105,6 +107,15 @@ public class MisVinos extends AppCompatActivity {
         }
 
         mList = (ListView) findViewById(R.id.list);
+
+        bNuevo = (FloatingActionButton) findViewById(R.id.nuevo);
+        bNuevo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                añadirVino();
+            }
+        });
+
         fillData();
 
         //Comportamiento al pulsar en un vino o grupo
