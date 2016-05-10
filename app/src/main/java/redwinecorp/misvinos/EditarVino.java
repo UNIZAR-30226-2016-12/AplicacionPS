@@ -60,6 +60,9 @@ public class EditarVino extends AppCompatActivity {
     ImageView ivImage;
 
     @Override
+    /**
+     * *     metodo constructor de la clase
+     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -155,7 +158,9 @@ public class EditarVino extends AppCompatActivity {
         });
         ivImage = (ImageView) findViewById(R.id.ivImage);
     }
-
+    /**
+     * *     metodo encargado de seleccionar una foto para ponerla en un vino
+     **/
     private void selectImage() {
         final CharSequence[] items = { "Cámara", "Elegir de la galería",
                 "Cancelar" };
@@ -183,7 +188,9 @@ public class EditarVino extends AppCompatActivity {
         });
         builder.show();
     }
-
+    /**
+     * *     metodo encargado de comprimir la imagen que se va a colocar como atributo de un vino
+     **/
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -245,7 +252,10 @@ public class EditarVino extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /**
+     * *     metodo que se encarga de añadir a la base de datos los atributos de un vino que el usuario
+     *      ha introducido anteriormente
+     **/
     private void populateFields() {
         if (id != null) {
             Cursor cV = mDbHelper.getVino(id);
@@ -548,7 +558,9 @@ public class EditarVino extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * *     metodo encargado de analizar que son correctos los datos introducidos por el usuario
+     **/
     private boolean comprobarEntradas(){
         boolean correcto = true;
 
@@ -600,7 +612,9 @@ public class EditarVino extends AppCompatActivity {
 
         return correcto;
     }
-
+    /**
+     * *     metodo encargado de comprobar que el formato de las uvas introducidas son correctas
+     **/
     private static boolean comprobarUvas(String s){
         if(s==null || s.equals("")){
             return true;
@@ -612,7 +626,9 @@ public class EditarVino extends AppCompatActivity {
         Matcher matcher = mPattern.matcher(s);
         return matcher.matches();
     }
-
+    /**
+     * *     metodo encargado de comprobar que el formato de los premios introducidas son correctas
+     **/
     private static boolean comprobarPremios(String s){
         if(s==null || s.equals("")){
             return true;
@@ -624,20 +640,26 @@ public class EditarVino extends AppCompatActivity {
         Matcher matcher = mPattern.matcher(s);
         return matcher.matches();
     }
-
+    /**
+     * *     metodo encargado de añadir un grupo a un vino
+     **/
     private void añadirGrupo(){
         Intent i = new Intent(this, MisGrupos.class);
         i.putExtra(MisGrupos.INICIO, new Boolean(false));
         startActivityForResult(i, 2);
     }
-
+    /**
+     * *     metodo encargado de quitar un grupo de un vino
+     **/
     private void quitarGrupo(){
         Intent i = new Intent(this, MisGrupos.class);
         i.putExtra(MisGrupos.ID_VINO, id);
         i.putExtra(MisGrupos.VER, new Boolean(false));
         startActivityForResult(i, 2);
     }
-
+    /**
+     * *     metodo encargado de mostrar las pantallas actualizadas despues de realizar cualquier actividad
+     **/
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_FILE)

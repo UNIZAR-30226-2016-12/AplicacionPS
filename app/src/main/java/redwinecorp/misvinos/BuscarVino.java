@@ -25,6 +25,9 @@ public class BuscarVino extends AppCompatActivity {
     private String valor;
 
     @Override
+    /**
+     * *     metodo constructor de la clase
+     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -56,7 +59,9 @@ public class BuscarVino extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, arraySpinner);
         desplegable.setAdapter(adapter);
     }
-
+    /**
+     * *     metodo que se encarga de comprobar que el formato de los datos que ha introducido el usuario es correctos
+     **/
     private boolean comprobarEntrada(){
         switch(parametro){
             case VinosDbAdapter.KEY_VINO_NOMBRE:
@@ -115,7 +120,9 @@ public class BuscarVino extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * *     metodo que se encarga de realizar la busqueda deseada por el usuario
+     **/
     private void buscar(){
         Intent i = new Intent(this, MisVinos.class);
         switch(parametro){

@@ -32,7 +32,9 @@ public class VerVino extends AppCompatActivity {
 
     private VinosDbAdapter mDbHelper;
     @Override
-
+    /**
+     * *     metodo constructor de la clase
+     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -74,6 +76,9 @@ public class VerVino extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *   metodo encargado de la pantalla de Ver vino
+     **/
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -84,7 +89,10 @@ public class VerVino extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /**
+     * *     metodo que se encarga de mostrar al usuario los atributos de un vino introducidos
+     * anteriormente en la base de datos
+     **/
     private void populateFields() {
         Cursor cV = mDbHelper.getVino(id.longValue());
         Cursor cD = mDbHelper.getDenominacion(id.longValue());
@@ -182,7 +190,9 @@ public class VerVino extends AppCompatActivity {
         }
         return devolver;
     }
-
+    /**
+     * *     metodo para visualizar los grupos a los que pertenece un vino
+     **/
     private void verGrupos(){
         Intent i = new Intent(this, MisGrupos.class);
         i.putExtra(MisGrupos.ID_VINO, id);

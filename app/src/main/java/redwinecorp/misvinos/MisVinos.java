@@ -118,7 +118,9 @@ public class MisVinos extends AppCompatActivity {
         registerForContextMenu(mList);
     }
 
-
+    /**
+     * *     metodo encargado de mostrar el listado de los vinos
+     **/
     private void fillData() {
         Cursor cVinos;
         if(idGrupo==null) {
@@ -180,6 +182,9 @@ public class MisVinos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de llamar al metodo que realiza cada una de las acciones posibles de la pantalla de mis vinos ( ordenar o añadir )
+     **/
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(idGrupo==null){
@@ -270,6 +275,9 @@ public class MisVinos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de los botones correspondientes a la pantalla de mis vinos ( borrar, editar o quitar vino de un grupo)
+     **/
     public void onCreateContextMenu(ContextMenu m, View v,
                                     ContextMenu.ContextMenuInfo mInfo) {
         super.onCreateContextMenu(m, v, mInfo);
@@ -285,6 +293,9 @@ public class MisVinos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de las realizar las acciones sobre un vino ( borrarlo, quitarlo de un grupo o editarlo)
+     **/
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info =
@@ -319,29 +330,39 @@ public class MisVinos extends AppCompatActivity {
         }
         return super.onContextItemSelected(item);
     }
-
+    /**
+     * *     metodo encargado de añadir un vino
+     **/
     private void añadirVino(){
         Intent i = new Intent(this, EditarVino.class);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
-
+    /**
+     * *     metodo encargado de editar un vino
+     **/
     private void editarVino(long id){
         Intent i = new Intent(this, EditarVino.class);
         i.putExtra(EditarVino.ID, new Long(id));
         startActivityForResult(i, ACTIVITY_EDIT);
     }
-
+    /**
+     * *     metodo encargado de quitar un vino de un grupo
+     **/
     private void quitarVino(long vino, long grupo){
         mDbHelper.borrarPertenece(vino,grupo);
         fillData();
     }
-
+    /**
+     * *     metodo encargado de borrar un vino de la lista
+     **/
     private void borrarVino(long id){
 
         mDbHelper.borrarVino(id);
         fillData();
     }
-
+    /**
+     * *     metodo encargado de ver un vino de la lista
+     **/
     private void verVino(long id){
         Intent i = new Intent(this, VerVino.class);
         i.putExtra(VerVino.ID,new Long(id));
@@ -349,6 +370,9 @@ public class MisVinos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de actualizar los cambios en la pantalla despues de realizar alguna actividad
+     **/
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         fillData();

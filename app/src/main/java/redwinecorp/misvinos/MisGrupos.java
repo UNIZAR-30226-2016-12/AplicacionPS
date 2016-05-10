@@ -139,7 +139,9 @@ public class MisGrupos extends AppCompatActivity {
         registerForContextMenu(mList);
     }
 
-
+    /**
+     * *     metodo encargado de mostrar el listado de los grupos de vinos
+     **/
     private void fillData() {
 
         Cursor cGrupos;
@@ -187,6 +189,9 @@ public class MisGrupos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de llamar al metodo que realiza cada una de las acciones posibles de la pantalla de mis grupos ( ordenar o añadir )
+     **/
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(idVino==null){
@@ -229,6 +234,9 @@ public class MisGrupos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de los botones correspondientes a la pantalla de mis vinos ( borrar, editar )
+     **/
     public void onCreateContextMenu(ContextMenu m, View v,
                                     ContextMenu.ContextMenuInfo mInfo) {
         super.onCreateContextMenu(m, v, mInfo);
@@ -242,6 +250,9 @@ public class MisGrupos extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * *     metodo encargado de las realizar las acciones sobre un grupo ( borrarlo o editarlo)
+     **/
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info =
@@ -270,43 +281,57 @@ public class MisGrupos extends AppCompatActivity {
         }
         return super.onContextItemSelected(item);
     }
-
+    /**
+     * *     metodo encargado de añadir un grupo
+     **/
     private void añadirGrupo(){
         Intent i = new Intent(this, EditarGrupo.class);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
-
+    /**
+     * *     metodo encargado de editar un grupo
+     **/
     private void editarGrupo(long grupo){
         Intent i = new Intent(this, EditarGrupo.class);
         i.putExtra(EditarGrupo.ID,new Long(grupo));
         startActivityForResult(i, ACTIVITY_EDIT);
     }
-
+    /**
+     * *     metodo encargado de borrar un grupo
+     **/
     private void borrarGrupo(long grupo){
         mDbHelper.borrarGrupo(grupo);
         fillData();
     }
-
+    /**
+     * *     metodo encargado de ver los vinos de un grupo
+     **/
     private void verVinos(long id){
         Intent i = new Intent(this, MisVinos.class);
         i.putExtra(MisVinos.MOSTRAR_GRUPO, new Long(id));
         startActivity(i);
     }
-
+    /**
+     * *     metodo encargado de asignar un vino a un grupo
+     **/
     private void devolverGrupoAsignar(long id){
         Intent data = new Intent();
         data.putExtra(EditarVino.ASIGNAR, new Long(id));
         setResult(RESULT_OK, data);
         finish();
     }
-
+    /**
+     * *     metodo encargado de quitar un vino de un grupo
+     **/
     private void devolverGrupoEliminar(long id){
         Intent data = new Intent();
         data.putExtra(EditarVino.ELIMINAR, new Long(id));
         setResult(RESULT_OK, data);
         finish();
     }
-
+    /**
+     * *     metodo encargado de actualizar los cambios en la pantalla despues de realizar alguna actividad
+     **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);

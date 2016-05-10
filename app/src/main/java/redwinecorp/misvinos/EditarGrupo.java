@@ -29,6 +29,9 @@ public class EditarGrupo extends AppCompatActivity {
     private VinosDbAdapter mDbHelper;
 
     @Override
+    /**
+     * *     metodo constructor de la clase
+     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -79,7 +82,10 @@ public class EditarGrupo extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /**
+     * *     metodo que se encarga de añadir a la base de datos los atributos de un grupo que el usuario
+     *      ha introducido anteriormente
+     **/
     private void populateFields() {
         if (grupo != null) {
             Cursor cG = mDbHelper.getGrupo(grupo.longValue());
