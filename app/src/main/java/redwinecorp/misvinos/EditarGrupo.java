@@ -114,10 +114,16 @@ public class EditarGrupo extends AppCompatActivity {
 
     private void saveState() {
         if(grupo!=null) {
-            mDbHelper.actualizarGrupo(grupo.longValue(),nombre.getText().toString());
+            String nombreGrupo = nombre.getText().toString();
+            if(!nombreGrupo.equals("")){
+                mDbHelper.actualizarGrupo(grupo,nombreGrupo);
+            }
         }
         else{
-            mDbHelper.crearGrupo(nombre.getText().toString());
+            String nombreGrupo = nombre.getText().toString();
+            if(!nombreGrupo.equals("")){
+                mDbHelper.crearGrupo(nombreGrupo);
+            }
         }
     }
 
