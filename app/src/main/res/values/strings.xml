@@ -7,6 +7,7 @@
     <string name="menu_edit">Editar Vino</string>
     <string name="nomVino">Nombre:</string>
     <string name="nomGrupo">Nombre:</string>
+    <string name="valorParametro">Parámetro:</string>
     <string name="valorBusqueda1">Valor del campo minimo:</string>
     <string name="valorBusqueda2">Valor del campo maximo:</string>
     <string name="vino">Tipo de vino:</string>

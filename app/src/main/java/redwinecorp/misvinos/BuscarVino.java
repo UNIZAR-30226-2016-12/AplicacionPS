@@ -36,7 +36,7 @@ public class BuscarVino extends AppCompatActivity {
         valorBusqueda2 = (EditText) findViewById(R.id.valorBusqueda2);
         desplegable = (Spinner) findViewById(R.id.spinner);
 
-        Button confirmButton = (Button) findViewById(R.id.searchButton);
+        Button confirmButton = (Button) findViewById(R.id.search);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 parametro = (String) desplegable.getItemAtPosition(desplegable.getSelectedItemPosition());
@@ -53,6 +53,7 @@ public class BuscarVino extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         desplegable.setAdapter(adapter);
     }
     /**
