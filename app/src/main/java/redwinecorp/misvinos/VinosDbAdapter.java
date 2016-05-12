@@ -281,34 +281,10 @@ public class VinosDbAdapter {
                     "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
                     "p."+ KEY_PERTENECE_GRUPO +"=?";        //id del grupo
 
-    private static final String CONSULTA_VINOS_GRUPO_ASC =
-            "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
-                    "p."+ KEY_PERTENECE_GRUPO +"=?\n"+        //id del grupo
-                    "ORDER BY ?";                         //atributo y orden del OrderBy
-
-    private static final String CONSULTA_VINOS_GRUPO_DESC =
-            "SELECT * FROM "+ DATABASE_NAME_VINO +" v, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE v."+ KEY_VINO_ID +"=p."+ KEY_PERTENECE_VINO +" AND "+
-                    "p."+ KEY_PERTENECE_GRUPO +"=?\n"+        //id del grupo
-                    "ORDER BY ? DESC";                            //atributo y orden del OrderBy
-
     private static final String CONSULTA_GRUPOS_VINO_NOORD =
             "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
                     "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
                     "p."+ KEY_PERTENECE_VINO +"=?"; //id del vino
-
-    private static final String CONSULTA_GRUPOS_VINO_ASC =
-            "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
-                    "p."+ KEY_PERTENECE_VINO +"=?\n" +          //id del vino
-                    "ORDER BY ?";                            //atributo y orden del OrderBy
-
-    private static final String CONSULTA_GRUPOS_VINO_DESC =
-            "SELECT * FROM "+ DATABASE_NAME_GRUPO +" g, "+ DATABASE_NAME_PERTENECE +" p\n"+
-                    "WHERE g."+ KEY_GRUPO_ID +"=p."+ KEY_PERTENECE_GRUPO +" AND "+
-                    "p."+ KEY_PERTENECE_VINO +"=?\n" +          //id del vino
-                    "ORDER BY ? DESC";                            //atributo y orden del OrderBy
 
     /**
      * *     Propiedades de la base de datos
@@ -1689,37 +1665,8 @@ public class VinosDbAdapter {
      *
      * @return devuelve un cursor con los vinos ordenados.
      */
-    public Cursor obtenerVinosOrdenadosGrupo(long grupo, int orden) {
-        String[] args = new String[2];
-        args[0] = ""+grupo;
-        switch (orden) {
-            case 0:
-                args[1] = KEY_VINO_NOMBRE;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC,args);
-            case 1:
-                args[1] = KEY_VINO_NOMBRE;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
-            case 2:
-                args[1] = KEY_VINO_AÑO;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
-            case 3:
-                args[1] = KEY_VINO_AÑO;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
-            case 4:
-                args[1] = KEY_VINO_POSICION;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
-            case 5:
-                args[1] = KEY_VINO_POSICION;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
-            case 6:
-                args[1] = KEY_VINO_VALORACION;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_ASC, args);
-            case 7:
-                args[1] = KEY_VINO_VALORACION;
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_DESC, args);
-            default:
-                return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{""+grupo});
-        }
+    public Cursor obtenerVinosGrupo(long grupo) {
+        return mDb.rawQuery(CONSULTA_VINOS_GRUPO_NOORD,new String[]{""+grupo});
     }
 
 
@@ -1745,24 +1692,76 @@ public class VinosDbAdapter {
     }
 
     /**
-     * Devuelve un cursor con todos los grupos de un vino ordenados segun orden:
-     * 0: nombre -> Alfabetico creciente
-     * 1: nombre -> Alfabetico descendiente
-     * otro: id
+     * Devuelve un cursor con todos los grupos de un vino:
      *
-     * @return devuelve un cursor con los grupos ordenados.
+     * @return devuelve un cursor con los grupos.
      */
-    public Cursor obtenerGruposOrdenadosVino(long vino, int orden) {
-        String[] args = new String[2];
-        args[0] = ""+vino;
-        args[1] = KEY_GRUPO_NOMBRE;
-        switch (orden) {
-            case 0:
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO_ASC, args);
-            case 1:
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO_DESC, args);
-            default:
-                return mDb.rawQuery(CONSULTA_GRUPOS_VINO_NOORD,new String[]{""+vino});
-        }
+    public Cursor obtenerGruposVino(long vino) {
+        return mDb.rawQuery(CONSULTA_GRUPOS_VINO_NOORD,new String[]{""+vino});
+    }
+
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarAño(int año1, int año2){
+        return mDb.query(DATABASE_NAME_VINO, null,
+                new String(KEY_VINO_AÑO + ">=" + año1 + " AND " + KEY_VINO_AÑO + "<=" + año2), null, null, null, null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarValoracion(int val1, int val2){
+        return mDb.query(DATABASE_NAME_VINO,null,
+                new String(KEY_VINO_VALORACION+">="+val1+" AND "+KEY_VINO_VALORACION+"<="+val2),null,null,null,null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarPosicion(int pos1, int pos2){
+        return mDb.query(DATABASE_NAME_VINO,null,
+                new String(KEY_VINO_POSICION+">="+pos1+" AND "+KEY_VINO_POSICION+"<="+pos2),null,null,null,null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarNombre(String nombre){
+        return mDb.query(DATABASE_NAME_VINO,null,
+                new String(KEY_VINO_NOMBRE+" LIKE '%"+nombre+"%'"),null,null,null,null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarDenominacion(String den){
+        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_CREATE_POSEE+" p "+
+                "WHERE v."+KEY_VINO_ID+"=p."+KEY_POSEE_VINO+" AND p."+
+                          KEY_POSEE_DENOMINACION+" LIKE '%"+den+"%'";
+        return mDb.rawQuery(query, null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos entre dos años concretos
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarTipo(String tipo){
+        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_CREATE_ES+" e "+
+                "WHERE v."+KEY_VINO_ID+"=e."+KEY_ES_VINO+" AND e."+
+                KEY_ES_TIPO+" LIKE '%"+tipo+"%'";
+        return mDb.rawQuery(query,null);
     }
 }

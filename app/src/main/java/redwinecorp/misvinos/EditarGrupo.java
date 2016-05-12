@@ -75,7 +75,6 @@ public class EditarGrupo extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
             default:

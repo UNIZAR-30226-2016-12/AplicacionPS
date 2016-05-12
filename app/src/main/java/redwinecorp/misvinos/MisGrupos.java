@@ -36,11 +36,6 @@ public class MisGrupos extends AppCompatActivity {
     private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+2;
     private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+3;
 
-    //Opciones del menu de todos los grupos(id!=null)
-    private static final int ORDENARV_POR_NOMBRE_ASC = Menu.FIRST;
-    private static final int ORDENARV_POR_NOMBRE_DESC = Menu.FIRST+1;
-    private static final int ORDENARV_POR_DEFECTO = Menu.FIRST+2;
-
     //Opciones del vino
     private static final int EDITAR_GRUPO = Menu.FIRST;
     private static final int BORRAR_GRUPO = Menu.FIRST+1;
@@ -149,7 +144,7 @@ public class MisGrupos extends AppCompatActivity {
             cGrupos = mDbHelper.obtenerGruposOrdenados(orden);
         }
         else{
-            cGrupos = mDbHelper.obtenerGruposOrdenadosVino(idVino.longValue(), orden);
+            cGrupos = mDbHelper.obtenerGruposVino(idVino.longValue());
         }
 
         startManagingCursor(cGrupos);
@@ -179,11 +174,6 @@ public class MisGrupos extends AppCompatActivity {
             m.add(Menu.NONE, ORDENAR_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
             m.add(Menu.NONE, ORDENAR_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
         }
-        else{
-            m.add(Menu.NONE, ORDENARV_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
-            m.add(Menu.NONE, ORDENARV_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
-            m.add(Menu.NONE, ORDENARV_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
-        }
         menu = m;
         return resultado;
     }
@@ -194,42 +184,28 @@ public class MisGrupos extends AppCompatActivity {
      **/
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(idVino==null){
-            switch (item.getItemId()){
+        if(idVino==null) {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    this.finish();
+                    return true;
                 case AÑADIR_GRUPO:
                     añadirGrupo();
                     return true;
                 case ORDENAR_POR_NOMBRE_ASC:
-                    orden=0;
+                    orden = 0;
                     fillData();
                     return true;
                 case ORDENAR_POR_NOMBRE_DESC:
-                    orden=1;
+                    orden = 1;
                     fillData();
                     return true;
                 case ORDENAR_POR_DEFECTO:
-                    orden=-1;
+                    orden = -1;
                     fillData();
                     return true;
             }
         }
-        else{
-            switch (item.getItemId()){
-                case ORDENAR_POR_NOMBRE_ASC:
-                    orden=0;
-                    fillData();
-                    return true;
-                case ORDENAR_POR_NOMBRE_DESC:
-                    orden=1;
-                    fillData();
-                    return true;
-                case ORDENAR_POR_DEFECTO:
-                    orden=-1;
-                    fillData();
-                    return true;
-            }
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

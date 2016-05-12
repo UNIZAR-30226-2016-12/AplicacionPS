@@ -19,10 +19,10 @@ public class BuscarVino extends AppCompatActivity {
 
     private Spinner desplegable;
     private EditText valorBusqueda;
-    private VinosDbAdapter mDbHelper;
 
     private String parametro;
-    private String valor;
+    private String valor1;
+    private String valor2;
 
     @Override
     /**
@@ -31,28 +31,24 @@ public class BuscarVino extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDbHelper = new VinosDbAdapter(this);
-        mDbHelper.open();
-
         setContentView(R.layout.activity_buscar_vino);
 
         valorBusqueda = (EditText) findViewById(R.id.nomBusqueda);
         desplegable = (Spinner) findViewById(R.id.spinner);
 
-        Button confirmButton = (Button) findViewById(R.id.confirmar);
+        Button confirmButton = (Button) findViewById(R.id.searchButton);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (comprobarEntrada()) {
-                    //parametro = desplegable.
-                    valor = valorBusqueda.getText().toString();
+                    parametro = (String) desplegable.getItemAtPosition(desplegable.getSelectedItemPosition());
+                    valor1 = valorBusqueda.getText().toString();
                     buscar();
                 }
             }
         });
 
         String[] arraySpinner = new String[] {
-                mDbHelper.KEY_VINO_NOMBRE,mDbHelper.KEY_VINO_AÑO,
-                mDbHelper.KEY_VINO_VALORACION,mDbHelper.KEY_VINO_POSICION,
+                VinosDbAdapter.KEY_VINO_NOMBRE
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -128,24 +124,15 @@ public class BuscarVino extends AppCompatActivity {
         switch(parametro){
             case VinosDbAdapter.KEY_VINO_NOMBRE:
                 i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_VINO_NOMBRE);
-                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V,valorBusqueda.getText().toString());
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V1,valorBusqueda.getText().toString());
             case VinosDbAdapter.KEY_VINO_AÑO:
                 try{
-                    int año = Integer.parseInt(valorBusqueda.getText().toString());
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_VINO_AÑO);
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V,año);
                 } catch (NumberFormatException e) {}
             case VinosDbAdapter.KEY_VINO_VALORACION:
                 try{
-                    int val = Integer.parseInt(valorBusqueda.getText().toString());
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_VINO_VALORACION);
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V,val);
                 } catch (NumberFormatException e) {}
             case VinosDbAdapter.KEY_VINO_POSICION:
                 try{
-                    int pos = Integer.parseInt(valorBusqueda.getText().toString());
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_VINO_POSICION);
-                    i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V,pos);
                 } catch (NumberFormatException e) {}
         }
         startActivity(i);

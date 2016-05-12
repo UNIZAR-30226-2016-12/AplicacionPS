@@ -27,7 +27,8 @@ public class MisVinos extends AppCompatActivity {
     //Cadenas para crear el intent de esta actividad
     public static final String MOSTRAR_GRUPO = "grupo"; //null-todos, !null-vinos del grupo
     public static final String MOSTRAR_BUSQUEDA_P = "parametro";
-    public static final String MOSTRAR_BUSQUEDA_V = "valor";
+    public static final String MOSTRAR_BUSQUEDA_V1 = "valor1";
+    public static final String MOSTRAR_BUSQUEDA_V2 = "valor2";
 
 
     //Opciones del menu de todos los vinos
@@ -42,17 +43,6 @@ public class MisVinos extends AppCompatActivity {
     private static final int ORDENAR_POR_VALORACION_DESC = Menu.FIRST+8;
     private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+9;
 
-    //Opciones del menu de los grupos
-    private static final int ORDENARG_POR_NOMBRE_ASC = Menu.FIRST;
-    private static final int ORDENARG_POR_NOMBRE_DESC = Menu.FIRST+1;
-    private static final int ORDENARG_POR_AÑO_ASC = Menu.FIRST+2;
-    private static final int ORDENARG_POR_AÑO_DESC = Menu.FIRST+3;
-    private static final int ORDENARG_POR_POSICION_ASC = Menu.FIRST+4;
-    private static final int ORDENARG_POR_POSICION_DESC = Menu.FIRST+5;
-    private static final int ORDENARG_POR_VALORACION_ASC = Menu.FIRST+6;
-    private static final int ORDENARG_POR_VALORACION_DESC = Menu.FIRST+7;
-    private static final int ORDENARG_POR_DEFECTO = Menu.FIRST+8;
-
     //Opciones de todos los vinos
     private static final int EDITAR_VINO = Menu.FIRST;
     private static final int BORRAR_VINO = Menu.FIRST+1;
@@ -64,6 +54,9 @@ public class MisVinos extends AppCompatActivity {
 
     //Para saber que hay que mostrar(null-todos, !null-vinos del grupo)
     private Long idGrupo;
+    private String parametro;
+    private String valor1;
+    private String valor2;
 
     //Orden de la lista
     private int orden = -1;
@@ -103,7 +96,31 @@ public class MisVinos extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             idGrupo = (extras != null) ? extras.getLong(MOSTRAR_GRUPO,-1)
                     : null;
-            if(idGrupo!=null && idGrupo.longValue()==-1) idGrupo=null;
+            if(idGrupo.longValue()==-1) idGrupo=null;
+        }
+
+        parametro = (savedInstanceState == null) ? null :
+                (String) savedInstanceState.getSerializable(MOSTRAR_BUSQUEDA_P);
+        if (parametro == null) {
+            Bundle extras = getIntent().getExtras();
+            parametro = (extras != null) ? extras.getString(MOSTRAR_BUSQUEDA_P, "")
+                    : null;
+        }
+
+        valor1 = (savedInstanceState == null) ? null :
+                (String) savedInstanceState.getSerializable(MOSTRAR_BUSQUEDA_V1);
+        if (valor1 == null) {
+            Bundle extras = getIntent().getExtras();
+            valor1 = (extras != null) ? extras.getString(MOSTRAR_BUSQUEDA_V1, "")
+                    : null;
+        }
+
+        valor2 = (savedInstanceState == null) ? null :
+                (String) savedInstanceState.getSerializable(MOSTRAR_BUSQUEDA_V2);
+        if (valor2 == null) {
+            Bundle extras = getIntent().getExtras();
+            valor2 = (extras != null) ? extras.getString(MOSTRAR_BUSQUEDA_V2, "")
+                    : null;
         }
 
         mList = (ListView) findViewById(R.id.list);
@@ -138,7 +155,32 @@ public class MisVinos extends AppCompatActivity {
             cVinos = mDbHelper.obtenerVinosOrdenados(orden);
         }
         else {
-            cVinos = mDbHelper.obtenerVinosOrdenadosGrupo(idGrupo.longValue(),orden);
+            cVinos = mDbHelper.obtenerVinosGrupo(idGrupo.longValue());
+        }
+        if(parametro!=null && !parametro.equals("") && valor1!=null && !valor1.equals("")){
+            if(parametro.equals(VinosDbAdapter.KEY_VINO_NOMBRE)){
+                cVinos = mDbHelper.buscarNombre(valor1);
+            }
+            else if (parametro.equals(VinosDbAdapter.KEY_POSEE_DENOMINACION)) {
+                cVinos = mDbHelper.buscarDenominacion(valor1);
+            }
+            else if (parametro.equals(VinosDbAdapter.KEY_ES_TIPO)) {
+                cVinos = mDbHelper.buscarTipo(valor1);
+            }
+            else if(valor2!=null && !valor2.equals("")){
+                try {
+                    int v1 = Integer.parseInt(valor1);
+                    int v2 = Integer.parseInt(valor2);
+                    if (parametro.equals(VinosDbAdapter.KEY_VINO_AÑO)) {
+                        cVinos = mDbHelper.buscarAño(v1, v2);
+                    } else if (parametro.equals(VinosDbAdapter.KEY_VINO_VALORACION)) {
+                        cVinos = mDbHelper.buscarValoracion(v1,v2);
+                    } else if (parametro.equals(VinosDbAdapter.KEY_VINO_POSICION)) {
+                        cVinos = mDbHelper.buscarPosicion(v1,v2);
+                    }
+                }
+                catch(NumberFormatException e){}
+            }
         }
 
         // Obtenemos los vinos de la base de datos
@@ -175,18 +217,6 @@ public class MisVinos extends AppCompatActivity {
             m.add(Menu.NONE, ORDENAR_POR_VALORACION_ASC, Menu.NONE, "Ordenar por valoracion asc.");
             m.add(Menu.NONE, ORDENAR_POR_VALORACION_DESC, Menu.NONE, "Ordenar por valoracion desc.");
             m.add(Menu.NONE, ORDENAR_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
-
-        }
-        else{
-            m.add(Menu.NONE, ORDENARG_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
-            m.add(Menu.NONE, ORDENARG_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
-            m.add(Menu.NONE, ORDENARG_POR_AÑO_ASC, Menu.NONE, "Ordenar por año asc.");
-            m.add(Menu.NONE, ORDENARG_POR_AÑO_DESC, Menu.NONE, "Ordenar por año desc.");
-            m.add(Menu.NONE, ORDENARG_POR_POSICION_ASC, Menu.NONE, "Ordenar por posicion asc.");
-            m.add(Menu.NONE, ORDENARG_POR_POSICION_DESC, Menu.NONE, "Ordenar por posicion desc.");
-            m.add(Menu.NONE, ORDENARG_POR_VALORACION_ASC, Menu.NONE, "Ordenar por valoracion asc.");
-            m.add(Menu.NONE, ORDENARG_POR_VALORACION_DESC, Menu.NONE, "Ordenar por valoracion desc.");
-            m.add(Menu.NONE, ORDENARG_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
         }
         menu = m;
         return resultado;
@@ -200,6 +230,9 @@ public class MisVinos extends AppCompatActivity {
 
         if(idGrupo==null){
             switch (item.getItemId()){
+                case android.R.id.home:
+                    this.finish();
+                    return true;
                 case AÑADIR_VINO:
                     añadirVino();
                     return true;
@@ -232,46 +265,6 @@ public class MisVinos extends AppCompatActivity {
                     fillData();
                     return true;
                 case ORDENAR_POR_VALORACION_DESC:
-                    orden=7;
-                    fillData();
-                    return true;
-                case ORDENAR_POR_DEFECTO:
-                    orden=-1;
-                    fillData();
-                    return true;
-            }
-        }
-        else{
-            switch (item.getItemId()){
-                case ORDENARG_POR_NOMBRE_ASC:
-                    orden=0;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_NOMBRE_DESC:
-                    orden=1;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_AÑO_ASC:
-                    orden=2;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_AÑO_DESC:
-                    orden=3;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_POSICION_ASC:
-                    orden=4;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_POSICION_DESC:
-                    orden=5;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_VALORACION_ASC:
-                    orden=6;
-                    fillData();
-                    return true;
-                case ORDENARG_POR_VALORACION_DESC:
                     orden=7;
                     fillData();
                     return true;
