@@ -1747,7 +1747,7 @@ public class VinosDbAdapter {
      * @return devuelve un cursor con los vinos
      */
     public Cursor buscarDenominacion(String den){
-        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_CREATE_POSEE+" p "+
+        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_NAME_POSEE+" p "+
                 "WHERE v."+KEY_VINO_ID+"=p."+KEY_POSEE_VINO+" AND p."+
                           KEY_POSEE_DENOMINACION+" LIKE '%"+den+"%'";
         return mDb.rawQuery(query, null);
@@ -1759,7 +1759,7 @@ public class VinosDbAdapter {
      * @return devuelve un cursor con los vinos
      */
     public Cursor buscarTipo(String tipo){
-        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_CREATE_ES+" e "+
+        String query = "SELECT * FROM "+DATABASE_NAME_VINO+" v, "+DATABASE_NAME_ES+" e "+
                 "WHERE v."+KEY_VINO_ID+"=e."+KEY_ES_VINO+" AND e."+
                 KEY_ES_TIPO+" LIKE '%"+tipo+"%'";
         return mDb.rawQuery(query,null);

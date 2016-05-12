@@ -8,24 +8,6 @@
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#a80038"
-            android:layout_margin="5dp"
-            android:textStyle="bold"
-            android:text="@string/nomBusqueda" />
-        <EditText android:id="@+id/nomBusqueda"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:hint="Valor del campo"
-            android:inputType="text"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <LinearLayout android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <Spinner
             android:layout_margin="5dp"
@@ -33,6 +15,45 @@
             android:layout_height="match_parent"
             android:id="@+id/spinner" />
 
+    </LinearLayout>
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#a80038"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:text="@string/valorBusqueda1" />
+        <EditText android:id="@+id/valorBusqueda1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:hint="Valor mínimo del campo"
+            android:inputType="text"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#a80038"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:text="@string/valorBusqueda2" />
+        <EditText
+            android:id="@+id/valorBusqueda2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:hint="Valor maximo del campo"
+            android:inputType="text"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <Button

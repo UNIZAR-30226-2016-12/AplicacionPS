@@ -31,15 +31,13 @@ public class MisGrupos extends AppCompatActivity {
                                                   //false-> al pulsar un grupo se devuelve el nombre de ese grupo
 
     //Opciones del menu de todos los grupos(id==null)
-    private static final int AÑADIR_GRUPO = Menu.FIRST;
-    private static final int ORDENAR_POR_NOMBRE_ASC = Menu.FIRST+1;
-    private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+2;
-    private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+3;
+    private static final int ORDENAR_POR_NOMBRE_ASC = Menu.FIRST;
+    private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+1;
+    private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+2;
 
     //Opciones del vino
     private static final int EDITAR_GRUPO = Menu.FIRST;
     private static final int BORRAR_GRUPO = Menu.FIRST+1;
-    private static final int QUITAR_GRUPO = Menu.FIRST+2;
 
     //Para saber que hay que mostrar(null->todos , !null->los del vino)
     private Long idVino = null;
@@ -169,7 +167,6 @@ public class MisGrupos extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu m) {
         boolean resultado = super.onCreateOptionsMenu(m);
         if(idVino==null) {
-            m.add(Menu.NONE, AÑADIR_GRUPO, Menu.NONE, "Añadir Grupo");
             m.add(Menu.NONE, ORDENAR_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
             m.add(Menu.NONE, ORDENAR_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
             m.add(Menu.NONE, ORDENAR_POR_DEFECTO, Menu.NONE, "Ordenación por defecto");
@@ -188,9 +185,6 @@ public class MisGrupos extends AppCompatActivity {
             switch (item.getItemId()) {
                 case android.R.id.home:
                     this.finish();
-                    return true;
-                case AÑADIR_GRUPO:
-                    añadirGrupo();
                     return true;
                 case ORDENAR_POR_NOMBRE_ASC:
                     orden = 0;

@@ -32,16 +32,15 @@ public class MisVinos extends AppCompatActivity {
 
 
     //Opciones del menu de todos los vinos
-    private static final int AÑADIR_VINO = Menu.FIRST;
-    private static final int ORDENAR_POR_NOMBRE_ASC = Menu.FIRST+1;
-    private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+2;
-    private static final int ORDENAR_POR_AÑO_ASC = Menu.FIRST+3;
-    private static final int ORDENAR_POR_AÑO_DESC = Menu.FIRST+4;
-    private static final int ORDENAR_POR_POSICION_ASC = Menu.FIRST+5;
-    private static final int ORDENAR_POR_POSICION_DESC = Menu.FIRST+6;
-    private static final int ORDENAR_POR_VALORACION_ASC = Menu.FIRST+7;
-    private static final int ORDENAR_POR_VALORACION_DESC = Menu.FIRST+8;
-    private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+9;
+    private static final int ORDENAR_POR_NOMBRE_ASC = Menu.FIRST;
+    private static final int ORDENAR_POR_NOMBRE_DESC = Menu.FIRST+1;
+    private static final int ORDENAR_POR_AÑO_ASC = Menu.FIRST+2;
+    private static final int ORDENAR_POR_AÑO_DESC = Menu.FIRST+3;
+    private static final int ORDENAR_POR_POSICION_ASC = Menu.FIRST+4;
+    private static final int ORDENAR_POR_POSICION_DESC = Menu.FIRST+5;
+    private static final int ORDENAR_POR_VALORACION_ASC = Menu.FIRST+6;
+    private static final int ORDENAR_POR_VALORACION_DESC = Menu.FIRST+7;
+    private static final int ORDENAR_POR_DEFECTO = Menu.FIRST+8;
 
     //Opciones de todos los vinos
     private static final int EDITAR_VINO = Menu.FIRST;
@@ -96,7 +95,7 @@ public class MisVinos extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             idGrupo = (extras != null) ? extras.getLong(MOSTRAR_GRUPO,-1)
                     : null;
-            if(idGrupo.longValue()==-1) idGrupo=null;
+            if(idGrupo!=null && idGrupo.longValue()==-1) idGrupo=null;
         }
 
         parametro = (savedInstanceState == null) ? null :
@@ -207,7 +206,6 @@ public class MisVinos extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu m) {
         boolean resultado = super.onCreateOptionsMenu(m);
         if(idGrupo==null) {
-            m.add(Menu.NONE, AÑADIR_VINO, Menu.NONE, R.string.menu_insert);
             m.add(Menu.NONE, ORDENAR_POR_NOMBRE_ASC, Menu.NONE, "Ordenar por nombre asc.");
             m.add(Menu.NONE, ORDENAR_POR_NOMBRE_DESC, Menu.NONE, "Ordenar por nombre desc.");
             m.add(Menu.NONE, ORDENAR_POR_AÑO_ASC, Menu.NONE, "Ordenar por año asc.");
@@ -232,9 +230,6 @@ public class MisVinos extends AppCompatActivity {
             switch (item.getItemId()){
                 case android.R.id.home:
                     this.finish();
-                    return true;
-                case AÑADIR_VINO:
-                    añadirVino();
                     return true;
                 case ORDENAR_POR_NOMBRE_ASC:
                     orden=0;
