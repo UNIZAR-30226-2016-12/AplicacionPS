@@ -31,6 +31,7 @@ public class VinosDbAdapter {
     public static final String KEY_VINO_AÑO = "año";
     public static final String KEY_VINO_VALORACION = "valoracion";
     public static final String KEY_VINO_NOTA = "nota";
+    public static final String KEY_VINO_IMAGEN = "imagen";
 
     // Atributos de la tabla Uva
     private static final String DATABASE_NAME_UVA = "uva";
@@ -94,7 +95,8 @@ public class VinosDbAdapter {
                     KEY_VINO_POSICION + " integer, " +
                     KEY_VINO_AÑO + " integer, " +
                     KEY_VINO_VALORACION + " integer, " +
-                    KEY_VINO_NOTA + " text);";
+                    KEY_VINO_NOTA + " text, " +
+                    KEY_VINO_IMAGEN + " text);";
 
     private static final String DATABASE_CREATE_UVA =
             "create table " + DATABASE_NAME_UVA + " (" +
@@ -642,10 +644,10 @@ public class VinosDbAdapter {
     /**
      * Inserta en la tabla vino el vino si no existe.
      *
-     * @return devuelve true si se ha creado, false si ya estaba.
+     * @return devuelve el id si se ha creado y -1 en caso contrario.
      * @params atributos de la tabla vino (null en caso de no tener alguno de ellos
      */
-    public long crearVino(String nombre, long posicion, long año, long valoracion, String nota) {
+    public long crearVino(String nombre, long posicion, long año, long valoracion, String nota, String imagen) {
 
         //Si no existe el vino se crea
         if (getVino(nombre, año).getCount() == 0) {
@@ -664,9 +666,14 @@ public class VinosDbAdapter {
             valores.put(KEY_VINO_AÑO, año);
             valores.put(KEY_VINO_VALORACION, valoracion);
             valores.put(KEY_VINO_NOTA, notaUpper);
+            valores.put(KEY_VINO_IMAGEN, imagen);
 
-            mDb.insert(DATABASE_NAME_VINO, null, valores);
-            return id;
+            if(mDb.insert(DATABASE_NAME_VINO, null, valores)!=-1) {
+                return id;
+            }
+            else{
+                return -1;
+            }
         } else {
             return -1;
         }
@@ -1185,7 +1192,7 @@ public class VinosDbAdapter {
      * @return devuelve true si existe el vino y se ha actualizado, false en caso contrario.
      */
     public boolean actualizarVino(long id, String nuevoNom, long nuevoAño, long nuevaPos,
-                                  long nuevaVal, String nuevaNota) {
+                                  long nuevaVal, String nuevaNota, String nuevaImagen) {
 
         Cursor cV = getVino(id);
 
@@ -1200,6 +1207,7 @@ public class VinosDbAdapter {
             valores.put(KEY_VINO_AÑO, nuevoAño);
             valores.put(KEY_VINO_VALORACION, nuevaVal);
             valores.put(KEY_VINO_NOTA, nuevaNota.toUpperCase());
+            valores.put(KEY_VINO_IMAGEN, nuevaImagen);
 
             return mDb.update(DATABASE_NAME_VINO, valores,
                     new String(KEY_VINO_ID + "=" + id), null) > 0;

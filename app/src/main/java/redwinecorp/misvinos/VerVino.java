@@ -2,12 +2,15 @@ package redwinecorp.misvinos;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -27,6 +30,9 @@ public class VerVino extends AppCompatActivity {
     private TextView premios;
     private RatingBar valoracion;
     private TextView nota;
+
+
+    private ImageView imagen;
 
     private Long id;
 
@@ -53,6 +59,9 @@ public class VerVino extends AppCompatActivity {
         premios = (TextView) findViewById(R.id.premios);
         valoracion = (RatingBar) findViewById(R.id.ratingBar);
         nota = (TextView) findViewById(R.id.notas);
+
+
+        imagen = (ImageView) findViewById(R.id.imagen_vino);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -88,6 +97,25 @@ public class VerVino extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    // Carga la imagen path(ruta absoluta) en ivImage
+    private void cargarImagen(String path){
+        Bitmap bm;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        final int REQUIRED_SIZE = 200;
+        int scale = 1;
+        while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+                && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+            scale *= 2;
+        options.inSampleSize = scale;
+        options.inJustDecodeBounds = false;
+        bm = BitmapFactory.decodeFile(path, options);
+
+        imagen.setImageBitmap(bm);
+    }
+
     /**
      * *     metodo que se encarga de mostrar al usuario los atributos de un vino introducidos
      * anteriormente en la base de datos
@@ -125,6 +153,11 @@ public class VerVino extends AppCompatActivity {
             localizacion.setText("");
         }else{
             localizacion.setText(p);
+        }
+
+        String imagen = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_IMAGEN));
+        if(imagen!=null && !imagen.equals("")){
+            cargarImagen(imagen);
         }
 
         valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION))/2.0f);

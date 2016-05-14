@@ -55,9 +55,10 @@ public class EditarVino extends AppCompatActivity {
 
     private VinosDbAdapter mDbHelper;
 
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    Button btnSelect;
-    ImageView ivImage;
+    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private Button btnSelect;
+    private ImageView ivImage;
+    private String actualPathImage;
 
     @Override
     /**
@@ -170,24 +171,25 @@ public class EditarVino extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
+                if (items[item].equals("Cámara")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_CAMERA);
-                } else if (items[item].equals("Choose from Library")) {
+                } else if (items[item].equals("Elegir de la galería")) {
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     startActivityForResult(
-                            Intent.createChooser(intent, "Select File"),
+                            Intent.createChooser(intent, "Seleccionar foto"),
                             SELECT_FILE);
-                } else if (items[item].equals("Cancel")) {
+                } else if (items[item].equals("Cancelar")) {
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
     }
+
     /**
      * *     metodo encargado de comprimir la imagen que se va a colocar como atributo de un vino
      **/
@@ -198,6 +200,8 @@ public class EditarVino extends AppCompatActivity {
 
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
+
+        actualPathImage = destination.getAbsolutePath();
 
         FileOutputStream fo;
         try {
@@ -211,7 +215,7 @@ public class EditarVino extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        ivImage.setImageBitmap(thumbnail);
+        cargarImagen(actualPathImage);
     }
 
     @SuppressWarnings("deprecation")
@@ -223,12 +227,17 @@ public class EditarVino extends AppCompatActivity {
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         cursor.moveToFirst();
 
-        String selectedImagePath = cursor.getString(column_index);
+        cargarImagen(cursor.getString(column_index));
+    }
+
+    // Carga la imagen path(ruta absoluta) en ivImage
+    private void cargarImagen(String path){
+        actualPathImage = path;
 
         Bitmap bm;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(selectedImagePath, options);
+        BitmapFactory.decodeFile(path, options);
         final int REQUIRED_SIZE = 200;
         int scale = 1;
         while (options.outWidth / scale / 2 >= REQUIRED_SIZE
@@ -236,7 +245,7 @@ public class EditarVino extends AppCompatActivity {
             scale *= 2;
         options.inSampleSize = scale;
         options.inJustDecodeBounds = false;
-        bm = BitmapFactory.decodeFile(selectedImagePath, options);
+        bm = BitmapFactory.decodeFile(path, options);
 
         ivImage.setImageBitmap(bm);
     }
@@ -268,28 +277,26 @@ public class EditarVino extends AppCompatActivity {
             cG.moveToFirst();
 
             nombre.setText(cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_NOMBRE)));
-            if(cT.getCount()>0) {
+            if (cT.getCount() > 0) {
                 tipo.setText(cT.getString(cT.getColumnIndex(VinosDbAdapter.KEY_ES_TIPO)));
-            }
-            else{
+            } else {
                 tipo.setText("");
             }
-            if(cD.getCount()>0) {
+            if (cD.getCount() > 0) {
                 denominacion.setText(cD.getString(cD.getColumnIndex(VinosDbAdapter.KEY_POSEE_DENOMINACION)));
-            }
-            else{
+            } else {
                 denominacion.setText("");
             }
             String a = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_AÑO));
-            if(a.equals("-1")){
+            if (a.equals("-1")) {
                 year.setText("");
-            }else{
+            } else {
                 year.setText(a);
             }
             String p = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_POSICION));
-            if(p.equals("-1")){
+            if (p.equals("-1")) {
                 localizacion.setText("");
-            }else{
+            } else {
                 localizacion.setText(p);
             }
             valoracion.setRating(cV.getFloat(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_VALORACION)) / 2.0f);
@@ -300,15 +307,26 @@ public class EditarVino extends AppCompatActivity {
             //Dado un cursor con los premio y los años, se convierte en un String("p1-a1, p2-a2...)
             premios.setText(tratarPremios(mDbHelper.getPremios(id)));
 
-            if(cG.getCount()==0) grupo.setText("");
-            if(cG.getCount()>0) {
+            if (cG.getCount() == 0) grupo.setText("");
+            if (cG.getCount() > 0) {
                 String grupos = cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE));
                 cG.moveToNext();
-                for(int i=1 ; i<cG.getCount() ; i++){
+                for (int i = 1; i < cG.getCount(); i++) {
                     grupos = grupos + "," + cG.getString(cG.getColumnIndex(VinosDbAdapter.KEY_GRUPO_NOMBRE));
                     cG.moveToNext();
                 }
                 grupo.setText(grupos);
+            }
+
+            // Si no tenemos una imagen recien cargada, cargamos la de la BD
+            if (actualPathImage==null || actualPathImage.equals("")){
+                actualPathImage = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_IMAGEN));
+                if (actualPathImage!=null && !actualPathImage.equals("")){
+                    cargarImagen(actualPathImage);
+                }
+            }
+            else{
+                cargarImagen(actualPathImage);
             }
         }
     }
@@ -370,9 +388,14 @@ public class EditarVino extends AppCompatActivity {
                     }
                 }
 
+                // Si no tenemos una imagen recien cargada, cargamos la de la BD
+                if (actualPathImage==null || actualPathImage.equals("")) {
+                    actualPathImage = cV.getString(cV.getColumnIndex(VinosDbAdapter.KEY_VINO_IMAGEN));
+                }
+
                 mDbHelper.actualizarVino(id, nombre.getText().toString(),
                         año, pos, (long) (valoracion.getRating()*2.0),
-                        nota.getText().toString());
+                        nota.getText().toString(),actualPathImage);
 
 
                 //Cambiamos la denominacion
@@ -431,7 +454,7 @@ public class EditarVino extends AppCompatActivity {
 
                 idVino = mDbHelper.crearVino(nombre.getText().toString(),
                         pos, año, (long) (valoracion.getRating()*2.0),
-                        nota.getText().toString());
+                        nota.getText().toString(),actualPathImage);
 
                 //Creamos la denominacion y la asignamos
                 String d = denominacion.getText().toString();
