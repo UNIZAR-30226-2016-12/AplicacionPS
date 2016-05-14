@@ -77,7 +77,8 @@
             android:background="@drawable/boton_redondeado"
             android:textColor="#e0e0e0"
             android:textSize="30dp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:drawableLeft="@drawable/buscar"/>
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

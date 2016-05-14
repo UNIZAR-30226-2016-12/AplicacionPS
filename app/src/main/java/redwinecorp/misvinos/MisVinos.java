@@ -166,15 +166,25 @@ public class MisVinos extends AppCompatActivity {
             else if (parametro.equals(VinosDbAdapter.KEY_ES_TIPO)) {
                 cVinos = mDbHelper.buscarTipo(valor1);
             }
+            else if (parametro.equals(VinosDbAdapter.KEY_GANA_PREMIO)){
+                cVinos = mDbHelper.buscarPremio(valor1);
+            }
             else if(valor2!=null && !valor2.equals("")){
                 try {
-                    int v1 = Integer.parseInt(valor1);
-                    int v2 = Integer.parseInt(valor2);
-                    if (parametro.equals(VinosDbAdapter.KEY_VINO_AÑO)) {
+                    if (parametro.equals(VinosDbAdapter.KEY_COMPUESTO_UVA)) {
+                        double v2 = Double.parseDouble(valor2);
+                        cVinos = mDbHelper.buscarUva(valor1, v2);
+                    } else if (parametro.equals(VinosDbAdapter.KEY_VINO_AÑO)) {
+                        int v1 = Integer.parseInt(valor1);
+                        int v2 = Integer.parseInt(valor2);
                         cVinos = mDbHelper.buscarAño(v1, v2);
                     } else if (parametro.equals(VinosDbAdapter.KEY_VINO_VALORACION)) {
+                        int v1 = Integer.parseInt(valor1);
+                        int v2 = Integer.parseInt(valor2);
                         cVinos = mDbHelper.buscarValoracion(v1,v2);
                     } else if (parametro.equals(VinosDbAdapter.KEY_VINO_POSICION)) {
+                        int v1 = Integer.parseInt(valor1);
+                        int v2 = Integer.parseInt(valor2);
                         cVinos = mDbHelper.buscarPosicion(v1,v2);
                     }
                 }
@@ -186,7 +196,7 @@ public class MisVinos extends AppCompatActivity {
         startManagingCursor(cVinos);
 
         // Creamos un array de los campos que vamos a mostrar
-        String[] from = new String[] { VinosDbAdapter.KEY_VINO_NOMBRE, VinosDbAdapter.KEY_VINO_AÑO};
+        String[] from = new String[] { VinosDbAdapter.KEY_VINO_NOMBRE};
 
         // Creamos un array de los campos a los que los vamos a asignar
         int[] to = new int[] { R.id.text1};

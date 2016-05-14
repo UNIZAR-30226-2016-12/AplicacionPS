@@ -48,7 +48,8 @@ public class BuscarVino extends AppCompatActivity {
 
         String[] arraySpinner = new String[] {
                 VinosDbAdapter.KEY_VINO_NOMBRE,VinosDbAdapter.KEY_VINO_AÑO,VinosDbAdapter.KEY_VINO_VALORACION,
-                VinosDbAdapter.KEY_VINO_POSICION,VinosDbAdapter.KEY_ES_TIPO,VinosDbAdapter.KEY_POSEE_DENOMINACION
+                VinosDbAdapter.KEY_VINO_POSICION,VinosDbAdapter.KEY_ES_TIPO,VinosDbAdapter.KEY_POSEE_DENOMINACION,
+                VinosDbAdapter.KEY_COMPUESTO_UVA,VinosDbAdapter.KEY_GANA_PREMIO
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -63,9 +64,9 @@ public class BuscarVino extends AppCompatActivity {
         switch(parametro){
             case VinosDbAdapter.KEY_VINO_NOMBRE:
                 if(valorBusqueda1.getText().toString().equals("")){
-                    valorBusqueda2.setText("");
-                    valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
-                    valorBusqueda2.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
+                    valorBusqueda1.setText("");
+                    valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda1.setHint("Para realizar una búsqueda por nombre, escriba aquí el nombre del vino.");
                     return false;
                 }
                 else if(!(valorBusqueda2.getText().toString().equals(""))){
@@ -227,9 +228,9 @@ public class BuscarVino extends AppCompatActivity {
                 }
             case VinosDbAdapter.KEY_ES_TIPO:
                 if(valorBusqueda1.getText().toString().equals("")){
-                    valorBusqueda2.setText("");
-                    valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
-                    valorBusqueda2.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
+                    valorBusqueda1.setText("");
+                    valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda1.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
                     return false;
                 }
                 else if(!valorBusqueda2.getText().toString().equals("")){
@@ -241,15 +242,62 @@ public class BuscarVino extends AppCompatActivity {
                 return true;
             case VinosDbAdapter.KEY_POSEE_DENOMINACION:
                 if(valorBusqueda1.getText().toString().equals("")){
-                    valorBusqueda2.setText("");
-                    valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
-                    valorBusqueda2.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
+                    valorBusqueda1.setText("");
+                    valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda1.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
                     return false;
                 }
                 else if(!valorBusqueda2.getText().toString().equals("")){
                     valorBusqueda2.setText("");
                     valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
                     valorBusqueda2.setHint("Para realizar una búsqueda por denominación deje este campo vacío.");
+                    return false;
+                }
+                return true;
+            case VinosDbAdapter.KEY_COMPUESTO_UVA:
+                if(valorBusqueda1.getText().toString().equals("")){
+                    valorBusqueda1.setText("");
+                    valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda1.setHint("Para realizar una búsqueda por uva, escriba aquí su nombre.");
+                    return false;
+                }
+                else if(valorBusqueda2.getText().toString().equals("")){
+                    valorBusqueda2.setText("");
+                    valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda2.setHint("Para realizar una búsqueda por uva, escriba aquí el porcentaje mínimo.");
+                    return false;
+                }
+                else{
+                    try{
+                        double por = Double.parseDouble(valorBusqueda2.getText().toString());
+                        if(por<0.0 || por>100.0){
+                            valorBusqueda2.setText("");
+                            valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
+                            valorBusqueda2.setHint("El porcentaje debe ser un número real entre 0.0 y 100.0.");
+                            return false;
+                        }
+                        else{
+                            return true;
+                        }
+                    }
+                    catch (NumberFormatException e){
+                        valorBusqueda2.setText("");
+                        valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
+                        valorBusqueda2.setHint("El porcentaje debe ser un número real entre 0.0 y 100.0.");
+                        return false;
+                    }
+                }
+            case VinosDbAdapter.KEY_GANA_PREMIO:
+                if(valorBusqueda1.getText().toString().equals("")){
+                    valorBusqueda1.setText("");
+                    valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda1.setHint("Para realizar una búsqueda por premio, escriba aquí el nombre del premio.");
+                    return false;
+                }
+                else if(!(valorBusqueda2.getText().toString().equals(""))){
+                    valorBusqueda2.setText("");
+                    valorBusqueda2.setHintTextColor(Color.rgb(255, 0, 0));
+                    valorBusqueda2.setHint("Para realizar una búsqueda por premio, deje este campo vacío.");
                     return false;
                 }
                 return true;
@@ -295,6 +343,15 @@ public class BuscarVino extends AppCompatActivity {
                 break;
             case VinosDbAdapter.KEY_POSEE_DENOMINACION:
                 i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_POSEE_DENOMINACION);
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V1,valorBusqueda1.getText().toString());
+                break;
+            case VinosDbAdapter.KEY_COMPUESTO_UVA:
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_COMPUESTO_UVA);
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V1,valorBusqueda1.getText().toString());
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V2,valorBusqueda2.getText().toString());
+                break;
+            case VinosDbAdapter.KEY_GANA_PREMIO:
+                i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_P,VinosDbAdapter.KEY_GANA_PREMIO);
                 i.putExtra(MisVinos.MOSTRAR_BUSQUEDA_V1,valorBusqueda1.getText().toString());
                 break;
         }

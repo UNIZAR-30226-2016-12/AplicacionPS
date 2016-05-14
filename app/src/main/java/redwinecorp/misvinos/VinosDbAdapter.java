@@ -1764,4 +1764,28 @@ public class VinosDbAdapter {
                 KEY_ES_TIPO+" LIKE '%"+tipo+"%'";
         return mDb.rawQuery(query,null);
     }
+
+    /**
+     * Devuelve un cursor con los vinos que han ganado un premio concreto
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarPremio(String premio){
+        String query = "SELECT DISTINCT v."+KEY_VINO_ID+", v."+KEY_VINO_NOMBRE+" FROM "+DATABASE_NAME_VINO+
+                " v, "+DATABASE_NAME_GANA+" g WHERE v."+KEY_VINO_ID+"=g."+KEY_GANA_VINO+" AND g."+
+                KEY_GANA_PREMIO+" LIKE '%"+premio+"%'";
+        return mDb.rawQuery(query,null);
+    }
+
+    /**
+     * Devuelve un cursor con los vinos que contienen un porcentaje minimo en una uva concreta
+     *
+     * @return devuelve un cursor con los vinos
+     */
+    public Cursor buscarUva(String uva, double porcentaje){
+        String query = "SELECT DISTINCT v."+KEY_VINO_ID+", v."+KEY_VINO_NOMBRE+" FROM "+DATABASE_NAME_VINO+
+                " v, "+DATABASE_NAME_COMPUESTO+" c WHERE v."+KEY_VINO_ID+"=c."+KEY_COMPUESTO_VINO+" AND c."+
+                KEY_COMPUESTO_UVA+" LIKE '%"+uva+"%' AND c."+KEY_COMPUESTO_PORCENTAJE+">="+porcentaje;
+        return mDb.rawQuery(query,null);
+    }
 }
