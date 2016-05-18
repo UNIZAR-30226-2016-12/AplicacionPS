@@ -62,7 +62,7 @@ public class MisGrupos extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.group_list);
+        setContentView(R.layout.activity_group_list);
 
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
@@ -155,7 +155,7 @@ public class MisGrupos extends AppCompatActivity {
 
         // Creamos un array adapter y lo preparamos para mostrar los datos
         SimpleCursorAdapter grupos =
-               new SimpleCursorAdapter(this, R.layout.grupos_row, cGrupos, from, to);
+               new SimpleCursorAdapter(this, R.layout.activity_grupos_row, cGrupos, from, to);
 
         mList.setAdapter(grupos);
 

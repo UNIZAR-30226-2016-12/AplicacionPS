@@ -76,7 +76,7 @@ public class MisVinos extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.coleccion_list);
+        setContentView(R.layout.activity_coleccion_list);
 
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
@@ -203,7 +203,7 @@ public class MisVinos extends AppCompatActivity {
 
         // Creamos un array adapter y lo preparamos para mostrar los datos
         SimpleCursorAdapter vinos =
-                new SimpleCursorAdapter(this, R.layout.vinos_row, cVinos, from, to);
+                new SimpleCursorAdapter(this, R.layout.activity_vinos_row, cVinos, from, to);
 
         mList.setAdapter(vinos);
 

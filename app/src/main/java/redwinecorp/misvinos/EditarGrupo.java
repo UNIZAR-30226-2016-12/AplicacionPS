@@ -38,7 +38,7 @@ public class EditarGrupo extends AppCompatActivity {
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
-        setContentView(R.layout.group_edit);
+        setContentView(R.layout.activity_group_edit);
 
         nombre = (EditText) findViewById(R.id.nomGrupo);
 

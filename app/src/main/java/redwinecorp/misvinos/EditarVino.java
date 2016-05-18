@@ -71,7 +71,7 @@ public class EditarVino extends AppCompatActivity {
         mDbHelper = new VinosDbAdapter(this);
         mDbHelper.open();
 
-        setContentView(R.layout.wine_edit);
+        setContentView(R.layout.activity_wine_edit);
         setTitle("EDITAR VINO");
 
         nombre = (EditText) findViewById(R.id.nomVino);
@@ -172,8 +172,21 @@ public class EditarVino extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Cámara")) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_CAMERA);
+
+                    File destination = new File(Environment.getExternalStorageDirectory(),
+                            System.currentTimeMillis() + ".jpg");
+                    actualPathImage = destination.getAbsolutePath();
+
+                    try {
+                        destination.createNewFile();
+                        Uri outputFileUri = Uri.fromFile(destination);
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 } else if (items[item].equals("Elegir de la galería")) {
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
@@ -188,34 +201,6 @@ public class EditarVino extends AppCompatActivity {
             }
         });
         builder.show();
-    }
-
-    /**
-     * *     metodo encargado de comprimir la imagen que se va a colocar como atributo de un vino
-     **/
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-
-        actualPathImage = destination.getAbsolutePath();
-
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        cargarImagen(actualPathImage);
     }
 
     @SuppressWarnings("deprecation")
@@ -684,19 +669,22 @@ public class EditarVino extends AppCompatActivity {
      **/
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+
+        }
+        if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
-        if (resultCode == RESULT_OK) {
-            Long idGrupoA = data.getLongExtra(ASIGNAR, -1);
-            if (idGrupoA.longValue() != -1) {
-                mDbHelper.añadirGrupo(idGrupoA.longValue(), id);
-            }
-            Long idGrupoE = data.getLongExtra(ELIMINAR, -1);
-            if (idGrupoE.longValue() != -1) {
-                mDbHelper.borrarPertenece(id, idGrupoE.longValue());
+                cargarImagen(actualPathImage);
+            else {
+                Long idGrupoA = data.getLongExtra(ASIGNAR, -1);
+                if (idGrupoA.longValue() != -1) {
+                    mDbHelper.añadirGrupo(idGrupoA.longValue(), id);
+                }
+                Long idGrupoE = data.getLongExtra(ELIMINAR, -1);
+                if (idGrupoE.longValue() != -1) {
+                    mDbHelper.borrarPertenece(id, idGrupoE.longValue());
+                }
             }
             populateFields();
         }
