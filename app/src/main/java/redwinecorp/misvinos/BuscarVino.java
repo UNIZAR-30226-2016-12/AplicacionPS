@@ -9,15 +9,21 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class BuscarVino extends AppCompatActivity {
 
     private Spinner desplegable;
+    private TextView campo1;
+    private TextView campo2;
     private EditText valorBusqueda1;
     private EditText valorBusqueda2;
 
@@ -34,6 +40,8 @@ public class BuscarVino extends AppCompatActivity {
 
         valorBusqueda1 = (EditText) findViewById(R.id.valorBusqueda1);
         valorBusqueda2 = (EditText) findViewById(R.id.valorBusqueda2);
+        campo1 = (TextView) findViewById(R.id.campo1);
+        campo2 = (TextView) findViewById(R.id.campo2);
         desplegable = (Spinner) findViewById(R.id.spinner);
 
         Button confirmButton = (Button) findViewById(R.id.search);
@@ -56,6 +64,66 @@ public class BuscarVino extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         desplegable.setAdapter(adapter);
+        desplegable.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        campo1.setText("Nombre:");
+                        campo2.setText("Sin uso:");
+                        valorBusqueda1.setHint("Introduzca aquí el nombre del vino.");
+                        valorBusqueda2.setHint("Deje este campo vacío.");
+                        break;
+                    case 1:
+                        campo1.setText("Año mínimo:");
+                        campo2.setText("Año máximo:");
+                        valorBusqueda1.setHint("Introduzca aquí el año menor.");
+                        valorBusqueda2.setHint("Introduzca aquí el año mayor.");
+                        break;
+                    case 2:
+                        campo1.setText("Valoración mínima:");
+                        campo2.setText("Valoración máxima:");
+                        valorBusqueda1.setHint("Introduzca aquí la valoración menor.");
+                        valorBusqueda2.setHint("Introduzca aquí la valoración mayor.");
+                        break;
+                    case 3:
+                        campo1.setText("Posición mínima:");
+                        campo2.setText("Posición máxima:");
+                        valorBusqueda1.setHint("Introduzca aquí la valoración menor.");
+                        valorBusqueda2.setHint("Introduzca aquí la valoración mayor.");
+                        break;
+                    case 4:
+                        campo1.setText("Tipo:");
+                        campo2.setText("Sin uso:");
+                        valorBusqueda1.setHint("Introduzca aquí el nombre del tipo.");
+                        valorBusqueda2.setHint("Deje este campo vacío.");
+                        break;
+                    case 5:
+                        campo1.setText("Denominación:");
+                        campo2.setText("Sin uso:");
+                        valorBusqueda1.setHint("Introduzca aquí el nombre de la denominación.");
+                        valorBusqueda2.setHint("Deje este campo vacío.");
+                        break;
+                    case 6:
+                        campo1.setText("Uva:");
+                        campo2.setText("Porcentaje:");
+                        valorBusqueda1.setHint("Introduzca aquí el nombre de la uva.");
+                        valorBusqueda2.setHint("Introduzca aquí el porcentaje mínimo.");
+                        break;
+                    case 7:
+                        campo1.setText("Premio:");
+                        campo2.setText("Sin uso:");
+                        valorBusqueda1.setHint("Introduzca aquí el nombre del premio.");
+                        valorBusqueda2.setHint("Deje este campo vacío.");
+                        break;
+                    default:
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
     }
     /**
      * *     metodo que se encarga de comprobar que el formato de los datos que ha introducido el usuario es correctos
