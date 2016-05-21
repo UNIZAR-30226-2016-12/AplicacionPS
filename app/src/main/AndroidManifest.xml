@@ -19,46 +19,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MisVinos"
-            android:label="@string/title_activity_mis_vinos"
-            android:parentActivityName=".Inicio" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Inicio" />
+            android:label="@string/title_activity_mis_vinos" >
         </activity>
+
         <activity
-            android:name=".EditarVino"
-            android:parentActivityName=".MisVinos" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MisVinos" />
+            android:name=".EditarVino" >
         </activity>
+
         <activity
-            android:name=".VerVino"
-            android:parentActivityName=".MisVinos" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MisVinos" />
+            android:name=".VerVino" >
         </activity>
+
         <activity
-            android:name=".BuscarVino"
-            android:parentActivityName=".MisVinos" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MisVinos" />
+            android:name=".BuscarVino">
         </activity>
+
         <activity
             android:name=".MisGrupos"
-            android:label="@string/title_activity_mis_grupos"
-            android:parentActivityName=".Inicio" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Inicio" />
+            android:label="@string/title_activity_mis_grupos" >
         </activity>
+
         <activity
-            android:name=".EditarGrupo"
-            android:parentActivityName=".MisGrupos" >
+            android:name=".EditarGrupo">
         </activity>
     </application>
 

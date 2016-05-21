@@ -199,7 +199,13 @@ public class MisGrupos extends AppCompatActivity {
                 default:
                         return super.onOptionsItemSelected(item);
             }
-
+        }
+        else{
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    this.finish();
+                    return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

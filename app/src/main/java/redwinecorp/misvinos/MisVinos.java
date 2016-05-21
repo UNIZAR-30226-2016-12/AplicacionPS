@@ -279,6 +279,13 @@ public class MisVinos extends AppCompatActivity {
                     return true;
             }
         }
+        else{
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    this.finish();
+                    return true;
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
