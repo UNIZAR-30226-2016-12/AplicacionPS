@@ -298,7 +298,7 @@ public class BuscarVino extends AppCompatActivity {
                 if(valorBusqueda1.getText().toString().equals("")){
                     valorBusqueda1.setText("");
                     valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
-                    valorBusqueda1.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
+                    valorBusqueda1.setHint("Para realizar una búsqueda por tipo no deje este campo vacío.");
                     return false;
                 }
                 else if(!valorBusqueda2.getText().toString().equals("")){
@@ -312,7 +312,7 @@ public class BuscarVino extends AppCompatActivity {
                 if(valorBusqueda1.getText().toString().equals("")){
                     valorBusqueda1.setText("");
                     valorBusqueda1.setHintTextColor(Color.rgb(255, 0, 0));
-                    valorBusqueda1.setHint("Para realizar una búsqueda por nombre no deje este campo vacío.");
+                    valorBusqueda1.setHint("Para realizar una búsqueda por denominación no deje este campo vacío.");
                     return false;
                 }
                 else if(!valorBusqueda2.getText().toString().equals("")){
