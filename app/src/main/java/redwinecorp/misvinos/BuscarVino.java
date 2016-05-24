@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,6 +45,11 @@ public class BuscarVino extends AppCompatActivity {
         campo1 = (TextView) findViewById(R.id.campo1);
         campo2 = (TextView) findViewById(R.id.campo2);
         desplegable = (Spinner) findViewById(R.id.spinner);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         Button confirmButton = (Button) findViewById(R.id.search);
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +132,18 @@ public class BuscarVino extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * *     metodo que se encarga de comprobar que el formato de los datos que ha introducido el usuario es correctos
      **/
